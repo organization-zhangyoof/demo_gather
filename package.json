@@ -1,0 +1,25 @@
+{
+  "private": true,
+  "scripts": {
+    "start": "set port=8991 && umi dev",
+    "build": "umi build",
+    "test": "umi test",
+    "precommit": "lint-staged"
+  },
+  "dependencies": {
+    "dva": "^2.6.0-beta.6",
+    "antd": "3.26.13",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "@grapecity/spread-sheets": "^13.0.2",
+    "@grapecity/spread-sheets-react": "^13.0.2",
+    "@grapecity/spread-excelio": "^13.0.2",
+    "@grapecity/spread-sheets-resources-zh": "^13.0.2",
+    "umi": "2.13.7"
+  },
+  "devDependencies": {
+    "react-test-renderer": "^16.7.0",
+    "umi": "^2.7.7",
+    "umi-plugin-react": "^1.8.4"
+  }
+}
