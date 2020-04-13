@@ -7,26 +7,28 @@ import closeImg from '../../assets/square-close.png'
 import {customCellType} from './spreadFun'
 GC.Spread.Common.CultureManager.culture("zh-cn");
 
-console.log("SpreadSheets=====",SpreadSheets)
 class SpreadHome extends Component {
     
     constructor(props) {
         super(props);
         this.state = {
             data : [
-                {name:'aaa',age:20,gender:0,department:'工程部',partName:'单位',level:'1',},
-                {name:'aaa',age:20,gender:0,department:'工程1部',partName:'分部',level:'1-1',},
-                {name:'aaa',age:20,gender:0,department:'工程1部材料中心',partName:'子分部',level:'1-1-1',},
-                {name:'aaa',age:20,gender:0,department:'工程1部材料中心01',partName:'实体单元',level:'1-1-1-1',},
-                {name:'aaa',age:20,gender:0,department:'工程1部材料中心02',partName:'实体单元',level:'1-1-1-2',},
-                {name:'aaa',age:20,gender:0,department:'工程1部实验中心',partName:'子分部',level:'1-1-2',},
-                {name:'aaa',age:20,gender:0,department:'工程2部',partName:'分部',level:'1-2',},
-                {name:'aaa',age:20,gender:0,department:'事业部',partName:'单位',level:'2',},
-                {name:'aaa',age:20,gender:0,department:'事业1部',partName:'分部',level:'2-1',},
-                {name:'aaa',age:20,gender:0,department:'事业2部',partName:'分部',level:'2-2',},
-                {name:'aaa',age:20,gender:0,department:'销售部',partName:'单位',level:'3',},
-                {name:'aaa',age:20,gender:0,department:'销售1部',partName:'分部',level:'3-1',},
-                {name:'aaa',age:20,gender:0,department:'销售2部',partName:'分部',level:'3-2',},
+                {name:'aaa',age:20,gender:0,department:'工程部',partName:'单位工程',level:'1',nodeType:1},
+                {name:'aaa',age:20,gender:0,department:'工程1部',partName:'子单位工程',level:'1-1',nodeType:2},
+                {name:'aaa',age:20,gender:0,department:'工程1部材料中心',partName:'分部工程',level:'1-1-1',nodeType:3},
+                {name:'aaa',age:20,gender:0,department:'工程1部材料中心01',partName:'子分部工程',level:'1-1-1-1',nodeType:4},
+                {name:'aaa',age:20,gender:0,department:'工程1部材料中心01',partName:'实体单元',level:'1-1-1-1-1',nodeType:5},
+                {name:'aaa',age:20,gender:0,department:'工程1部材料中心01',partName:'分项工程',level:'1-1-1-1-1-1',nodeType:6},
+                {name:'aaa',age:20,gender:0,department:'工程1部材料中心01',partName:'清单',level:'1-1-1-1-1-1-1',nodeType:7},
+                {name:'aaa',age:20,gender:0,department:'工程1部材料中心02',partName:'子分部工程',level:'1-1-1-2',nodeType:4},
+                {name:'aaa',age:20,gender:0,department:'工程1部实验中心',partName:'分部工程',level:'1-1-2',nodeType:3},
+                {name:'aaa',age:20,gender:0,department:'工程2部',partName:'子单位工程',level:'1-2',nodeType:2},
+                {name:'aaa',age:20,gender:0,department:'事业部',partName:'单位工程',level:'2',nodeType:1},
+                {name:'aaa',age:20,gender:0,department:'事业1部',partName:'子单位工程',level:'2-1',nodeType:2},
+                {name:'aaa',age:20,gender:0,department:'事业2部',partName:'子单位工程',level:'2-2',nodeType:2},
+                {name:'aaa',age:20,gender:0,department:'销售部',partName:'单位工程',level:'3',nodeType:1},
+                {name:'aaa',age:20,gender:0,department:'销售1部',partName:'子单位工程',level:'3-1',nodeType:2},
+                {name:'aaa',age:20,gender:0,department:'销售2部',partName:'子单位工程',level:'3-2',nodeType:2},
             ]
         }
     }
@@ -91,20 +93,31 @@ class SpreadHome extends Component {
 
     render(){
         const colorRange = [
-            {partBg:'#E8F4FF',partTextClolr:'#1890FF'},
-            {partBg:'#E7F9F9',partTextClolr:'#13C2CD'},
-            {partBg:'#E7F9F9',partTextClolr:'#13C2CD'},
-            {partBg:'#FFEEE5',partTextClolr:'#FFBA4A'},
-
+            {nodeType:1,partBg:'#E8F4FF',partTextClolr:'#1890FF'},
+            {nodeType:2,partBg:'#E7F9F9',partTextClolr:'#13C2CD'},
+            {nodeType:3,partBg:'#B4C4EA',partTextClolr:'#0843E5'},
+            {nodeType:4,partBg:'#FFEEE5',partTextClolr:'#FFBA4A'},
+            {nodeType:5,partBg:'#E5DBE8',partTextClolr:'#AD0FEA'},
+            {nodeType:6,partBg:'#BFF0BC',partTextClolr:'#1CE80D'},
+            {nodeType:7,partBg:'#F5DBD8',partTextClolr:'#EA2E17'},
+        ]
+        const nodeTypeNameEmun = [
+            { nodeType: 1, name: "单位工程" },
+            { nodeType: 2, name: "子单位工程"},
+            { nodeType: 3, name: "分部工程"},
+            { nodeType: 4, name: "子分部工程"},
+            { nodeType: 5, name: "实体单元"},
+            { nodeType: 6, name: "分项工程"},
+            { nodeType: 7, name: "清单"}
         ]
         const columns = [
             // { visible: true, name: "xuhao", displayName: '序号',width:200},
-            { visible: true, name: "partName", displayName: '工程划分', cellType: new customCellType(this.state.data,'department',colorRange),width:300},
+            { visible: true, name: "nodeType", displayName: '工程划分', cellType: new customCellType(this.state.data,'department',colorRange,nodeTypeNameEmun),width:300},
             { visible: true, name: "test", displayName: 'test',width:400,},
             { visible: true, name: "name", displayName: '姓名', width: 400 },
             { visible: true, name: "age", displayName: '年龄', width: 400 },
             { visible: true, name: "gender", displayName: '性别', width: 100 },
-            { visible: true, name: "department", displayName: '部门', width: 150 },
+            { visible: true, name: "department", displayName: '部门', },
         ]
 
         return (
