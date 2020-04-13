@@ -4,38 +4,29 @@ import GC from '@grapecity/spread-sheets';
 import {SpreadSheets, Worksheet, Column} from '@grapecity/spread-sheets-react';
 import openImg from '../../assets/square-open.png'
 import closeImg from '../../assets/square-close.png'
-import {FivePointedStarCellType} from './spreadFun'
+import {customCellType} from './spreadFun'
 GC.Spread.Common.CultureManager.culture("zh-cn");
 
-
+console.log("SpreadSheets=====",SpreadSheets)
 class SpreadHome extends Component {
     
     constructor(props) {
         super(props);
         this.state = {
             data : [
-                // {name:'aaa',age:20,gender:0,department:'工程部',level:'1',custom:true},
-                // {name:'aaa',age:20,gender:0,department:'工程1部',level:'1-1',custom:true},
-                // {name:'aaa',age:20,gender:0,department:'工程1部材料中心',level:'1-1-1',custom:true},
-                // {name:'aaa',age:20,gender:0,department:'工程1部实验中心',level:'1-1-2',custom:true},
-                // {name:'aaa',age:20,gender:0,department:'工程2部',level:'1-2',custom:true},
-                // {name:'aaa',age:20,gender:0,department:'事业部',level:'2',custom:true},
-                // {name:'aaa',age:20,gender:0,department:'事业1部',level:'2-1',custom:true},
-                // {name:'aaa',age:20,gender:0,department:'事业2部',level:'2-2',custom:true},
-                // {name:'aaa',age:20,gender:0,department:'销售部',level:'3',custom:true},
-                // {name:'aaa',age:20,gender:0,department:'销售1部',level:'3-1',custom:true},
-                // {name:'aaa',age:20,gender:0,department:'销售2部',level:'3-2',custom:true},
-                {name:'aaa',age:20,gender:0,department:'工程部',level:'1',custom:'1-1-1-4'},
-                {name:'aaa',age:20,gender:0,department:'工程1部',level:'1-1',custom:'1-1'},
-                {name:'aaa',age:20,gender:0,department:'工程1部材料中心',level:'1-1-1',custom:'1-1-1'},
-                {name:'aaa',age:20,gender:0,department:'工程1部实验中心',level:'1-1-2',custom:'1-1-2'},
-                {name:'aaa',age:20,gender:0,department:'工程2部',level:'1-2',custom:'1-2'},
-                {name:'aaa',age:20,gender:0,department:'事业部',level:'2',custom:'2'},
-                {name:'aaa',age:20,gender:0,department:'事业1部',level:'2-1',custom:'2-1'},
-                {name:'aaa',age:20,gender:0,department:'事业2部',level:'2-2',custom:'2-2'},
-                {name:'aaa',age:20,gender:0,department:'销售部',level:'3',custom:'3'},
-                {name:'aaa',age:20,gender:0,department:'销售1部',level:'3-1',custom:'3-1'},
-                {name:'aaa',age:20,gender:0,department:'销售2部',level:'3-2',custom:'3-2'},
+                {name:'aaa',age:20,gender:0,department:'工程部',partName:'单位',level:'1',},
+                {name:'aaa',age:20,gender:0,department:'工程1部',partName:'分部',level:'1-1',},
+                {name:'aaa',age:20,gender:0,department:'工程1部材料中心',partName:'子分部',level:'1-1-1',},
+                {name:'aaa',age:20,gender:0,department:'工程1部材料中心01',partName:'实体单元',level:'1-1-1-1',},
+                {name:'aaa',age:20,gender:0,department:'工程1部材料中心02',partName:'实体单元',level:'1-1-1-2',},
+                {name:'aaa',age:20,gender:0,department:'工程1部实验中心',partName:'子分部',level:'1-1-2',},
+                {name:'aaa',age:20,gender:0,department:'工程2部',partName:'分部',level:'1-2',},
+                {name:'aaa',age:20,gender:0,department:'事业部',partName:'单位',level:'2',},
+                {name:'aaa',age:20,gender:0,department:'事业1部',partName:'分部',level:'2-1',},
+                {name:'aaa',age:20,gender:0,department:'事业2部',partName:'分部',level:'2-2',},
+                {name:'aaa',age:20,gender:0,department:'销售部',partName:'单位',level:'3',},
+                {name:'aaa',age:20,gender:0,department:'销售1部',partName:'分部',level:'3-1',},
+                {name:'aaa',age:20,gender:0,department:'销售2部',partName:'分部',level:'3-2',},
             ]
         }
     }
@@ -72,12 +63,12 @@ class SpreadHome extends Component {
             let checkBox = new spreadNs.CellTypes.CheckBox()
             // sheet.setCellType(r,1,checkBox, spreadNs.SheetArea.vieport)
             // sheet.setCellType(r,0,checkBox, spreadNs.SheetArea.vieport)
-            // sheet.setValue(r,0,level)
-            // sheet.getCell(r,1).locked(false)
-            sheet.getCell(r,0).locked(false)
             //设置缩进
             // sheet.getCell(r,1).textIndent(num)
             sheet.getCell(r,0).textIndent(num)
+            // sheet.setValue(r,0,level)
+            // sheet.getCell(r,1).locked(false)
+            sheet.getCell(r,0).locked(false)
         }
         //设置标题行及数据行高
         sheet.defaults.colHeaderRowHeight = 48
@@ -99,9 +90,17 @@ class SpreadHome extends Component {
 
 
     render(){
+        const colorRange = [
+            {partBg:'#E8F4FF',partTextClolr:'#1890FF'},
+            {partBg:'#E7F9F9',partTextClolr:'#13C2CD'},
+            {partBg:'#E7F9F9',partTextClolr:'#13C2CD'},
+            {partBg:'#FFEEE5',partTextClolr:'#FFBA4A'},
+
+        ]
         const columns = [
-            { visible: true, name: "xuhao", displayName: '序号',width:200},
-            { visible: true, name: "custom", displayName: '序号1', cellType: new FivePointedStarCellType(10), width:300 },
+            // { visible: true, name: "xuhao", displayName: '序号',width:200},
+            { visible: true, name: "partName", displayName: '工程划分', cellType: new customCellType(this.state.data,'department',colorRange),width:300},
+            { visible: true, name: "test", displayName: 'test',width:400,},
             { visible: true, name: "name", displayName: '姓名', width: 400 },
             { visible: true, name: "age", displayName: '年龄', width: 400 },
             { visible: true, name: "gender", displayName: '性别', width: 100 },
@@ -137,7 +136,7 @@ class SpreadHome extends Component {
                                     dataField={item.name}
                                     key={item.name}
                                     headerText={item.displayName}
-                                    width={!item.width ? '200': item.width}
+                                    width={!item.width ? '': item.width}
                                     style={{ }}
                                     autoFit = {item.width?false:true}
                                     cellType = {item.cellType}
