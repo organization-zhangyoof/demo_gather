@@ -1,66 +1,75 @@
 import GC from '@grapecity/spread-sheets';
 let spreadNS = GC.Spread.Sheets
-export function FivePointedStarCellType(size){
-    this.size = size;
+/**
+ * 用于spreadJS表格单元格显示层级，不同层级显示不同颜色
+ * @param {Array} data 所要展示的的数据
+ * @param {String} nameKey 工程分项后面所要跟随那个字段的值
+ * @param {Array} colorRange 个层架显示颜色集合
+ * @param {Number} partTextY 工程划分文字竖向偏移量
+ * @param {Number} nameTextY 工程划分后文字竖向偏移量
+ * @param {Number} partSize 工程划分文字大小
+ * @param {Number} nameSize 工程划分后的文字大小
+ */
+export function customCellType(data,nameKey,colorRange,partTextY,nameTextY,partSize,nameSize){
+    this.partSize = partSize;
+    this.nameSize = nameSize;
+    this.data = data;
+    this.partTextY = partTextY || 21
+    this.nameTextY = nameTextY || 20
+    this.colorRange = colorRange
+    this.nameKey = nameKey
 }
-FivePointedStarCellType.prototype = new spreadNS.CellTypes.Base();
-FivePointedStarCellType.prototype.paint = function (ctx, value, x, y, w, h, style, context) {
-    // if(value == "1"){
-        console.log("ctx====",ctx)
-        console.log("value====",value)
-        console.log("x====",x)
-        console.log("y====",y)
-        console.log("w====",w)
-        console.log("h====",h)
-        console.log("style====",style)
-        console.log("context====",context)
-    // }
+
+// customCellType.prototype = new spreadNS.CellTypes.Base();
+customCellType.prototype = new spreadNS.CellTypes.Text();
+// customCellType.prototype.paint = function (ctx, value, x, y, w, h, style, context) {
+customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style, context) {
+    let row = context.row
     if (!ctx) {
-        console.log(456)
         return;
     }
 
     ctx.save();
 
-    // draw inside the cell's boundary
     ctx.rect(x, y, w, h);
     ctx.clip();
     ctx.beginPath();
 
-    // if (value) {
-    //     ctx.fillStyle = "orange";
-    // } else {
-    //     ctx.fillStyle = "gray";
-    // }
-
-    // ctx.fillStyle = "orange";
-
-    // var size = this.size;
-    // var dx = x + w / 2;
-    // var dy = y + h / 2;
-    // ctx.beginPath();
-    // var dig = Math.PI / 5 * 4;
-    // ctx.moveTo(dx + Math.sin(0 * dig) * size, dy + Math.cos(0 * dig) * size);
-    // for (var i = 1; i < 5; i++) {
-    //     ctx.lineTo(dx + Math.sin(i * dig) * size, dy + Math.cos(i * dig) * size);
-    // }
-    // ctx.closePath();
-    // ctx.fill();
-    var tm1 = ctx.measureText(value);
-    ctx.fillStyle = 'red';
-    ctx.fillRect(x+5, y+5, w-20, h-10);
-    // ctx.fillStyle = 'red';
-    // ctx.strokeStyle = 'blue';
-    // ctx.lineWidth = 1;
-    // ctx.fillRect(50, 50, 100, 100);
-    // ctx.strokeRect(50, 50, 100, 100);
-    var tm1 = ctx.measureText(value);
-    if(value == "1-1-1-4"){
-        // console.log("tm1=====",Math.ceil(tm1.width))
+    //获取文字属性
+    var textInfo = ctx.measureText(value)
+    //绘制矩形
+    if(this.colorRange && this.colorRange.length){
+        let level = this.data[row].level.split("-").length-1
+        ctx.fillStyle = this.colorRange[level].partBg;
+    }else{
+        ctx.fillStyle = "#ccc"
     }
-    // ctx.beginPath();
-    // ctx.fillStyle = '#000';
-    // ctx.fillText(value,x+80,y+20);
+    ctx.fillRect(x+5, y+5, Math.ceil(textInfo.width)+10, h-10);
+
+    //绘制矩形内文字
+    ctx.beginPath();
+    ctx.textAlign="start";
+    if(this.colorRange && this.colorRange.length){
+        let level = this.data[row].level.split("-").length-1
+        ctx.fillStyle = this.colorRange[level].partTextClolr;
+    }else{
+        ctx.fillStyle = "#000"
+    }
+    if(this.partSize){
+        ctx.font = this.partSize + "px  Arial";
+    }
+    ctx.fillText(value,x+10,y+this.partTextY);
+
+    //绘制矩形后面文字
+    if(this.nameKey){
+        ctx.beginPath();
+        ctx.textAlign="start";
+        ctx.fillStyle = '#000';
+        if(this.nameSize){
+            ctx.font = this.nameSize + "px  Arial";
+        }
+        ctx.fillText((this.data[row])[this.nameKey],x+Math.ceil(textInfo.width)+20,y+this.nameTextY);
+    }
 
     ctx.restore();
 };
