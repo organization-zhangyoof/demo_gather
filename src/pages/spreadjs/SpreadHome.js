@@ -4,7 +4,7 @@ import GC from '@grapecity/spread-sheets';
 import {SpreadSheets, Worksheet, Column} from '@grapecity/spread-sheets-react';
 import openImg from '../../assets/square-open.png'
 import closeImg from '../../assets/square-close.png'
-import {customCellType} from './spreadFun'
+import {customCellType, TipCellType, EllipsisTextCellType} from './spreadFun'
 GC.Spread.Common.CultureManager.culture("zh-cn");
 
 class SpreadHome extends Component {
@@ -13,7 +13,7 @@ class SpreadHome extends Component {
         super(props);
         this.state = {
             data : [
-                {name:'aaa',age:20,gender:0,department:'工程部',partName:'单位工程',level:'1',nodeType:1},
+                {name:'aaa',age:20,gender:0,department:'1',partName:'单位工程',level:'1',nodeType:1},
                 {name:'aaa',age:20,gender:0,department:'工程1部',partName:'子单位工程',level:'1-1',nodeType:2},
                 {name:'aaa',age:20,gender:0,department:'工程1部材料中心',partName:'分部工程',level:'1-1-1',nodeType:3},
                 {name:'aaa',age:20,gender:0,department:'工程1部材料中心01',partName:'子分部工程',level:'1-1-1-1',nodeType:4},
@@ -28,7 +28,7 @@ class SpreadHome extends Component {
                 {name:'aaa',age:20,gender:0,department:'事业2部',partName:'子单位工程',level:'2-2',nodeType:2},
                 {name:'aaa',age:20,gender:0,department:'销售部',partName:'单位工程',level:'3',nodeType:1},
                 {name:'aaa',age:20,gender:0,department:'销售1部',partName:'子单位工程',level:'3-1',nodeType:2},
-                {name:'aaa',age:20,gender:0,department:'销售2部',partName:'子单位工程',level:'3-2',nodeType:2},
+                {name:'aaa',age:20,gender:0,department:'销售2部的干撒罕见的国际化搜嘎大家好规划局爱上过的痕迹啊工商局',partName:'子单位工程',level:'3-2',nodeType:2},
             ]
         }
     }
@@ -114,14 +114,14 @@ class SpreadHome extends Component {
             // { visible: true, name: "xuhao", displayName: '序号',width:200},
             { visible: true, name: "nodeType", displayName: '工程划分', cellType: new customCellType(this.state.data,'department',colorRange,nodeTypeNameEmun),width:300},
             { visible: true, name: "test", displayName: 'test',width:400,},
-            { visible: true, name: "name", displayName: '姓名', width: 400 },
+            { visible: true, name: "name", displayName: '姓名', width: 400 , cellType: new TipCellType("__spread_js_box__") },
             { visible: true, name: "age", displayName: '年龄', width: 400 },
             { visible: true, name: "gender", displayName: '性别', width: 100 },
-            { visible: true, name: "department", displayName: '部门', },
+            { visible: true, name: "department", displayName: '部门', cellType: new EllipsisTextCellType(),width:200},
         ]
 
         return (
-            <div style={{width:'100%',height:'100%',background:'#C1F5E8'}}>
+            <div style={{width:'100%',height:'100%',background:'#C1F5E8',position:'relative'}} id="__spread_js_box__">
                 <SpreadSheets hostStyle={{width: '100%', height: '550px'}}
                           workbookInitialized={spread => this.initSpreadSheets(spread)}
                           tabStripVisible={false}
