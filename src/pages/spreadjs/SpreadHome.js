@@ -4,7 +4,7 @@ import GC from '@grapecity/spread-sheets';
 import {SpreadSheets, Worksheet, Column} from '@grapecity/spread-sheets-react';
 import openImg from '../../assets/square-open.png'
 import closeImg from '../../assets/square-close.png'
-import {customCellType, TipCellType, EllipsisTextCellType} from './spreadFun'
+import {customCellType, TipCellType, EllipsisTextCellType, EllipsisAndToolTip} from './spreadFun'
 GC.Spread.Common.CultureManager.culture("zh-cn");
 
 class SpreadHome extends Component {
@@ -13,7 +13,7 @@ class SpreadHome extends Component {
         super(props);
         this.state = {
             data : [
-                {name:'aaa',age:20,gender:0,department:'1',partName:'单位工程',level:'1',nodeType:1},
+                {name:'aaa',age:20,gender:0,department:'1第三方的今飞凯达附近的开放开打了开发接口对接按付款的建安路附近的咖啡机两大框架反馈的减肥',partName:'单位工程',level:'1',nodeType:1},
                 {name:'aaa',age:20,gender:0,department:'工程1部',partName:'子单位工程',level:'1-1',nodeType:2},
                 {name:'aaa',age:20,gender:0,department:'工程1部材料中心',partName:'分部工程',level:'1-1-1',nodeType:3},
                 {name:'aaa',age:20,gender:0,department:'工程1部材料中心01',partName:'子分部工程',level:'1-1-1-1',nodeType:4},
@@ -86,7 +86,7 @@ class SpreadHome extends Component {
             columnIndex:0,
             expandIndicator:closeImg,
             collapseIndicator:openImg,
-            showCheckBox:true
+            // showCheckBox:true
         })
     }
 
@@ -114,10 +114,10 @@ class SpreadHome extends Component {
             // { visible: true, name: "xuhao", displayName: '序号',width:200},
             { visible: true, name: "nodeType", displayName: '工程划分', cellType: new customCellType(this.state.data,'department',colorRange,nodeTypeNameEmun),width:300},
             { visible: true, name: "test", displayName: 'test',width:400,},
-            { visible: true, name: "name", displayName: '姓名', width: 400 , cellType: new TipCellType("__spread_js_box__") },
+            { visible: true, name: "name", displayName: '姓名', width: 400 , },
             { visible: true, name: "age", displayName: '年龄', width: 400 },
             { visible: true, name: "gender", displayName: '性别', width: 100 },
-            { visible: true, name: "department", displayName: '部门', cellType: new EllipsisTextCellType(),width:200},
+            { visible: true, name: "department", displayName: '部门',width:200,cellType: new EllipsisAndToolTip("__spread_js_box__")},
         ]
 
         return (
@@ -150,7 +150,7 @@ class SpreadHome extends Component {
                                     key={item.name}
                                     headerText={item.displayName}
                                     width={!item.width ? '': item.width}
-                                    style={{ }}
+                                    style={{background:'red' }}
                                     autoFit = {item.width?false:true}
                                     cellType = {item.cellType}
                                 />

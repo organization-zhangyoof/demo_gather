@@ -1,6 +1,53 @@
 import GC from '@grapecity/spread-sheets';
 let spreadNS = GC.Spread.Sheets
 
+/**
+ * 用于在对象数组中查询特定值或下标
+ *
+ * @param {any} value 要在查找的值
+ * @param {*} arr 数组
+ * @param {*} isReturnIndex 是否返回下标值
+ */
+let findFromArr =  (value,arr,isReturnIndex = false) => {
+    let result = ''
+    let index = -1
+    for(let i = 0;i<arr.length;i++){
+    let item = arr[i]
+    if(item.nodeType == value){
+        result = item.name
+        index = i
+    }
+    }
+    if(isReturnIndex){
+        return index
+    }else{
+        return result
+    }
+}
+
+
+/**
+ * 用于过滤并形成最后需要省略显示的文字
+ *
+ * @param {*} c canvas画笔
+ * @param {*} str 要显示的字符串
+ * @param {*} maxWidth 最大宽度
+ */
+let fittingString = (c, str, maxWidth) => {
+    var width = c.measureText(str).width;
+    var ellipsis = '…';
+    var ellipsisWidth = c.measureText(ellipsis).width;
+    if (width <= maxWidth || width <= ellipsisWidth) {
+        return str;
+    } else {
+        var len = str.length;
+        while (width >= maxWidth - ellipsisWidth && len-- > 0) {
+            str = str.substring(0, len);
+            width = c.measureText(str).width;
+        }
+        return str + ellipsis;
+    }
+}
 
 /**
  * 用于spreadJS表格单元格显示层级，不同层级显示不同颜色
@@ -33,28 +80,9 @@ export function customCellType(data,nameKey,colorRange,nodeTypeNameEmun,partText
     this.nameKey = nameKey
     this.nodeTypeNameEmun = nodeTypeNameEmun || typeEmun
 }
-let findFromArr =  (value,arr,isReturnIndex = false) => {
-    let result = ''
-    let index = -1
-    for(let i = 0;i<arr.length;i++){
-     let item = arr[i]
-     if(item.nodeType == value){
-        result = item.name
-        index = i
-     }
-    }
-    if(isReturnIndex){
-        return index
-    }else{
-        return result
-    }
-}
-// customCellType.prototype = new spreadNS.CellTypes.Base();
+
 customCellType.prototype = new spreadNS.CellTypes.Text();
-// customCellType.prototype.paint = function (ctx, value, x, y, w, h, style, context) {
 customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style, context) {
-
-
 
     let nodeTypeName = findFromArr(value,this.nodeTypeNameEmun)
     let row = context.row
@@ -200,28 +228,116 @@ TipCellType.prototype.processMouseLeave = function (hitinfo) {
 };
 
 
-//超出省略显示...
 
+/**
+ * 超出省略显示...
+ *
+ */
 export function EllipsisTextCellType() {
 }
+
 EllipsisTextCellType.prototype = new spreadNS.CellTypes.Text();
 EllipsisTextCellType.prototype.paint = function (ctx, value, x, y, w, h, style, context) {
     ctx.font = style.font;
     value = fittingString(ctx, value, w - 2);
-    spreadNS.CellTypes.Text.prototype.paint.apply(this, arguments);
+    spreadNS.CellTypes.Text.prototype.paint(ctx, value, x, y, w, h, style, context);
 };
-let fittingString = (c, str, maxWidth) => {
-    var width = c.measureText(str).width;
-    var ellipsis = '…';
-    var ellipsisWidth = c.measureText(ellipsis).width;
-    if (width <= maxWidth || width <= ellipsisWidth) {
-        return str;
-    } else {
-        var len = str.length;
-        while (width >= maxWidth - ellipsisWidth && len-- > 0) {
-            str = str.substring(0, len);
-            width = c.measureText(str).width;
-        }
-        return str + ellipsis;
-    }
+
+
+
+
+/**
+ * 超出隐藏显示...，并显示toolTip
+ *
+ * @param {*} parentId
+ * @param {string} arrowPosition 指示箭头位置取值范围["left","center","right"],默认值为center
+ */
+export function EllipsisAndToolTip(parentId,arrowPosition){
+    this.parentId = parentId
+    this.arrowPosition = arrowPosition || 'center'
 }
+EllipsisAndToolTip.prototype = new spreadNS.CellTypes.Text();
+EllipsisAndToolTip.prototype.paint = function (ctx, value, x, y, w, h, style, context) {
+    ctx.font = style.font;
+    value = fittingString(ctx, value, w - 2);
+    spreadNS.CellTypes.Text.prototype.paint(ctx, value, x, y, w, h, style, context);
+};
+
+EllipsisAndToolTip.prototype.getHitInfo = function (x, y, cellStyle, cellRect, context,value) {
+	return {
+		x: x,
+		y: y,
+		row: context.row,
+		col: context.col,
+		cellStyle: cellStyle,
+		cellRect: cellRect,
+        sheetArea: context.sheetArea,
+        context:context
+	};
+}
+EllipsisAndToolTip.prototype.processMouseEnter = function (hitinfo) {
+
+    let { sheet, cellRect, row:cellRow, col:cellCol } = hitinfo
+    let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
+    let cellVAlue = sheet.getValue(cellRow,cellCol)
+
+	if (!document.getElementById("__spread_customTipCellType__")) {
+        let div = document.createElement("div");
+            div.setAttribute("id",'__spread_customTipCellType__')
+            div.style.position = "absolute"
+            // div.style.border = "1px #C0C0C0 solid"
+            div.style.boxShadow = "1px 2px 5px rgba(0,0,0,0.4)"
+            div.style.borderRadius = "5px"
+            div.style.font = "Arial"
+            div.style.background = "#404040"
+            div.style.color = "#fff"
+            div.style.padding = "6px 8px"
+            div.style.zIndex = 1000
+
+        this._toolTipElement = div;
+
+        //绘制指示箭头
+        let arrow = document.createElement("div");
+            arrow.setAttribute("id",'__spread_customTip_arrow__')
+            arrow.style.position = "absolute"
+            arrow.style.font = "Arial"
+            arrow.style.background = "#404040"
+            arrow.style.width = "10px"
+            arrow.style.height = "10px"
+            arrow.style.color = "#fff"
+            arrow.style.transform= "rotate(45deg) "
+            div.style.zIndex = 999
+
+        this._toolTipArrow = arrow
+    }
+    this._toolTipElement.innerHTML = cellVAlue
+    this._toolTipElement.style.top = cellY + "px"
+    this._toolTipElement.style.left = cellX + "px"
+    this._toolTipArrow.style.top = cellY - 5 +  "px"
+    this._toolTipArrow.style.left = cellX + "px"
+    document.getElementById(this.parentId).append(this._toolTipElement)
+    document.getElementById(this.parentId).append(this._toolTipArrow)
+
+    let h = document.getElementById("__spread_customTipCellType__").offsetHeight
+    let w = document.getElementById("__spread_customTipCellType__").offsetWidth
+    this._toolTipElement.style.top = cellY - h -5 + "px"
+    this._toolTipElement.style.left = cellX + "px"
+    if(this.arrowPosition == "center"){
+        this._toolTipArrow.style.top = cellY - 10 +  "px"
+        this._toolTipArrow.style.left = cellX + w/2 - 7 + "px"
+    }else if(this.arrowPosition == "left"){
+        this._toolTipArrow.style.top = cellY - 10 +  "px"
+        let tmpW = w*0.25>15?15:w*0.25
+        this._toolTipArrow.style.left = cellX + tmpW + "px"
+    }else if(this.arrowPosition == "right"){
+        this._toolTipArrow.style.top = cellY - 11 +  "px"
+        this._toolTipArrow.style.left = cellX + w - w*0.25 - 7 + "px"
+    }
+};
+EllipsisAndToolTip.prototype.processMouseLeave = function (hitinfo) {
+	if (this._toolTipElement) {
+		document.getElementById(this.parentId).removeChild(this._toolTipElement);
+		document.getElementById(this.parentId).removeChild(this._toolTipArrow);
+		this._toolTipElement = null;
+	}
+};
