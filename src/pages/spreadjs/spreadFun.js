@@ -62,7 +62,7 @@ let fittingString = (c, str, maxWidth) => {
  * @param {Number} partSize 工程划分文字大小
  * @param {Number} nameSize 工程划分后的文字大小
  */
-export function customCellType(data,nameKey,colorRange,nodeTypeNameEmun,partTextY,nameTextY,partSize,nameSize){
+export function customCellType(data,nameKey,colorRange,nodeTypeNameEmun,isAutoFitColumn,partTextY,nameTextY,partSize,nameSize,){
     let typeEmun = [
         { nodeType: 1, name: "单位工程" },
         { nodeType: 2, name: "子单位工程"},
@@ -80,6 +80,7 @@ export function customCellType(data,nameKey,colorRange,nodeTypeNameEmun,partText
     this.colorRange = colorRange
     this.nameKey = nameKey
     this.nodeTypeNameEmun = nodeTypeNameEmun || typeEmun
+    this.isAutoFitColumn = isAutoFitColumn || false
     this.textWidth = 0
 }
 
@@ -148,10 +149,10 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
     ctx.restore();
 };
 customCellType.prototype.getAutoFitWidth = function (value, text, cellStyle, zoomFactor, context) {
-    debugger
-    console.log("this.textWidth===",this.textWidth)
-    var orginWidth = GC.Spread.Sheets.CellTypes.Text.prototype.getAutoFitWidth.call(this, value, text, cellStyle, zoomFactor, context);
-    return orginWidth + this.textWidth;
+    if(this.isAutoFitColumn){
+        var orginWidth = GC.Spread.Sheets.CellTypes.Text.prototype.getAutoFitWidth.call(this, value, text, cellStyle, zoomFactor, context);
+        return orginWidth + this.textWidth;
+    }
 }
 
 

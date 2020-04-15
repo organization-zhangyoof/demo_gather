@@ -173,7 +173,7 @@ class SpreadHome extends Component {
         }
         const columns = [
             // { visible: true, name: "xuhao", displayName: '序号',width:200},
-            { visible: true, name: "nodeType", displayName: '工程划分', cellType: new customCellType(this.state.data,'department',colorRange,nodeTypeNameEmun)},
+            { visible: true, name: "nodeType", displayName: '工程划分', cellType: new customCellType(this.state.data,'department',colorRange,nodeTypeNameEmun,true)},
             { visible: true, name: "HyperLink", displayName: '超链接测试',width:400,},
             { visible: true, name: "name", displayName: '姓名' ,cellType: new HyperLinkTextCell(),width:50},
             { visible: true, name: "age", displayName: '年龄', width: 400 },
