@@ -365,13 +365,42 @@ EllipsisAndToolTip.prototype.processMouseLeave = function (hitinfo) {
 };
 
 //超链接+文本测试
-export function HyperLinkTextCell(){
-
+export function HyperLinkTextCell(hyperLinkText){
+    this.hyperLinkText = hyperLinkText || ""
+    this.plainTextWidth = 0
 }
-HyperLinkTextCell.prototype = new spreadNS.CellTypes.HyperLink();
+//TODO 绘制超链接并添加点击事件
+/**
+ * 用于过滤并形成最后需要省略显示的文字
+ *
+ * @param {*} c canvas画笔
+ * @param {*} str 要显示的字符串
+ * @param {*} maxWidth 最大宽度
+ */
+let fittingStringForHyperLink = (c, str, maxWidth,hyperLinkText) => {
+    let result = ''
+    let width = c.measureText(str).width;
+    let ellipsis = '…';
+    let ellipsisWidth = c.measureText(ellipsis).width;
+    let hyperLinkTextWidth = c.measureText(hyperLinkText).width;
+    maxWidth = maxWidth - hyperLinkTextWidth - 10
+    console.log("ellipsisWidth===",ellipsisWidth)
+    if (width <= maxWidth || width <= ellipsisWidth) {
+        return result = str;
+    } else {
+        let len = str.length;
+        while (width >= maxWidth - ellipsisWidth && len-- > 0) {
+            str = str.substring(0, len);
+            width = c.measureText(str).width;
+        }
+        return result = str + ellipsis;
+    }
+}
+HyperLinkTextCell.prototype = new spreadNS.CellTypes.Text();
+
 HyperLinkTextCell.prototype.paint = function (ctx, value, x, y, w, h, style, context) {
     ctx.font = style.font;
-    value = fittingString(ctx, value, w - 2);
+    value = fittingStringForHyperLink(ctx, value, w - 2, this.hyperLinkText );
     spreadNS.CellTypes.Text.prototype.paint(ctx, value, x, y, w, h, style, context);
 };
 HyperLinkTextCell.prototype.getHitInfo = function (x, y, cellStyle, cellRect, context) {
