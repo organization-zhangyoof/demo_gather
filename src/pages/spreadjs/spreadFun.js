@@ -37,6 +37,7 @@ let fittingString = (c, str, maxWidth) => {
     var width = c.measureText(str).width;
     var ellipsis = '…';
     var ellipsisWidth = c.measureText(ellipsis).width;
+    console.log("ellipsisWidth===",ellipsisWidth)
     if (width <= maxWidth || width <= ellipsisWidth) {
         return str;
     } else {
@@ -79,11 +80,12 @@ export function customCellType(data,nameKey,colorRange,nodeTypeNameEmun,partText
     this.colorRange = colorRange
     this.nameKey = nameKey
     this.nodeTypeNameEmun = nodeTypeNameEmun || typeEmun
+    this.textWidth = 0
 }
 
 customCellType.prototype = new spreadNS.CellTypes.Text();
 customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style, context) {
-
+    let textTotalWidth = 0
     let nodeTypeName = findFromArr(value,this.nodeTypeNameEmun)
     let row = context.row
     if (!ctx) {
@@ -98,6 +100,8 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
 
     //获取文字属性
     var textInfo = ctx.measureText(nodeTypeName)
+    //计算矩形宽度并暂时赋值给单元格总宽度
+    textTotalWidth += Math.ceil(textInfo.width)
     //绘制矩形
     if(this.colorRange && this.colorRange.length){
         let index = findFromArr(value,this.colorRange,true)
@@ -105,6 +109,7 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
     }else{
         ctx.fillStyle = "#ccc"
     }
+    
     ctx.fillRect(x+5, y+5, Math.ceil(textInfo.width)+10, h-10);
 
     //绘制矩形内文字
@@ -126,14 +131,28 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
         ctx.beginPath();
         ctx.textAlign="start";
         ctx.fillStyle = '#000';
+
+        //计算后面跟随文字的宽度
+        let afterText = (this.data[row])[this.nameKey];
+        textTotalWidth += Math.ceil(ctx.measureText(afterText).width)
+
         if(this.nameSize){
             ctx.font = this.nameSize + "px  Arial";
         }
-        ctx.fillText((this.data[row])[this.nameKey],x+Math.ceil(textInfo.width)+20,y+this.nameTextY);
+        ctx.fillText(afterText,x+Math.ceil(textInfo.width)+20,y+this.nameTextY);
     }
 
+    //列宽的撑开是根据最后一次算的值的大小来撑开的，如果值小于目前的宽度则不进行赋值
+    this.textWidth = textTotalWidth > this.textWidth ? textTotalWidth : this.textWidth
+    // this.textWidth = textTotalWidth
     ctx.restore();
 };
+customCellType.prototype.getAutoFitWidth = function (value, text, cellStyle, zoomFactor, context) {
+    debugger
+    console.log("this.textWidth===",this.textWidth)
+    var orginWidth = GC.Spread.Sheets.CellTypes.Text.prototype.getAutoFitWidth.call(this, value, text, cellStyle, zoomFactor, context);
+    return orginWidth + this.textWidth;
+}
 
 
 /**
@@ -178,6 +197,7 @@ TipCellType.prototype.processMouseEnter = function (hitinfo) {
             div.style.color = "#fff"
             div.style.padding = "6px 8px"
             div.style.zIndex = 1000
+            div.style.width = cellWidth + "px"
 
         this._toolTipElement = div;
 
@@ -293,6 +313,7 @@ EllipsisAndToolTip.prototype.processMouseEnter = function (hitinfo) {
             div.style.color = "#fff"
             div.style.padding = "6px 8px"
             div.style.zIndex = 1000
+            div.style.width = cellWidth + "px"
 
         this._toolTipElement = div;
 
@@ -340,4 +361,34 @@ EllipsisAndToolTip.prototype.processMouseLeave = function (hitinfo) {
 		document.getElementById(this.parentId).removeChild(this._toolTipArrow);
 		this._toolTipElement = null;
 	}
+};
+
+//超链接+文本测试
+export function HyperLinkTextCell(){
+
+}
+HyperLinkTextCell.prototype = new spreadNS.CellTypes.HyperLink();
+HyperLinkTextCell.prototype.paint = function (ctx, value, x, y, w, h, style, context) {
+    ctx.font = style.font;
+    value = fittingString(ctx, value, w - 2);
+    spreadNS.CellTypes.Text.prototype.paint(ctx, value, x, y, w, h, style, context);
+};
+HyperLinkTextCell.prototype.getHitInfo = function (x, y, cellStyle, cellRect, context) {
+	return {
+		x: x,
+		y: y,
+		row: context.row,
+		col: context.col,
+		cellStyle: cellStyle,
+		cellRect: cellRect,
+        sheetArea: context.sheetArea,
+        context:context
+	};
+}
+HyperLinkTextCell.prototype.processMouseDown = function (hitinfo) {
+    debugger
+    let { sheet, cellRect, row:cellRow, col:cellCol } = hitinfo
+    let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
+    let cellVAlue = sheet.getValue(cellRow,cellCol)
+    debugger
 };
