@@ -7,14 +7,13 @@ import closeImg from '../../assets/square-close.png'
 import {Button} from "antd"
 import {customCellType, TipCellType, EllipsisTextCellType, EllipsisAndToolTip, HyperLinkTextCell,} from './spreadFun'
 GC.Spread.Common.CultureManager.culture("zh-cn");
-
 class SpreadHome extends Component {
     
     constructor(props) {
         super(props);
         this.state = {
             data : [
-                {name:'艾瑞莉娅',age:20,gender:0,department:'工程部',partName:'单位工程',level:'1',nodeType:1,remark:'是多大'},
+                {name:'艾瑞莉娅',age:20,gender:0,department:'工程部返回的数据返回快速导航开发计划是的空间',partName:'单位工程',level:'1',nodeType:1,remark:'是多大'},
                 {name:'瑞文',age:20,gender:0,department:'工程1部',partName:'子单位工程',level:'1-1',nodeType:2,remark:'慌撒的看哈是框架'},
                 {name:'伊泽瑞尔',age:20,gender:0,department:'工程1部材料中心',partName:'分部工程',level:'1-1-1',nodeType:3,remark:'撒德哈卡大数据汇顶科技按数据库的'},
                 {name:'莫德凯撒',age:20,gender:0,department:'工程1部材料中心01',partName:'子分部工程',level:'1-1-1-1',nodeType:4,remark:'第三方的深V说的'},
@@ -76,10 +75,36 @@ class SpreadHome extends Component {
         this.initSheetOutline()
     }
 
+    linkClickFun1 = () => {
+        console.log("引用1点击")
+        this.linkClickFun2()
+    }
+    linkClickFun2 = () => {
+        console.log("引用2点击")
+    }
+
     initSheetOutline = () => {
         debugger
         let data = this.state.data
         let sheet = this.spread.getActiveSheet();
+        
+        let linkArr = [
+            {name:'引用1',color:'red',clickFun:this.linkClickFun1},
+            {name:'引用2',color:'blue',clickFun:this.linkClickFun2}
+        ]
+        let columns = [
+            // { visible: true, name: "xuhao", displayName: '序号',width:200},
+            { visible: true, name: "nodeType", displayName: '工程划分',width:150},
+            { visible: true, name: "HyperLink", displayName: '超链接测试',width:400,},
+            { visible: true, name: "aaa", displayName: '姓名' ,cellType: new HyperLinkTextCell(linkArr,50,21,21),width:300},
+            { visible: true, name: "age", displayName: '年龄', width: 400 },
+            { visible: true, name: "gender", displayName: '性别', width: 100 },
+            { visible: true, name: "remark", displayName: '备注',width:200,cellType: new EllipsisAndToolTip("__spread_js_box__")},
+        ]
+
+        sheet.setDataSource(this.state.data);
+        sheet.bindColumns(columns)
+
         let spreadNs = GC.Spread.Sheets
 
         //设置复选框
@@ -123,6 +148,7 @@ class SpreadHome extends Component {
 
 
     render(){
+        let _this = this
         let columnChangeTest = this.state.columnChangeTest
         const colorRange = [
             {nodeType:1,partBg:'#E8F4FF',partTextClolr:'#1890FF'},
@@ -172,19 +198,42 @@ class SpreadHome extends Component {
                 })
             }
         }
+        const linkClickFun1 = (hitinfo) => {
+            debugger
+            // console.log("引用1点击===",_this.state.data[0])
+            // linkClickFun2()
+            console.log("this======204===",this)
+        }
+        const linkClickFun2 = () => {
+            debugger
+            console.log("引用2点击")
+        }
+        const linkArr = [
+            {name:'引用1',color:'red',clickFun:()=>{linkClickFun1()}},
+            {name:'引用2',color:'blue',clickFun:linkClickFun2}
+        ]
         const columns = [
             // { visible: true, name: "xuhao", displayName: '序号',width:200},
             { visible: true, name: "nodeType", displayName: '工程划分', cellType: new customCellType(this.state.data,'department',colorRange,nodeTypeNameEmun,true)},
             { visible: true, name: "HyperLink", displayName: '超链接测试',width:400,},
-            { visible: true, name: "name", displayName: '姓名' ,cellType: new HyperLinkTextCell("引用"),width:100},
+            { visible: true, name: "name", displayName: '姓名' ,cellType: new HyperLinkTextCell(linkArr,50,21,21),width:300},
             { visible: true, name: "age", displayName: '年龄', width: 400 },
             { visible: true, name: "gender", displayName: '性别', width: 100 },
             { visible: true, name: "remark", displayName: '备注',width:200,cellType: new EllipsisAndToolTip("__spread_js_box__")},
         ]
+        const columnsTest = [
+            // { visible: true, name: "xuhao", displayName: '序号',width:200},
+            { visible: true, name: "type", displayName: '工程划分', cellType: new customCellType(this.state.data,'name',colorRange,nodeTypeNameEmun,true)},
+            { visible: true, name: "longCode", displayName: '超链接测试',width:400,},
+            { visible: true, name: "gmtCreate", displayName: '姓名' ,cellType: new HyperLinkTextCell(["引用","引用2"]),width:200},
+            { visible: true, name: "id", displayName: '年龄', width: 400 },
+            { visible: true, name: "comment", displayName: '性别', width: 100 },
+            { visible: true, name: "remark", displayName: '备注',width:200,cellType: new EllipsisAndToolTip("__spread_js_box__")},
+        ]
         
         const clickCellHandler = (sheet,sheetName,row,col,cancel) =>{
-            console.log("sheet======",sheet)
-            console.log("sheetName======",sheetName)
+            // console.log("sheet======",sheet)
+            // console.log("sheetName======",sheetName)
             // console.log("row======",row)
             // console.log("col======",col)
             // console.log("cancel======",cancel)
@@ -217,7 +266,7 @@ class SpreadHome extends Component {
                             rangeGroupStateChanging = {rangeGroupStateChanging} //分组改变时
                             rangeGroupStateChanged = {rangeGroupStateChanged} //分组改变后
                     >
-                        <Worksheet dataSource = {this.state.data}
+                        {/* <Worksheet dataSource = {this.state.data}
                                 name={"合同工程量清单"}
                                 selectionPolicy={GC.Spread.Sheets.SelectionPolicy.single}
                                 selectionUnit={GC.Spread.Sheets.SelectionUnit.row}
@@ -242,7 +291,7 @@ class SpreadHome extends Component {
                                     />
                                 ))
                             }
-                        </Worksheet>
+                        </Worksheet> */}
                     </SpreadSheets>
                 </div>
             </div>

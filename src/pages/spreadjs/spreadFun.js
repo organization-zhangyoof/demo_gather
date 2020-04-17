@@ -37,7 +37,7 @@ let fittingString = (c, str, maxWidth) => {
     var width = c.measureText(str).width;
     var ellipsis = '…';
     var ellipsisWidth = c.measureText(ellipsis).width;
-    console.log("ellipsisWidth===",ellipsisWidth)
+    // console.log("ellipsisWidth===",ellipsisWidth)
     if (width <= maxWidth || width <= ellipsisWidth) {
         return str;
     } else {
@@ -57,6 +57,7 @@ let fittingString = (c, str, maxWidth) => {
  * @param {String} nameKey 工程分项后面所要跟随那个字段的值
  * @param {Array} colorRange 个层架显示颜色集合
  * @param {Array} nodeTypeNameEmun 工程划分枚举值
+ * @param {bool} isAutoFitColumn 是否自适应撑开列宽
  * @param {Number} partTextY 工程划分文字竖向偏移量
  * @param {Number} nameTextY 工程划分后文字竖向偏移量
  * @param {Number} partSize 工程划分文字大小
@@ -365,8 +366,17 @@ EllipsisAndToolTip.prototype.processMouseLeave = function (hitinfo) {
 };
 
 //超链接+文本测试
-export function HyperLinkTextCell(hyperLinkText){
-    this.hyperLinkText = hyperLinkText || ""
+export function HyperLinkTextCell(linkArr,textMaxWidth,textY,linkY){
+    this.linkArr = linkArr || []
+    this.linkTextArr = ""
+    this.textY = textY || 21
+    this.linkY = linkY || 21
+    this.linArea = []
+    this.textMaxWidth = textMaxWidth
+    for (let i = 0; i < linkArr.length; i++) {
+        const item = linkArr[i];
+        this.linkTextArr+=item.name
+    }
     this.plainTextWidth = 0
 }
 //TODO 绘制超链接并添加点击事件
@@ -377,14 +387,15 @@ export function HyperLinkTextCell(hyperLinkText){
  * @param {*} str 要显示的字符串
  * @param {*} maxWidth 最大宽度
  */
-let fittingStringForHyperLink = (c, str, maxWidth,hyperLinkText) => {
+let fittingStringForHyperLink = (c, str, maxWidth,hyperLinkTextArr) => {
+    // debugger
     let result = ''
     let width = c.measureText(str).width;
     let ellipsis = '…';
     let ellipsisWidth = c.measureText(ellipsis).width;
-    let hyperLinkTextWidth = c.measureText(hyperLinkText).width;
-    maxWidth = maxWidth - hyperLinkTextWidth - 10
-    console.log("ellipsisWidth===",ellipsisWidth)
+    let hyperLinkTextWidth = c.measureText(hyperLinkTextArr).width;
+    // maxWidth = maxWidth - hyperLinkTextWidth - 10
+    // console.log("ellipsisWidth===",ellipsisWidth)
     if (width <= maxWidth || width <= ellipsisWidth) {
         return result = str;
     } else {
@@ -396,12 +407,46 @@ let fittingStringForHyperLink = (c, str, maxWidth,hyperLinkText) => {
         return result = str + ellipsis;
     }
 }
-HyperLinkTextCell.prototype = new spreadNS.CellTypes.Text();
+HyperLinkTextCell.prototype = new spreadNS.CellTypes.Base();
 
-HyperLinkTextCell.prototype.paint = function (ctx, value, x, y, w, h, style, context) {
+HyperLinkTextCell.prototype.paintContent = function (ctx, value, x, y, w, h, style, context) {
     ctx.font = style.font;
-    value = fittingStringForHyperLink(ctx, value, w - 2, this.hyperLinkText );
-    spreadNS.CellTypes.Text.prototype.paint(ctx, value, x, y, w, h, style, context);
+    value = fittingStringForHyperLink(ctx, value, this.textMaxWidth - 2, this.linkTextArr );
+    // spreadNS.CellTypes.Text.prototype.paintContent(ctx, value, x, y, w, h, style, context);
+    // ctx.save();
+
+    // ctx.rect(x, y, w, h);
+    // ctx.clip();
+    ctx.beginPath();
+
+    // //获取文字属性
+    let textInfo = ctx.measureText(value)
+    // //计算矩形宽度并暂时赋值给单元格总宽度
+    let textWidth = 0
+    //绘制普通文本
+        ctx.textAlign="start";
+        ctx.fillStyle = '#000';
+        if(value){
+            textWidth = this.textMaxWidth+10
+            ctx.fillText(value,x+5,y+this.textY);
+        }
+        //绘制超链接文本
+        for (let k = 0; k < this.linkArr.length; k++) {
+            ctx.beginPath();
+            const ele = this.linkArr[k];
+            ctx.textAlign="start";
+            ctx.fillStyle = ele.color || "#000";
+            ctx.fillText(ele.name,x+5+textWidth,y+this.linkY);
+            let currentLinkTextWidth = Math.ceil(ctx.measureText(ele.name).width)
+
+            if(!this.linArea[context.row]){
+                this.linArea[context.row]= [{startX:x+5+textWidth,endX:x+5+textWidth + currentLinkTextWidth,name:value,row:context.row}]
+            }else if(!(this.linArea[context.row])[k]){
+                (this.linArea[context.row])[k]= {startX:x+5+textWidth,endX:x+5+textWidth + currentLinkTextWidth,name:value,row:context.row}
+            }
+
+            textWidth += Math.ceil(ctx.measureText(ele.name).width)+10
+        }
 };
 HyperLinkTextCell.prototype.getHitInfo = function (x, y, cellStyle, cellRect, context) {
 	return {
@@ -422,3 +467,41 @@ HyperLinkTextCell.prototype.processMouseDown = function (hitinfo) {
     let cellVAlue = sheet.getValue(cellRow,cellCol)
     debugger
 };
+HyperLinkTextCell.prototype.processMouseDown = function (hitinfo) {
+    debugger
+    let { sheet, cellRect, row:cellRow, col:cellCol,x:mouseX,y:mouseY } = hitinfo
+    let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
+    let cellVAlue = sheet.getValue(cellRow,cellCol)
+    let res = ismouseInArea(mouseX,"",cellRow,this.linArea)
+    if(res.index>-1){
+        let clickFun = this.linkArr[res.index].clickFun
+        clickFun()
+    }
+};
+// HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
+//     debugger
+//     let { sheet, cellRect, row:cellRow, col:cellCol,x:mouseX,y:mouseY } = hitinfo
+//     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
+//     let cellVAlue = sheet.getValue(cellRow,cellCol)
+//     let res = ismouseInArea(mouseX,"",cellRow,this.linArea)
+//     // if(res.ismouseInArea){
+//     //     document.getElementById("vp_vp").style.cursor = "pointer !important"
+//     //     console.log("document.body====",document.body)
+//     // }else{
+//     //     document.body.style.cursor = "auto"
+//     // }
+//     debugger
+// };
+
+let ismouseInArea = (mouseX,mouseY,row,areaArr) => {
+    let res = {index:-1,ismouseInArea:false}
+    let arr = areaArr[row]
+    for (let j = 0; j < arr.length; j++) {
+        const ele = arr[j];
+        if(mouseX > ele.startX && mouseX < ele.endX){
+            res = {index:j,ismouseInArea:true}
+            break
+        }
+    }
+    return res
+}
