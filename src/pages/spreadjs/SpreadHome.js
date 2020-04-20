@@ -57,22 +57,19 @@ class SpreadHome extends Component {
             let sheet = this.spread.getActiveSheet();
             // 暂停sheet绘制，等待所有改变完成
             sheet.suspendPaint();
-
-            // 初始化SpreadSheet
-            this.initSheetOutline();
-
             // 激活spread绘制
             sheet.resumePaint();
+            //激活后再次初始化一次spreadSheet否则绘制会有问题
+            this.initSheetOutline();
         }
     }
     componentDidMount(){
-        debugger
         // this.initSheetOutline();
     }
     initSpreadSheets = (spread) => {
         debugger
         this.spread = spread;
-        this.initSheetOutline()
+        this.initSheetOutline(true)
     }
 
     linkClickFun1 = (res) => {
@@ -83,8 +80,8 @@ class SpreadHome extends Component {
         console.log("引用2点击")
     }
 
-    initSheetOutline = () => {
-
+    initSheetOutline = (isInit) => {
+        debugger
         const colorRange = [
             {nodeType:1,partBg:'#E8F4FF',partTextClolr:'#1890FF'},
             {nodeType:2,partBg:'#E7F9F9',partTextClolr:'#13C2CD'},
@@ -104,26 +101,26 @@ class SpreadHome extends Component {
             { nodeType: 7, name: "清单"}
         ]
 
-        debugger
         let data = this.state.data
         let sheet = this.spread.getActiveSheet();
 
         let linkArr = [
-            {name:'超链接',color:'red',clickFun:(res)=>this.linkClickFun1(res),tipText:'三大框架会涉及到'},
+            {name:'超链接',color:'red',clickFun:(res)=>this.linkClickFun1(res),tipText:''},
             {name:'引用',color:'blue',clickFun:this.linkClickFun2}
         ]
         let columns = [
             // { visible: true, name: "xuhao", displayName: '序号',width:200},
-            { visible: true, name: "nodeType", displayName: '工程划分',width:500, cellType: new customCellType(this.state.data,'partName',colorRange,nodeTypeNameEmun,true)},
-            { visible: true, name: "HyperLink", displayName: '超链接测试',width:400,},
+            { visible: true, name: "nodeType", displayName: '工程划分', cellType: new customCellType(this.state.data,'partName',colorRange,nodeTypeNameEmun,true)},
+            { visible: false, name: "HyperLink", displayName: '超链接测试',width:400,},
             { visible: true, name: "name", displayName: '姓名' ,cellType: new HyperLinkTextCell(linkArr,"__spread_js_box__"),width:300},
             { visible: true, name: "age", displayName: '年龄', width: 400 },
             { visible: true, name: "gender", displayName: '性别', width: 100 },
             { visible: true, name: "remark", displayName: '备注',width:200,cellType: new EllipsisAndToolTip("__spread_js_box__")},
         ]
-
+        
         sheet.setDataSource(this.state.data);
         sheet.bindColumns(columns)
+        // sheet.autoFitColumn(0)
 
         let spreadNs = GC.Spread.Sheets
 
@@ -161,8 +158,8 @@ class SpreadHome extends Component {
         // sheet.rowOutlines.expand(5, false);
         // sheet.rowOutlines.expand(6, false);
         // sheet.rowOutlines.expand(7, false);
-
-        sheet.autoFitColumn(0)
+            sheet.autoFitColumn(0)
+        
         sheet.outlineColumn.refresh();
     }
 
@@ -205,7 +202,6 @@ class SpreadHome extends Component {
             { visible: true, name: "department", displayName: '部门',width:200,},
         ]
         const changeCloumns = () => {
-            debugger
             if(this.state.showCloumn1){
                 this.setState({
                     columnChangeTest:column2,
@@ -219,13 +215,11 @@ class SpreadHome extends Component {
             }
         }
         const linkClickFun1 = (hitinfo) => {
-            debugger
             // console.log("引用1点击===",_this.state.data[0])
             // linkClickFun2()
             console.log("this======204===",this)
         }
         const linkClickFun2 = () => {
-            debugger
             console.log("引用2点击")
         }
         const linkArr = [
@@ -234,7 +228,7 @@ class SpreadHome extends Component {
         ]
         const columns = [
             // { visible: true, name: "xuhao", displayName: '序号',width:200},
-            { visible: true, name: "nodeType", displayName: '工程划分', cellType: new customCellType(this.state.data,'department',colorRange,nodeTypeNameEmun,true)},
+            { visible: true, name: "nodeType", displayName: '工程划分',width:500, cellType: new customCellType(this.state.data,'department',colorRange,nodeTypeNameEmun,true)},
             { visible: true, name: "HyperLink", displayName: '超链接测试',width:400,},
             { visible: true, name: "name", displayName: '姓名' ,cellType: new HyperLinkTextCell(linkArr,50,21,21),width:300},
             { visible: true, name: "age", displayName: '年龄', width: 400 },
@@ -259,10 +253,8 @@ class SpreadHome extends Component {
             // console.log("cancel======",cancel)
         }
         const rangeGroupStateChanging = () => {
-            debugger
         }
         const rangeGroupStateChanged = () => {
-            debugger
         }
         return (
             <div>
@@ -280,7 +272,7 @@ class SpreadHome extends Component {
                             allowUserDragDrop={false}
                             allowContextMenu={false}
                             scrollbarMaxAlign={false}
-                            allowUserResize = {true}
+                            allowUserResize = {false}
                             //   valueChanged={onCellrefresh}
                             cellClick={clickCellHandler} //单元格点击
                             rangeGroupStateChanging = {rangeGroupStateChanging} //分组改变时

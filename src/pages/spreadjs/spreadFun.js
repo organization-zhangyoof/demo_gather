@@ -439,8 +439,6 @@ HyperLinkTextCell.prototype = new spreadNS.CellTypes.Base();
 
 HyperLinkTextCell.prototype.paintContent = function (ctx, value, x, y, w, h, style, context) {
     ctx.font = style.font;
-    
-    // value = fittingStringForHyperLink(ctx, value, this.textMaxWidth - 2, this.linkTextArr );
     let fittingres = fittingStringForHyperLink(ctx, value,  w - 2, this.linkTextStr,this.linkNum ,this.textMaxWidth);
     let newValue = fittingres.newStr
     this.textWidth = fittingres.textWidth == this.textMaxWidth?this.textMaxWidth:fittingres.textWidth
@@ -469,11 +467,11 @@ HyperLinkTextCell.prototype.paintContent = function (ctx, value, x, y, w, h, sty
             ctx.textAlign="start";
             ctx.fillStyle = ele.color || "#000";
             ctx.fillText(ele.name,x+5+textWidth,y+this.linkY);
-            let currentLinkTextWidth = Math.ceil(ctx.measureText(ele.name).width)
+            let currentLinkTextWidth = Math.ceil(ctx.measureText(ele.name).width);
 
             if(!this.linArea[context.row]){
                 this.linArea[context.row]= [{startX:x+5+textWidth,endX:x+5+textWidth + currentLinkTextWidth,name:ele.name,row:context.row,tipText:ele.tipText||ele.name}]
-            }else if(!(this.linArea[context.row])[k]){
+            }else{
                 (this.linArea[context.row])[k]= {startX:x+5+textWidth,endX:x+5+textWidth + currentLinkTextWidth,name:ele.name,row:context.row,tipText:ele.tipText||ele.name}
             }
 
@@ -493,11 +491,12 @@ HyperLinkTextCell.prototype.getHitInfo = function (x, y, cellStyle, cellRect, co
 	};
 }
 HyperLinkTextCell.prototype.processMouseDown = function (hitinfo) {
+    debugger
 
     let { sheet, cellRect, row:cellRow, col:cellCol,x:mouseX,y:mouseY } = hitinfo
     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
     let cellVAlue = sheet.getValue(cellRow,cellCol)
-    let res = ismouseInArea(mouseX,"",cellRow,this.linArea)
+    let res = ismouseInArea(mouseX,"",cellRow,this.linArea,cellX,this.textWidthArr)
     if(res.index>-1){
         let clickFun = this.linkArr[res.index].clickFun
         clickFun(hitinfo)
@@ -519,7 +518,10 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
     let res = ismouseInArea(mouseX,"",cellRow,this.linArea,cellX,this.textWidthArr)
     if(res.ismouseInArea){//鼠标悬浮至超链接文字上
         // clearTip()
-        document.getElementById("vp_vp").style.cursor = "pointer !important"
+        // document.getElementById("vp_vp").style.cursor = "pointer !important"
+        setTimeout(function(){
+            document.getElementById("vp_vp").style.cursor  = 'pointer';
+        },0)
         let index = res.index
         let linkTextWidth = (this.linArea[cellRow])[index].endX - (this.linArea[cellRow])[index].startX 
         if (!document.getElementById("__spread_customTipCellType__")) {
@@ -565,8 +567,6 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
         this._toolTipElement.style.left = linkTextWidth<50?(this.linArea[cellRow])[index].startX - 7 +"px" :(this.linArea[cellRow])[index].startX + "px"
         // if(this.arrowPosition == "center"){
         this._toolTipArrow.style.top = cellY - 10 +  "px"
-        console.log("index====",cellRow)
-        console.log("this.linArea====",this.linArea)
         this._toolTipArrow.style.left = (this.linArea[cellRow])[index].startX+linkTextWidth/2 - 7 + "px"
         // }else if(this.arrowPosition == "left"){
         //     this._toolTipArrow.style.top = cellY - 10 +  "px"
@@ -655,6 +655,7 @@ HyperLinkTextCell.prototype.processMouseLeave = function (hitinfo) {
  */
 let ismouseInArea = (mouseX,mouseY,row,areaArr,cellX,textWidthArr) => {
     let res = {index:-1,ismouseInArea:false,isInTextArea:false}
+    // console.log(textWidthArr)
     if(mouseX < cellX+5+textWidthArr[row].textWidth){
         res = {index:-1,ismouseInArea:false,isInTextArea:true}
         return res
