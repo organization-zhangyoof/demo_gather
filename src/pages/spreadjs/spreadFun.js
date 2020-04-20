@@ -491,7 +491,6 @@ HyperLinkTextCell.prototype.getHitInfo = function (x, y, cellStyle, cellRect, co
 	};
 }
 HyperLinkTextCell.prototype.processMouseDown = function (hitinfo) {
-    debugger
 
     let { sheet, cellRect, row:cellRow, col:cellCol,x:mouseX,y:mouseY } = hitinfo
     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect

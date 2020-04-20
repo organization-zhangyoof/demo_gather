@@ -52,7 +52,6 @@ class SpreadHome extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        debugger
         if (this.spread) {
             let sheet = this.spread.getActiveSheet();
             // 暂停sheet绘制，等待所有改变完成
@@ -67,9 +66,8 @@ class SpreadHome extends Component {
         // this.initSheetOutline();
     }
     initSpreadSheets = (spread) => {
-        debugger
         this.spread = spread;
-        this.initSheetOutline(true)
+        this.initSheetOutline()
     }
 
     linkClickFun1 = (res) => {
@@ -81,7 +79,6 @@ class SpreadHome extends Component {
     }
 
     initSheetOutline = (isInit) => {
-        debugger
         const colorRange = [
             {nodeType:1,partBg:'#E8F4FF',partTextClolr:'#1890FF'},
             {nodeType:2,partBg:'#E7F9F9',partTextClolr:'#13C2CD'},
