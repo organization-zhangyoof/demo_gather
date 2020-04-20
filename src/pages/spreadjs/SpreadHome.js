@@ -162,85 +162,85 @@ class SpreadHome extends Component {
 
 
     render(){
-        let _this = this
-        let columnChangeTest = this.state.columnChangeTest
-        const colorRange = [
-            {nodeType:1,partBg:'#E8F4FF',partTextClolr:'#1890FF'},
-            {nodeType:2,partBg:'#E7F9F9',partTextClolr:'#13C2CD'},
-            {nodeType:3,partBg:'#B4C4EA',partTextClolr:'#0843E5'},
-            {nodeType:4,partBg:'#FFEEE5',partTextClolr:'#FFBA4A'},
-            {nodeType:5,partBg:'#E5DBE8',partTextClolr:'#AD0FEA'},
-            {nodeType:6,partBg:'#BFF0BC',partTextClolr:'#1CE80D'},
-            {nodeType:7,partBg:'#F5DBD8',partTextClolr:'#EA2E17'},
-        ]
-        const nodeTypeNameEmun = [
-            { nodeType: 1, name: "单位工程" },
-            { nodeType: 2, name: "子单位工程"},
-            { nodeType: 3, name: "分部工程"},
-            { nodeType: 4, name: "子分部工程"},
-            { nodeType: 5, name: "实体单元"},
-            { nodeType: 6, name: "分项工程"},
-            { nodeType: 7, name: "清单"}
-        ]
-        const column1 = [
-            // { visible: true, name: "xuhao", displayName: '序号',width:200},
-            { visible: true, name: "nodeType", displayName: '工程划分', width:300},
-            // { visible: true, name: "name", displayName: '姓名' ,},
-            { visible: true, name: "age", displayName: '年龄', width: 400 },
-            // { visible: true, name: "gender", displayName: '性别', width: 100 },
-            { visible: true, name: "department", displayName: '部门',width:200,},
-        ]
-        const column2 = [
-            // { visible: true, name: "xuhao", displayName: '序号',width:200},
-            { visible: true, name: "nodeType", displayName: '工程划分',width:300},
-            { visible: true, name: "name", displayName: '姓名' ,},
-            { visible: true, name: "age", displayName: '年龄', width: 400 },
-            { visible: true, name: "gender", displayName: '性别', width: 100 },
-            { visible: true, name: "department", displayName: '部门',width:200,},
-        ]
-        const changeCloumns = () => {
-            if(this.state.showCloumn1){
-                this.setState({
-                    columnChangeTest:column2,
-                    showCloumn1:false
-                })
-            }else{
-                this.setState({
-                    columnChangeTest:column1,
-                    showCloumn1:true
-                })
-            }
-        }
-        const linkClickFun1 = (hitinfo) => {
-            // console.log("引用1点击===",_this.state.data[0])
-            // linkClickFun2()
-            console.log("this======204===",this)
-        }
-        const linkClickFun2 = () => {
-            console.log("引用2点击")
-        }
-        const linkArr = [
-            {name:'引用1',color:'red',clickFun:()=>{linkClickFun1()}},
-            {name:'引用2',color:'blue',clickFun:linkClickFun2}
-        ]
-        const columns = [
-            // { visible: true, name: "xuhao", displayName: '序号',width:200},
-            { visible: true, name: "nodeType", displayName: '工程划分',width:500, cellType: new customCellType(this.state.data,'department',colorRange,nodeTypeNameEmun,true)},
-            { visible: true, name: "HyperLink", displayName: '超链接测试',width:400,},
-            { visible: true, name: "name", displayName: '姓名' ,cellType: new HyperLinkTextCell(linkArr,50,21,21),width:300},
-            { visible: true, name: "age", displayName: '年龄', width: 400 },
-            { visible: true, name: "gender", displayName: '性别', width: 100 },
-            { visible: true, name: "remark", displayName: '备注',width:200,cellType: new EllipsisAndToolTip("__spread_js_box__")},
-        ]
-        const columnsTest = [
-            // { visible: true, name: "xuhao", displayName: '序号',width:200},
-            { visible: true, name: "type", displayName: '工程划分', cellType: new customCellType(this.state.data,'name',colorRange,nodeTypeNameEmun,true)},
-            { visible: true, name: "longCode", displayName: '超链接测试',width:400,},
-            { visible: true, name: "gmtCreate", displayName: '姓名' ,cellType: new HyperLinkTextCell(["引用","引用2"]),width:200},
-            { visible: true, name: "id", displayName: '年龄', width: 400 },
-            { visible: true, name: "comment", displayName: '性别', width: 100 },
-            { visible: true, name: "remark", displayName: '备注',width:200,cellType: new EllipsisAndToolTip("__spread_js_box__")},
-        ]
+        // let _this = this
+        // let columnChangeTest = this.state.columnChangeTest
+        // const colorRange = [
+        //     {nodeType:1,partBg:'#E8F4FF',partTextClolr:'#1890FF'},
+        //     {nodeType:2,partBg:'#E7F9F9',partTextClolr:'#13C2CD'},
+        //     {nodeType:3,partBg:'#B4C4EA',partTextClolr:'#0843E5'},
+        //     {nodeType:4,partBg:'#FFEEE5',partTextClolr:'#FFBA4A'},
+        //     {nodeType:5,partBg:'#E5DBE8',partTextClolr:'#AD0FEA'},
+        //     {nodeType:6,partBg:'#BFF0BC',partTextClolr:'#1CE80D'},
+        //     {nodeType:7,partBg:'#F5DBD8',partTextClolr:'#EA2E17'},
+        // ]
+        // const nodeTypeNameEmun = [
+        //     { nodeType: 1, name: "单位工程" },
+        //     { nodeType: 2, name: "子单位工程"},
+        //     { nodeType: 3, name: "分部工程"},
+        //     { nodeType: 4, name: "子分部工程"},
+        //     { nodeType: 5, name: "实体单元"},
+        //     { nodeType: 6, name: "分项工程"},
+        //     { nodeType: 7, name: "清单"}
+        // ]
+        // const column1 = [
+        //     // { visible: true, name: "xuhao", displayName: '序号',width:200},
+        //     { visible: true, name: "nodeType", displayName: '工程划分', width:300},
+        //     // { visible: true, name: "name", displayName: '姓名' ,},
+        //     { visible: true, name: "age", displayName: '年龄', width: 400 },
+        //     // { visible: true, name: "gender", displayName: '性别', width: 100 },
+        //     { visible: true, name: "department", displayName: '部门',width:200,},
+        // ]
+        // const column2 = [
+        //     // { visible: true, name: "xuhao", displayName: '序号',width:200},
+        //     { visible: true, name: "nodeType", displayName: '工程划分',width:300},
+        //     { visible: true, name: "name", displayName: '姓名' ,},
+        //     { visible: true, name: "age", displayName: '年龄', width: 400 },
+        //     { visible: true, name: "gender", displayName: '性别', width: 100 },
+        //     { visible: true, name: "department", displayName: '部门',width:200,},
+        // ]
+        // const changeCloumns = () => {
+        //     if(this.state.showCloumn1){
+        //         this.setState({
+        //             columnChangeTest:column2,
+        //             showCloumn1:false
+        //         })
+        //     }else{
+        //         this.setState({
+        //             columnChangeTest:column1,
+        //             showCloumn1:true
+        //         })
+        //     }
+        // }
+        // const linkClickFun1 = (hitinfo) => {
+        //     // console.log("引用1点击===",_this.state.data[0])
+        //     // linkClickFun2()
+        //     console.log("this======204===",this)
+        // }
+        // const linkClickFun2 = () => {
+        //     console.log("引用2点击")
+        // }
+        // const linkArr = [
+        //     {name:'引用1',color:'red',clickFun:()=>{linkClickFun1()}},
+        //     {name:'引用2',color:'blue',clickFun:linkClickFun2}
+        // ]
+        // const columns = [
+        //     // { visible: true, name: "xuhao", displayName: '序号',width:200},
+        //     { visible: true, name: "nodeType", displayName: '工程划分',width:500, cellType: new customCellType(this.state.data,'department',colorRange,nodeTypeNameEmun,true)},
+        //     { visible: true, name: "HyperLink", displayName: '超链接测试',width:400,},
+        //     { visible: true, name: "name", displayName: '姓名' ,cellType: new HyperLinkTextCell(linkArr,50,21,21),width:300},
+        //     { visible: true, name: "age", displayName: '年龄', width: 400 },
+        //     { visible: true, name: "gender", displayName: '性别', width: 100 },
+        //     { visible: true, name: "remark", displayName: '备注',width:200,cellType: new EllipsisAndToolTip("__spread_js_box__")},
+        // ]
+        // const columnsTest = [
+        //     // { visible: true, name: "xuhao", displayName: '序号',width:200},
+        //     { visible: true, name: "type", displayName: '工程划分', cellType: new customCellType(this.state.data,'name',colorRange,nodeTypeNameEmun,true)},
+        //     { visible: true, name: "longCode", displayName: '超链接测试',width:400,},
+        //     { visible: true, name: "gmtCreate", displayName: '姓名' ,cellType: new HyperLinkTextCell(["引用","引用2"]),width:200},
+        //     { visible: true, name: "id", displayName: '年龄', width: 400 },
+        //     { visible: true, name: "comment", displayName: '性别', width: 100 },
+        //     { visible: true, name: "remark", displayName: '备注',width:200,cellType: new EllipsisAndToolTip("__spread_js_box__")},
+        // ]
         
         const clickCellHandler = (sheet,sheetName,row,col,cancel) =>{
             // console.log("sheet======",sheet)
@@ -248,10 +248,6 @@ class SpreadHome extends Component {
             // console.log("row======",row)
             // console.log("col======",col)
             // console.log("cancel======",cancel)
-        }
-        const rangeGroupStateChanging = () => {
-        }
-        const rangeGroupStateChanged = () => {
         }
         return (
             <div>
@@ -272,8 +268,6 @@ class SpreadHome extends Component {
                             allowUserResize = {false}
                             //   valueChanged={onCellrefresh}
                             cellClick={clickCellHandler} //单元格点击
-                            rangeGroupStateChanging = {rangeGroupStateChanging} //分组改变时
-                            rangeGroupStateChanged = {rangeGroupStateChanged} //分组改变后
                     >
                         {/* <Worksheet dataSource = {this.state.data}
                                 name={"合同工程量清单"}
