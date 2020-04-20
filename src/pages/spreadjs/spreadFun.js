@@ -51,7 +51,7 @@ let fittingString = (c, str, maxWidth) => {
 }
 
 /**
- * 用于spreadJS表格单元格显示层级，不同层级显示不同颜色
+ * customCellType  用于spreadJS表格单元格显示层级，不同层级显示不同颜色
  *
  * @param {Array} data 所要展示的的数据
  * @param {String} nameKey 工程分项后面所要跟随那个字段的值
@@ -90,7 +90,7 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
     let textTotalWidth = 0
     let nodeTypeName = findFromArr(value,this.nodeTypeNameEmun)
     let row = context.row
-    if (!ctx) {
+    if (!ctx || !this.data.length) {
         return;
     }
 
@@ -99,7 +99,7 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
     ctx.rect(x, y, w, h);
     ctx.clip();
     ctx.beginPath();
-
+    
     //获取文字属性
     var textInfo = ctx.measureText(nodeTypeName)
     //计算矩形宽度并暂时赋值给单元格总宽度
@@ -107,26 +107,33 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
     //绘制矩形
     if(this.colorRange && this.colorRange.length){
         let index = findFromArr(value,this.colorRange,true)
-        ctx.fillStyle = this.colorRange[index].partBg;
+        if(index>-1 && (this.data[row])[this.nameKey]){
+            ctx.fillStyle = this.colorRange[index].partBg;
+        }
     }else{
         ctx.fillStyle = "#ccc"
     }
-    
-    ctx.fillRect(x+5, y+5, Math.ceil(textInfo.width)+10, h-10);
+    if((this.data[row])[this.nameKey]){
+        ctx.fillRect(x+5, y+5, Math.ceil(textInfo.width)+10, h-10);
+    }
 
     //绘制矩形内文字
     ctx.beginPath();
     ctx.textAlign="start";
     if(this.colorRange && this.colorRange.length){
         let index = findFromArr(value,this.colorRange,true)
-        ctx.fillStyle = this.colorRange[index].partTextClolr;
+        if(index>-1 && (this.data[row])[this.nameKey]){
+            ctx.fillStyle = this.colorRange[index].partTextClolr;
+        }
     }else{
         ctx.fillStyle = "#000"
     }
     if(this.partSize){
         ctx.font = this.partSize + "px  Arial";
     }
-    ctx.fillText(nodeTypeName,x+10,y+this.partTextY);
+    if((this.data[row])[this.nameKey]){
+        ctx.fillText(nodeTypeName,x+10,y+this.partTextY);
+    }
 
     //绘制矩形后面文字
     if(this.nameKey){
@@ -141,7 +148,9 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
         if(this.nameSize){
             ctx.font = this.nameSize + "px  Arial";
         }
-        ctx.fillText(afterText,x+Math.ceil(textInfo.width)+20,y+this.nameTextY);
+        if(afterText && afterText != "null"){
+            ctx.fillText(afterText,x+Math.ceil(textInfo.width)+20,y+this.nameTextY);
+        }
     }
 
     //列宽的撑开是根据最后一次算的值的大小来撑开的，如果值小于目前的宽度则不进行赋值
@@ -158,9 +167,9 @@ customCellType.prototype.getAutoFitWidth = function (value, text, cellStyle, zoo
 
 
 /**
- * 悬浮提示内容
+ * TipCellType 悬浮提示内容
  *
- * @param {*} parentId
+ * @param {*} parentId 表格最外层容器Id position属性应为relative
  * @param {string} arrowPosition 指示箭头位置取值范围["left","center","right"],默认值为center
  */
 export function TipCellType(parentId,arrowPosition) {
@@ -252,7 +261,7 @@ TipCellType.prototype.processMouseLeave = function (hitinfo) {
 
 
 /**
- * 超出省略显示...
+ * EllipsisTextCellType 超出省略显示...
  *
  */
 export function EllipsisTextCellType() {
@@ -269,9 +278,9 @@ EllipsisTextCellType.prototype.paint = function (ctx, value, x, y, w, h, style, 
 
 
 /**
- * 超出隐藏显示...，并显示toolTip
+ * EllipsisAndToolTip 超出隐藏显示...，并显示toolTip
  *
- * @param {*} parentId
+ * @param {*} parentId 表格最外层容器Id position属性应为relative
  * @param {string} arrowPosition 指示箭头位置取值范围["left","center","right"],默认值为center
  */
 export function EllipsisAndToolTip(parentId,arrowPosition){
@@ -365,21 +374,33 @@ EllipsisAndToolTip.prototype.processMouseLeave = function (hitinfo) {
 	}
 };
 
-//超链接+文本测试
-export function HyperLinkTextCell(linkArr,textMaxWidth,textY,linkY){
+
+/**
+ * HyperLinkTextCell  超链接+文本测试
+ * @param {array} linkArr 超链接属性 形如：[{name:'引用',color:'red',clickFun:function,tipText}]  name:超链接文本，color:超链接文本颜色，clickFun:超链接点击执行方法,tipText:超链接悬浮显示文字，若不传则显示name
+ * @param {string} parentId 表格最外层容器Id position属性应为relative
+ * @param {number} textMaxWidth 普通文本宽度 不传则自动计算除超链接的宽度赋予文本宽度，超出隐藏
+ * @param {number} textY 普通文本竖向偏移量 默认值21
+ * @param {number} linkY 超链接文本竖向偏移量 默认值21
+ */
+export function HyperLinkTextCell(linkArr,parentId,textY = 21,linkY = 21,textMaxWidth,needTip = true,){
     this.linkArr = linkArr || []
-    this.linkTextArr = ""
-    this.textY = textY || 21
-    this.linkY = linkY || 21
+    this.linkTextStr = ""
+    this.textY = textY
+    this.linkY = linkY
     this.linArea = []
+    this.linkNum = linkArr.length
+    this.textWidth = 0
+    this.textWidthArr = []
     this.textMaxWidth = textMaxWidth
+    this.needTip = needTip
+    this.parentId = parentId
     for (let i = 0; i < linkArr.length; i++) {
         const item = linkArr[i];
-        this.linkTextArr+=item.name
+        this.linkTextStr+=item.name
     }
     this.plainTextWidth = 0
 }
-//TODO 绘制超链接并添加点击事件
 /**
  * 用于过滤并形成最后需要省略显示的文字
  *
@@ -387,48 +408,59 @@ export function HyperLinkTextCell(linkArr,textMaxWidth,textY,linkY){
  * @param {*} str 要显示的字符串
  * @param {*} maxWidth 最大宽度
  */
-let fittingStringForHyperLink = (c, str, maxWidth,hyperLinkTextArr) => {
-    // debugger
+let fittingStringForHyperLink = (c, str, cellWidth,linkTextStr,linkNum,maxWidth) => {
     let result = ''
     let width = c.measureText(str).width;
     let ellipsis = '…';
     let ellipsisWidth = c.measureText(ellipsis).width;
-    let hyperLinkTextWidth = c.measureText(hyperLinkTextArr).width;
-    // maxWidth = maxWidth - hyperLinkTextWidth - 10
+    let hyperLinkTextWidth = c.measureText(linkTextStr).width;
+    let textMaxWidth = maxWidth || cellWidth- 20 - hyperLinkTextWidth - 10*(linkNum-1)
     // console.log("ellipsisWidth===",ellipsisWidth)
-    if (width <= maxWidth || width <= ellipsisWidth) {
-        return result = str;
+    if (width <= textMaxWidth || width <= ellipsisWidth) {
+        return result = {
+          newStr: str,
+          textWidth:c.measureText(str).width,
+          textMaxWidth: textMaxWidth
+        };
     } else {
         let len = str.length;
-        while (width >= maxWidth - ellipsisWidth && len-- > 0) {
+        while (width >= textMaxWidth - ellipsisWidth && len-- > 0) {
             str = str.substring(0, len);
             width = c.measureText(str).width;
         }
-        return result = str + ellipsis;
+        return result = {
+          newStr: str + ellipsis,
+          textWidth: textMaxWidth,
+          textMaxWidth: textMaxWidth
+        };
     }
 }
 HyperLinkTextCell.prototype = new spreadNS.CellTypes.Base();
 
 HyperLinkTextCell.prototype.paintContent = function (ctx, value, x, y, w, h, style, context) {
     ctx.font = style.font;
-    value = fittingStringForHyperLink(ctx, value, this.textMaxWidth - 2, this.linkTextArr );
-    // spreadNS.CellTypes.Text.prototype.paintContent(ctx, value, x, y, w, h, style, context);
-    // ctx.save();
-
-    // ctx.rect(x, y, w, h);
-    // ctx.clip();
+    
+    // value = fittingStringForHyperLink(ctx, value, this.textMaxWidth - 2, this.linkTextArr );
+    let fittingres = fittingStringForHyperLink(ctx, value,  w - 2, this.linkTextStr,this.linkNum ,this.textMaxWidth);
+    let newValue = fittingres.newStr
+    this.textWidth = fittingres.textWidth == this.textMaxWidth?this.textMaxWidth:fittingres.textWidth
+    this.textMaxWidth = this.textMaxWidth || fittingres.textMaxWidth
+    let row = context.row
+    if(!this.textWidthArr[row]){
+        this.textWidthArr.push({textWidth:Math.ceil(this.textWidth),text:value})
+    }
     ctx.beginPath();
 
     // //获取文字属性
-    let textInfo = ctx.measureText(value)
+    let textInfo = ctx.measureText(newValue)
     // //计算矩形宽度并暂时赋值给单元格总宽度
     let textWidth = 0
     //绘制普通文本
         ctx.textAlign="start";
         ctx.fillStyle = '#000';
-        if(value){
+        if(newValue){
             textWidth = this.textMaxWidth+10
-            ctx.fillText(value,x+5,y+this.textY);
+            ctx.fillText(newValue,x+5,y+this.textY);
         }
         //绘制超链接文本
         for (let k = 0; k < this.linkArr.length; k++) {
@@ -440,9 +472,9 @@ HyperLinkTextCell.prototype.paintContent = function (ctx, value, x, y, w, h, sty
             let currentLinkTextWidth = Math.ceil(ctx.measureText(ele.name).width)
 
             if(!this.linArea[context.row]){
-                this.linArea[context.row]= [{startX:x+5+textWidth,endX:x+5+textWidth + currentLinkTextWidth,name:value,row:context.row}]
+                this.linArea[context.row]= [{startX:x+5+textWidth,endX:x+5+textWidth + currentLinkTextWidth,name:ele.name,row:context.row,tipText:ele.tipText||ele.name}]
             }else if(!(this.linArea[context.row])[k]){
-                (this.linArea[context.row])[k]= {startX:x+5+textWidth,endX:x+5+textWidth + currentLinkTextWidth,name:value,row:context.row}
+                (this.linArea[context.row])[k]= {startX:x+5+textWidth,endX:x+5+textWidth + currentLinkTextWidth,name:ele.name,row:context.row,tipText:ele.tipText||ele.name}
             }
 
             textWidth += Math.ceil(ctx.measureText(ele.name).width)+10
@@ -461,45 +493,177 @@ HyperLinkTextCell.prototype.getHitInfo = function (x, y, cellStyle, cellRect, co
 	};
 }
 HyperLinkTextCell.prototype.processMouseDown = function (hitinfo) {
-    debugger
-    let { sheet, cellRect, row:cellRow, col:cellCol } = hitinfo
-    let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
-    let cellVAlue = sheet.getValue(cellRow,cellCol)
-    debugger
-};
-HyperLinkTextCell.prototype.processMouseDown = function (hitinfo) {
-    debugger
+
     let { sheet, cellRect, row:cellRow, col:cellCol,x:mouseX,y:mouseY } = hitinfo
     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
     let cellVAlue = sheet.getValue(cellRow,cellCol)
     let res = ismouseInArea(mouseX,"",cellRow,this.linArea)
     if(res.index>-1){
         let clickFun = this.linkArr[res.index].clickFun
-        clickFun()
+        clickFun(hitinfo)
     }
 };
-// HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
-//     debugger
-//     let { sheet, cellRect, row:cellRow, col:cellCol,x:mouseX,y:mouseY } = hitinfo
-//     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
-//     let cellVAlue = sheet.getValue(cellRow,cellCol)
-//     let res = ismouseInArea(mouseX,"",cellRow,this.linArea)
-//     // if(res.ismouseInArea){
-//     //     document.getElementById("vp_vp").style.cursor = "pointer !important"
-//     //     console.log("document.body====",document.body)
-//     // }else{
-//     //     document.body.style.cursor = "auto"
-//     // }
-//     debugger
-// };
+HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
+    //清除提示
+    let clearTip = () => {
+        if (this._toolTipElement && this._toolTipArrow) {
+            document.getElementById(this.parentId).removeChild(this._toolTipElement);
+            document.getElementById(this.parentId).removeChild(this._toolTipArrow);
+            this._toolTipElement = null;
+            this._toolTipArrow = null
+        }
+    }
+    let { sheet, cellRect, row:cellRow, col:cellCol,x:mouseX,y:mouseY } = hitinfo
+    let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
+    let cellVAlue = sheet.getValue(cellRow,cellCol)
+    let res = ismouseInArea(mouseX,"",cellRow,this.linArea,cellX,this.textWidthArr)
+    if(res.ismouseInArea){//鼠标悬浮至超链接文字上
+        // clearTip()
+        document.getElementById("vp_vp").style.cursor = "pointer !important"
+        let index = res.index
+        let linkTextWidth = (this.linArea[cellRow])[index].endX - (this.linArea[cellRow])[index].startX 
+        if (!document.getElementById("__spread_customTipCellType__")) {
+            let div = document.createElement("div");
+                div.setAttribute("id",'__spread_customTipCellType__')
+                div.style.position = "absolute"
+                // div.style.border = "1px #C0C0C0 solid"
+                div.style.boxShadow = "1px 2px 5px rgba(0,0,0,0.4)"
+                div.style.borderRadius = "5px"
+                div.style.font = "Arial"
+                div.style.background = "#404040"
+                div.style.color = "#fff"
+                div.style.padding = "6px 8px"
+                div.style.zIndex = 1000
+                div.style.width = linkTextWidth<50?50+"px":linkTextWidth  + "px"
+    
+            this._toolTipElement = div;
+    
+            //绘制指示箭头
+            let arrow = document.createElement("div");
+                arrow.setAttribute("id",'__spread_customTip_arrow__')
+                arrow.style.position = "absolute"
+                arrow.style.font = "Arial"
+                arrow.style.background = "#404040"
+                arrow.style.width = "10px"
+                arrow.style.height = "10px"
+                arrow.style.color = "#fff"
+                arrow.style.transform= "rotate(45deg) "
+                div.style.zIndex = 999
+    
+            this._toolTipArrow = arrow
+        }
+        this._toolTipElement.innerHTML = (this.linArea[cellRow])[index].tipText
+        this._toolTipElement.style.top = cellY + "px"
+        this._toolTipElement.style.left = cellX + "px"
+        this._toolTipArrow.style.top = cellY - 5 +  "px"
+        this._toolTipArrow.style.left = cellX+this.textMaxWidth + "px"
+        document.getElementById(this.parentId).append(this._toolTipElement)
+        document.getElementById(this.parentId).append(this._toolTipArrow)
+        let h = document.getElementById("__spread_customTipCellType__").offsetHeight
+        let w = document.getElementById("__spread_customTipCellType__").offsetWidth
+        this._toolTipElement.style.top = cellY - h -5 + "px"
+        this._toolTipElement.style.left = linkTextWidth<50?(this.linArea[cellRow])[index].startX - 7 +"px" :(this.linArea[cellRow])[index].startX + "px"
+        // if(this.arrowPosition == "center"){
+        this._toolTipArrow.style.top = cellY - 10 +  "px"
+        console.log("index====",cellRow)
+        console.log("this.linArea====",this.linArea)
+        this._toolTipArrow.style.left = (this.linArea[cellRow])[index].startX+linkTextWidth/2 - 7 + "px"
+        // }else if(this.arrowPosition == "left"){
+        //     this._toolTipArrow.style.top = cellY - 10 +  "px"
+        //     let tmpW = w*0.25>15?15:w*0.25
+        //     this._toolTipArrow.style.left = cellX + tmpW + "px"
+        // }else if(this.arrowPosition == "right"){
+        //     this._toolTipArrow.style.top = cellY - 11 +  "px"
+        //     this._toolTipArrow.style.left = cellX + w - w*0.25 - 7 + "px"
+        // }
+    }else if(res.isInTextArea && this.needTip){//鼠标悬浮至普通文本上
+        document.body.style.cursor = "auto"
+        if (!document.getElementById("__spread_customTipCellType__")) {
+            let div = document.createElement("div");
+                div.setAttribute("id",'__spread_customTipCellType__')
+                div.style.position = "absolute"
+                // div.style.border = "1px #C0C0C0 solid"
+                div.style.boxShadow = "1px 2px 5px rgba(0,0,0,0.4)"
+                div.style.borderRadius = "5px"
+                div.style.font = "Arial"
+                div.style.background = "#404040"
+                div.style.color = "#fff"
+                div.style.padding = "6px 8px"
+                div.style.zIndex = 1000
+                div.style.width = this.textWidthArr[cellRow].textWidth<50?50:this.textWidthArr[cellRow].textWidth + "px"
+    
+            this._toolTipElement = div;
+    
+            //绘制指示箭头
+            let arrow = document.createElement("div");
+                arrow.setAttribute("id",'__spread_customTip_arrow__')
+                arrow.style.position = "absolute"
+                arrow.style.font = "Arial"
+                arrow.style.background = "#404040"
+                arrow.style.width = "10px"
+                arrow.style.height = "10px"
+                arrow.style.color = "#fff"
+                arrow.style.transform= "rotate(45deg) "
+                div.style.zIndex = 999
+    
+            this._toolTipArrow = arrow
+        }
+        this._toolTipElement.innerHTML = this.textWidthArr[cellRow].text
+        this._toolTipElement.style.top = cellY + "px"
+        this._toolTipElement.style.left = cellX + "px"
+        this._toolTipArrow.style.top = cellY - 5 +  "px"
+        this._toolTipArrow.style.left = cellX + "px"
+        document.getElementById(this.parentId).append(this._toolTipElement)
+        document.getElementById(this.parentId).append(this._toolTipArrow)
+        let h = document.getElementById("__spread_customTipCellType__").offsetHeight
+        let w = document.getElementById("__spread_customTipCellType__").offsetWidth
+        this._toolTipElement.style.top = cellY - h -5 + "px"
+        this._toolTipElement.style.left = cellX + "px"
+        // if(this.arrowPosition == "center"){
+            this._toolTipArrow.style.top = cellY - 10 +  "px"
+            this._toolTipArrow.style.left = cellX + w/2 - 7 + "px"
+        // }else if(this.arrowPosition == "left"){
+        //     this._toolTipArrow.style.top = cellY - 10 +  "px"
+        //     let tmpW = w*0.25>15?15:w*0.25
+        //     this._toolTipArrow.style.left = cellX + tmpW + "px"
+        // }else if(this.arrowPosition == "right"){
+        //     this._toolTipArrow.style.top = cellY - 11 +  "px"
+        //     this._toolTipArrow.style.left = cellX + w - w*0.25 - 7 + "px"
+        // }
+    }else{
+        clearTip()
+    }
+};
+HyperLinkTextCell.prototype.processMouseLeave = function (hitinfo) {
+	if (this._toolTipElement && this._toolTipArrow) {
+		document.getElementById(this.parentId).removeChild(this._toolTipElement);
+		document.getElementById(this.parentId).removeChild(this._toolTipArrow);
+        this._toolTipElement = null;
+        this._toolTipArrow = null
+	}
+};
 
-let ismouseInArea = (mouseX,mouseY,row,areaArr) => {
-    let res = {index:-1,ismouseInArea:false}
+/**
+ * ismouseInArea 判断鼠标是否在特定范围内 返回{ismouseInArea：true|false， index：number，isInTextArea: true|false} ismouseInArea为是否在区域内，index为在区域数组中的下标,isInTextArea：是否悬浮在普通文本区域
+ *
+ * @param {Number} mouseX 鼠标的X位置
+ * @param {Number} mouseY 鼠标的Y位置
+ * @param {Number} row 行号
+ * @param {Array} areaArr特定区域数组
+ * @param {Array} cellX 单元格的起始X位置
+ * @param {Array} textWidthArr 普通文本的宽度集合
+ */
+let ismouseInArea = (mouseX,mouseY,row,areaArr,cellX,textWidthArr) => {
+    let res = {index:-1,ismouseInArea:false,isInTextArea:false}
+    if(mouseX < cellX+5+textWidthArr[row].textWidth){
+        res = {index:-1,ismouseInArea:false,isInTextArea:true}
+        return res
+    }
     let arr = areaArr[row]
     for (let j = 0; j < arr.length; j++) {
         const ele = arr[j];
         if(mouseX > ele.startX && mouseX < ele.endX){
-            res = {index:j,ismouseInArea:true}
+            res = {index:j,ismouseInArea:true,isInTextArea:false}
             break
         }
     }

@@ -13,7 +13,7 @@ class SpreadHome extends Component {
         super(props);
         this.state = {
             data : [
-                {name:'艾瑞莉娅',age:20,gender:0,department:'工程部返回的数据返回快速导航开发计划是的空间',partName:'单位工程',level:'1',nodeType:1,remark:'是多大'},
+                {name:'艾瑞莉娅大数据哈师大很快就暗示的科技按时的痕迹',age:20,gender:0,department:'工程部返回的数据返回快速导航开发计划是的空间',partName:'单位工程',level:'1',nodeType:1,remark:'是多大'},
                 {name:'瑞文',age:20,gender:0,department:'工程1部',partName:'子单位工程',level:'1-1',nodeType:2,remark:'慌撒的看哈是框架'},
                 {name:'伊泽瑞尔',age:20,gender:0,department:'工程1部材料中心',partName:'分部工程',level:'1-1-1',nodeType:3,remark:'撒德哈卡大数据汇顶科技按数据库的'},
                 {name:'莫德凯撒',age:20,gender:0,department:'工程1部材料中心01',partName:'子分部工程',level:'1-1-1-1',nodeType:4,remark:'第三方的深V说的'},
@@ -75,28 +75,48 @@ class SpreadHome extends Component {
         this.initSheetOutline()
     }
 
-    linkClickFun1 = () => {
-        console.log("引用1点击")
-        this.linkClickFun2()
+    linkClickFun1 = (res) => {
+        console.log("引用1点击=====",res)
+        // this.linkClickFun2()
     }
     linkClickFun2 = () => {
         console.log("引用2点击")
     }
 
     initSheetOutline = () => {
+
+        const colorRange = [
+            {nodeType:1,partBg:'#E8F4FF',partTextClolr:'#1890FF'},
+            {nodeType:2,partBg:'#E7F9F9',partTextClolr:'#13C2CD'},
+            {nodeType:3,partBg:'#B4C4EA',partTextClolr:'#0843E5'},
+            {nodeType:4,partBg:'#FFEEE5',partTextClolr:'#FFBA4A'},
+            {nodeType:5,partBg:'#E5DBE8',partTextClolr:'#AD0FEA'},
+            {nodeType:6,partBg:'#BFF0BC',partTextClolr:'#1CE80D'},
+            {nodeType:7,partBg:'#F5DBD8',partTextClolr:'#EA2E17'},
+        ]
+        const nodeTypeNameEmun = [
+            { nodeType: 1, name: "单位工程" },
+            { nodeType: 2, name: "子单位工程"},
+            { nodeType: 3, name: "分部工程"},
+            { nodeType: 4, name: "子分部工程"},
+            { nodeType: 5, name: "实体单元"},
+            { nodeType: 6, name: "分项工程"},
+            { nodeType: 7, name: "清单"}
+        ]
+
         debugger
         let data = this.state.data
         let sheet = this.spread.getActiveSheet();
-        
+
         let linkArr = [
-            {name:'引用1',color:'red',clickFun:this.linkClickFun1},
-            {name:'引用2',color:'blue',clickFun:this.linkClickFun2}
+            {name:'超链接',color:'red',clickFun:(res)=>this.linkClickFun1(res),tipText:'三大框架会涉及到'},
+            {name:'引用',color:'blue',clickFun:this.linkClickFun2}
         ]
         let columns = [
             // { visible: true, name: "xuhao", displayName: '序号',width:200},
-            { visible: true, name: "nodeType", displayName: '工程划分',width:150},
+            { visible: true, name: "nodeType", displayName: '工程划分',width:500, cellType: new customCellType(this.state.data,'partName',colorRange,nodeTypeNameEmun,true)},
             { visible: true, name: "HyperLink", displayName: '超链接测试',width:400,},
-            { visible: true, name: "aaa", displayName: '姓名' ,cellType: new HyperLinkTextCell(linkArr,50,21,21),width:300},
+            { visible: true, name: "name", displayName: '姓名' ,cellType: new HyperLinkTextCell(linkArr,"__spread_js_box__"),width:300},
             { visible: true, name: "age", displayName: '年龄', width: 400 },
             { visible: true, name: "gender", displayName: '性别', width: 100 },
             { visible: true, name: "remark", displayName: '备注',width:200,cellType: new EllipsisAndToolTip("__spread_js_box__")},
