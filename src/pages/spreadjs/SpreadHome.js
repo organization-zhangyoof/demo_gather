@@ -1,6 +1,5 @@
 import React,{Component} from'react'
 // import '@grapecity/spread-sheets/styles/gc.spread.sheets.excel2016colorful.css';
-import './spreadCustom.less'
 import GC from '@grapecity/spread-sheets';
 import {SpreadSheets, Worksheet, Column} from '@grapecity/spread-sheets-react';
 import openImg from '../../assets/square-open.png'
@@ -119,6 +118,7 @@ class SpreadHome extends Component {
             { visible: true, name: "age", displayName: '年龄', width: 400 },
             { visible: true, name: "gender", displayName: '性别', width: 100 },
             { visible: true, name: "remark", displayName: '备注',width:200,cellType: new EllipsisAndToolTip("__spread_js_box__",)},
+            { visible: true, name: "department", displayName: '部门',width:200,cellType: new EllipsisTextCellType('right')},
         ]
         
         sheet.setDataSource(this.state.data);

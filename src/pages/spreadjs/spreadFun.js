@@ -276,15 +276,32 @@ TipCellType.prototype.processMouseLeave = function (hitinfo) {
  * EllipsisTextCellType 超出省略显示...
  *
  */
-export function EllipsisTextCellType() {
+export function EllipsisTextCellType(textAlign,textY) {
+    this.textAlign = textAlign || 'left'
+    this.textY = textY || 21
 }
 
 EllipsisTextCellType.prototype = new spreadNS.CellTypes.Text();
 EllipsisTextCellType.prototype.paint = function (ctx, value, x, y, w, h, style, context) {
     ctx.font = style.font;
-    let res = fittingString(ctx, value, w - 2);
+    let res = fittingString(ctx, value, w - 5);
     value = res.newStr
-    spreadNS.CellTypes.Text.prototype.paint(ctx, value, x, y, w, h, style, context);
+    let isEllipsis = res.isEllipsis
+    ctx.beginPath();
+    ctx.textAlign="start";
+    ctx.fillStyle = '#000';
+    let textWidth = Math.ceil(ctx.measureText(value).width)
+    if(isEllipsis){
+        ctx.fillText(value,x+2,y+this.textY);
+    }else{
+        if(this.textAlign == 'left'){
+            ctx.fillText(value,x+5,y+this.textY);
+        }else if(this.textAlign == 'center'){
+            ctx.fillText(value,x+(w/2-textWidth/2),y+this.textY);
+        }else if(this.textAlign == 'right'){
+            ctx.fillText(value,x+(w-textWidth-5),y+this.textY);
+        }
+    }
 };
 
 
