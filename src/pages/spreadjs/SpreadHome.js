@@ -1,17 +1,20 @@
 import React,{Component} from'react'
-import '@grapecity/spread-sheets/styles/gc.spread.sheets.excel2016colorful.css';
+// import '@grapecity/spread-sheets/styles/gc.spread.sheets.excel2016colorful.css';
+import './spreadCustom.less'
 import GC from '@grapecity/spread-sheets';
 import {SpreadSheets, Worksheet, Column} from '@grapecity/spread-sheets-react';
 import openImg from '../../assets/square-open.png'
 import closeImg from '../../assets/square-close.png'
-import {Button} from "antd"
+import { Button, Modal } from "antd"
 import {customCellType, TipCellType, EllipsisTextCellType, EllipsisAndToolTip, HyperLinkTextCell,} from './spreadFun'
+
 GC.Spread.Common.CultureManager.culture("zh-cn");
 class SpreadHome extends Component {
     
     constructor(props) {
         super(props);
         this.state = {
+            visible:false,
             data : [
                 {name:'艾瑞莉娅大数据哈师大很快就暗示的科技按时的痕迹',age:20,gender:0,department:'工程部返回的数据返回快速导航开发计划是的空间',partName:'单位工程',level:'1',nodeType:1,remark:'是多大'},
                 {name:'瑞文',age:20,gender:0,department:'工程1部',partName:'子单位工程',level:'1-1',nodeType:2,remark:'慌撒的看哈是框架'},
@@ -67,36 +70,39 @@ class SpreadHome extends Component {
     }
     initSpreadSheets = (spread) => {
         this.spread = spread;
-        this.initSheetOutline()
+        this.initSheetOutline(true)
     }
 
     linkClickFun1 = (res) => {
+        // alert("超链接点击")
         console.log("引用1点击=====",res)
+        this.setState({visible:true})
         // this.linkClickFun2()
     }
     linkClickFun2 = () => {
         console.log("引用2点击")
+        alert("引用2点击")
     }
 
     initSheetOutline = (isInit) => {
-        const colorRange = [
-            {nodeType:1,partBg:'#E8F4FF',partTextClolr:'#1890FF'},
-            {nodeType:2,partBg:'#E7F9F9',partTextClolr:'#13C2CD'},
-            {nodeType:3,partBg:'#B4C4EA',partTextClolr:'#0843E5'},
-            {nodeType:4,partBg:'#FFEEE5',partTextClolr:'#FFBA4A'},
-            {nodeType:5,partBg:'#E5DBE8',partTextClolr:'#AD0FEA'},
-            {nodeType:6,partBg:'#BFF0BC',partTextClolr:'#1CE80D'},
-            {nodeType:7,partBg:'#F5DBD8',partTextClolr:'#EA2E17'},
-        ]
-        const nodeTypeNameEmun = [
-            { nodeType: 1, name: "单位工程" },
-            { nodeType: 2, name: "子单位工程"},
-            { nodeType: 3, name: "分部工程"},
-            { nodeType: 4, name: "子分部工程"},
-            { nodeType: 5, name: "实体单元"},
-            { nodeType: 6, name: "分项工程"},
-            { nodeType: 7, name: "清单"}
-        ]
+        // const colorRange = [
+        //     {nodeType:1,partBg:'#E8F4FF',partTextClolr:'#1890FF'},
+        //     {nodeType:2,partBg:'#E7F9F9',partTextClolr:'#13C2CD'},
+        //     {nodeType:3,partBg:'#B4C4EA',partTextClolr:'#0843E5'},
+        //     {nodeType:4,partBg:'#FFEEE5',partTextClolr:'#FFBA4A'},
+        //     {nodeType:5,partBg:'#E5DBE8',partTextClolr:'#AD0FEA'},
+        //     {nodeType:6,partBg:'#BFF0BC',partTextClolr:'#1CE80D'},
+        //     {nodeType:7,partBg:'#F5DBD8',partTextClolr:'#EA2E17'},
+        // ]
+        // const nodeTypeNameEmun = [
+        //     { nodeType: 1, name: "单位工程" },
+        //     { nodeType: 2, name: "子单位工程"},
+        //     { nodeType: 3, name: "分部工程"},
+        //     { nodeType: 4, name: "子分部工程"},
+        //     { nodeType: 5, name: "实体单元"},
+        //     { nodeType: 6, name: "分项工程"},
+        //     { nodeType: 7, name: "清单"}
+        // ]
 
         let data = this.state.data
         let sheet = this.spread.getActiveSheet();
@@ -107,12 +113,12 @@ class SpreadHome extends Component {
         ]
         let columns = [
             // { visible: true, name: "xuhao", displayName: '序号',width:200},
-            { visible: true, name: "nodeType", displayName: '工程划分', cellType: new customCellType(this.state.data,'partName',colorRange,nodeTypeNameEmun,true)},
+            { visible: true, name: "nodeType", displayName: '工程划分',width:500, cellType: new customCellType(this.state.data,'partName','','',true)},
             { visible: false, name: "HyperLink", displayName: '超链接测试',width:400,},
-            { visible: true, name: "name", displayName: '姓名' ,cellType: new HyperLinkTextCell(linkArr,"__spread_js_box__"),width:300},
+            { visible: true, name: "name2", displayName: '姓名' ,cellType: new HyperLinkTextCell(linkArr,"__spread_js_box__"),width:300},
             { visible: true, name: "age", displayName: '年龄', width: 400 },
             { visible: true, name: "gender", displayName: '性别', width: 100 },
-            { visible: true, name: "remark", displayName: '备注',width:200,cellType: new EllipsisAndToolTip("__spread_js_box__")},
+            { visible: true, name: "remark", displayName: '备注',width:200,cellType: new EllipsisAndToolTip("__spread_js_box__",)},
         ]
         
         sheet.setDataSource(this.state.data);
@@ -136,7 +142,7 @@ class SpreadHome extends Component {
         spreadNs.AutoFitType.cellWithHeader = true
 
         //隐藏行号
-        sheet.setColumnVisible(0,false,GC.Spread.Sheets.SheetArea.rowHeader)
+        // sheet.setColumnVisible(0,false,GC.Spread.Sheets.SheetArea.rowHeader)
         //分组设置
 
         sheet.showRowOutline(false)
@@ -147,101 +153,33 @@ class SpreadHome extends Component {
             // showCheckBox:true
         })
         //控制树的展开收缩需要放在设置outlineColumn.options之后，否则不生效，参数有两个，第一个参数为层级，第二个为是否展开
-        // sheet.rowOutlines.expand(0, false);
-        // sheet.rowOutlines.expand(1, false);
-        // sheet.rowOutlines.expand(2, false);
-        // sheet.rowOutlines.expand(3, false);
-        // sheet.rowOutlines.expand(4, false);
-        // sheet.rowOutlines.expand(5, false);
-        // sheet.rowOutlines.expand(6, false);
-        // sheet.rowOutlines.expand(7, false);
-            sheet.autoFitColumn(0)
-        
+        // if(isInit){
+            sheet.rowOutlines.expand(0, false);
+            sheet.rowOutlines.expand(1, false);
+            sheet.rowOutlines.expand(2, false);
+            sheet.rowOutlines.expand(3, false);
+            sheet.rowOutlines.expand(4, false);
+            sheet.rowOutlines.expand(5, false);
+            sheet.rowOutlines.expand(6, false);
+            sheet.rowOutlines.expand(7, false);
+        // }
+        sheet.rowOutlines.setCollapsed(0, true);
+
+        sheet.rowOutlines.setCollapsed(1,true);
         sheet.outlineColumn.refresh();
     }
 
+    handleCancel = ()=>{
+        this.setState({visible:false})
+    }
 
     render(){
-        // let _this = this
-        // let columnChangeTest = this.state.columnChangeTest
-        // const colorRange = [
-        //     {nodeType:1,partBg:'#E8F4FF',partTextClolr:'#1890FF'},
-        //     {nodeType:2,partBg:'#E7F9F9',partTextClolr:'#13C2CD'},
-        //     {nodeType:3,partBg:'#B4C4EA',partTextClolr:'#0843E5'},
-        //     {nodeType:4,partBg:'#FFEEE5',partTextClolr:'#FFBA4A'},
-        //     {nodeType:5,partBg:'#E5DBE8',partTextClolr:'#AD0FEA'},
-        //     {nodeType:6,partBg:'#BFF0BC',partTextClolr:'#1CE80D'},
-        //     {nodeType:7,partBg:'#F5DBD8',partTextClolr:'#EA2E17'},
-        // ]
-        // const nodeTypeNameEmun = [
-        //     { nodeType: 1, name: "单位工程" },
-        //     { nodeType: 2, name: "子单位工程"},
-        //     { nodeType: 3, name: "分部工程"},
-        //     { nodeType: 4, name: "子分部工程"},
-        //     { nodeType: 5, name: "实体单元"},
-        //     { nodeType: 6, name: "分项工程"},
-        //     { nodeType: 7, name: "清单"}
-        // ]
-        // const column1 = [
-        //     // { visible: true, name: "xuhao", displayName: '序号',width:200},
-        //     { visible: true, name: "nodeType", displayName: '工程划分', width:300},
-        //     // { visible: true, name: "name", displayName: '姓名' ,},
-        //     { visible: true, name: "age", displayName: '年龄', width: 400 },
-        //     // { visible: true, name: "gender", displayName: '性别', width: 100 },
-        //     { visible: true, name: "department", displayName: '部门',width:200,},
-        // ]
-        // const column2 = [
-        //     // { visible: true, name: "xuhao", displayName: '序号',width:200},
-        //     { visible: true, name: "nodeType", displayName: '工程划分',width:300},
-        //     { visible: true, name: "name", displayName: '姓名' ,},
-        //     { visible: true, name: "age", displayName: '年龄', width: 400 },
-        //     { visible: true, name: "gender", displayName: '性别', width: 100 },
-        //     { visible: true, name: "department", displayName: '部门',width:200,},
-        // ]
-        // const changeCloumns = () => {
-        //     if(this.state.showCloumn1){
-        //         this.setState({
-        //             columnChangeTest:column2,
-        //             showCloumn1:false
-        //         })
-        //     }else{
-        //         this.setState({
-        //             columnChangeTest:column1,
-        //             showCloumn1:true
-        //         })
-        //     }
-        // }
-        // const linkClickFun1 = (hitinfo) => {
-        //     // console.log("引用1点击===",_this.state.data[0])
-        //     // linkClickFun2()
-        //     console.log("this======204===",this)
-        // }
-        // const linkClickFun2 = () => {
-        //     console.log("引用2点击")
-        // }
-        // const linkArr = [
-        //     {name:'引用1',color:'red',clickFun:()=>{linkClickFun1()}},
-        //     {name:'引用2',color:'blue',clickFun:linkClickFun2}
-        // ]
-        // const columns = [
-        //     // { visible: true, name: "xuhao", displayName: '序号',width:200},
-        //     { visible: true, name: "nodeType", displayName: '工程划分',width:500, cellType: new customCellType(this.state.data,'department',colorRange,nodeTypeNameEmun,true)},
-        //     { visible: true, name: "HyperLink", displayName: '超链接测试',width:400,},
-        //     { visible: true, name: "name", displayName: '姓名' ,cellType: new HyperLinkTextCell(linkArr,50,21,21),width:300},
-        //     { visible: true, name: "age", displayName: '年龄', width: 400 },
-        //     { visible: true, name: "gender", displayName: '性别', width: 100 },
-        //     { visible: true, name: "remark", displayName: '备注',width:200,cellType: new EllipsisAndToolTip("__spread_js_box__")},
-        // ]
-        // const columnsTest = [
-        //     // { visible: true, name: "xuhao", displayName: '序号',width:200},
-        //     { visible: true, name: "type", displayName: '工程划分', cellType: new customCellType(this.state.data,'name',colorRange,nodeTypeNameEmun,true)},
-        //     { visible: true, name: "longCode", displayName: '超链接测试',width:400,},
-        //     { visible: true, name: "gmtCreate", displayName: '姓名' ,cellType: new HyperLinkTextCell(["引用","引用2"]),width:200},
-        //     { visible: true, name: "id", displayName: '年龄', width: 400 },
-        //     { visible: true, name: "comment", displayName: '性别', width: 100 },
-        //     { visible: true, name: "remark", displayName: '备注',width:200,cellType: new EllipsisAndToolTip("__spread_js_box__")},
-        // ]
-        
+        const openLevel = () => {
+            let sheet = this.spread.getActiveSheet();
+            sheet.rowOutlines.setCollapsed(10, false);
+            sheet.invalidateLayout();
+            sheet.repaint()
+        }
         const clickCellHandler = (sheet,sheetName,row,col,cancel) =>{
             // console.log("sheet======",sheet)
             // console.log("sheetName======",sheetName)
@@ -251,10 +189,20 @@ class SpreadHome extends Component {
         }
         return (
             <div>
-
+                <Modal
+                    title="Basic Modal"
+                    visible={this.state.visible}
+                    onOk={this.handleCancel}
+                    onCancel={this.handleCancel}
+                >
+                    <p>Some contents...</p>
+                    <p>Some contents...</p>
+                    <p>Some contents...</p>
+                </Modal>
                 <div>
                     {/* <Button onClick = {changeCloumns} disabled = {this.state.showCloumn1}>点击切换列1</Button>
                     <Button onClick = {changeCloumns} disabled = {!this.state.showCloumn1}>点击切换列2</Button> */}
+                    <Button onClick = {openLevel} >展开</Button>
                 </div>
                 <div style={{width:'100%',height:'100%',background:'#C1F5E8',position:'relative'}} id="__spread_js_box__">
                     <SpreadSheets hostStyle={{width: '100%', height: '550px'}}
@@ -265,7 +213,7 @@ class SpreadHome extends Component {
                             allowUserDragDrop={false}
                             allowContextMenu={false}
                             scrollbarMaxAlign={false}
-                            allowUserResize = {false}
+                            allowUserResize = {true}
                             //   valueChanged={onCellrefresh}
                             cellClick={clickCellHandler} //单元格点击
                     >

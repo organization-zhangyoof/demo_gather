@@ -34,19 +34,22 @@ let findFromArr =  (value,arr,isReturnIndex = false) => {
  * @param {*} maxWidth 最大宽度
  */
 let fittingString = (c, str, maxWidth) => {
+    let obj = {newStr:'',isEllipsis:false}
     var width = c.measureText(str).width;
     var ellipsis = '…';
     var ellipsisWidth = c.measureText(ellipsis).width;
     // console.log("ellipsisWidth===",ellipsisWidth)
     if (width <= maxWidth || width <= ellipsisWidth) {
-        return str;
+        obj = {newStr:str,isEllipsis:false}
+        return obj;
     } else {
         var len = str.length;
         while (width >= maxWidth - ellipsisWidth && len-- > 0) {
             str = str.substring(0, len);
             width = c.measureText(str).width;
         }
-        return str + ellipsis;
+        obj = {newStr:str + ellipsis,isEllipsis:true}
+        return obj;
     }
 }
 
@@ -64,21 +67,29 @@ let fittingString = (c, str, maxWidth) => {
  * @param {Number} nameSize 工程划分后的文字大小
  */
 export function customCellType(data,nameKey,colorRange,nodeTypeNameEmun,isAutoFitColumn,partTextY,nameTextY,partSize,nameSize,){
-    let typeEmun = [
+    const typeEmun = [
         { nodeType: 1, name: "单位工程" },
         { nodeType: 2, name: "子单位工程"},
         { nodeType: 3, name: "分部工程"},
         { nodeType: 4, name: "子分部工程"},
         { nodeType: 5, name: "实体单元"},
         { nodeType: 6, name: "分项工程"},
-        { nodeType: 7, name: "清单"}
+        // { nodeType: 7, name: "清单"}
+    ]
+    const colorRangeEnum = [
+        { nodeType: 2, partBg: '#E8F4FF', partTextClolr: '#1890FF' },
+        { nodeType: 3, partBg: '#E7F9F9', partTextClolr: '#13C2CD' },
+        { nodeType: 4, partBg: '#E7F9F9', partTextClolr: '#13C2CD' },
+        { nodeType: 5, partBg: '#FFEEE5', partTextClolr: '#FE9400' },
+        { nodeType: 6, partBg: '#FFEEE5', partTextClolr: '#FE9400' },
+        // {nodeType:7,partBg:'#F5DBD8',partTextClolr:'#EA2E17'},
     ]
     this.partSize = partSize;
     this.nameSize = nameSize;
     this.data = data;
     this.partTextY = partTextY || 21
     this.nameTextY = nameTextY || 20
-    this.colorRange = colorRange
+    this.colorRange = colorRange || colorRangeEnum
     this.nameKey = nameKey
     this.nodeTypeNameEmun = nodeTypeNameEmun || typeEmun
     this.isAutoFitColumn = isAutoFitColumn || false
@@ -104,16 +115,17 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
     var textInfo = ctx.measureText(nodeTypeName)
     //计算矩形宽度并暂时赋值给单元格总宽度
     textTotalWidth += Math.ceil(textInfo.width)
+    let index = findFromArr(value,this.colorRange,true)
     //绘制矩形
     if(this.colorRange && this.colorRange.length){
-        let index = findFromArr(value,this.colorRange,true)
+        // let index = findFromArr(value,this.colorRange,true)
         if(index>-1 && (this.data[row])[this.nameKey]){
             ctx.fillStyle = this.colorRange[index].partBg;
         }
     }else{
         ctx.fillStyle = "#ccc"
     }
-    if((this.data[row])[this.nameKey]){
+    if((this.data[row])[this.nameKey] && index > -1){
         ctx.fillRect(x+5, y+5, Math.ceil(textInfo.width)+10, h-10);
     }
 
@@ -121,7 +133,7 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
     ctx.beginPath();
     ctx.textAlign="start";
     if(this.colorRange && this.colorRange.length){
-        let index = findFromArr(value,this.colorRange,true)
+        // let index = findFromArr(value,this.colorRange,true)
         if(index>-1 && (this.data[row])[this.nameKey]){
             ctx.fillStyle = this.colorRange[index].partTextClolr;
         }
@@ -160,7 +172,7 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
 };
 customCellType.prototype.getAutoFitWidth = function (value, text, cellStyle, zoomFactor, context) {
     if(this.isAutoFitColumn){
-        var orginWidth = GC.Spread.Sheets.CellTypes.Text.prototype.getAutoFitWidth.call(this, value, text, cellStyle, zoomFactor, context);
+        var orginWidth = GC.Spread.Sheets.CellTypes.Text.prototype.getAutoFitWidth.call(this, value, text, cellStyle, zoomFactor, context) || 10;
         return orginWidth + this.textWidth;
     }
 }
@@ -270,7 +282,8 @@ export function EllipsisTextCellType() {
 EllipsisTextCellType.prototype = new spreadNS.CellTypes.Text();
 EllipsisTextCellType.prototype.paint = function (ctx, value, x, y, w, h, style, context) {
     ctx.font = style.font;
-    value = fittingString(ctx, value, w - 2);
+    let res = fittingString(ctx, value, w - 2);
+    value = res.newStr
     spreadNS.CellTypes.Text.prototype.paint(ctx, value, x, y, w, h, style, context);
 };
 
@@ -282,16 +295,41 @@ EllipsisTextCellType.prototype.paint = function (ctx, value, x, y, w, h, style, 
  *
  * @param {*} parentId 表格最外层容器Id position属性应为relative
  * @param {string} arrowPosition 指示箭头位置取值范围["left","center","right"],默认值为center
+ * @param {string} textAlign 文字位置["left","center","right"],默认值为left，居左
+ * @param {number} textY 文字竖方向的偏移量
  */
-export function EllipsisAndToolTip(parentId,arrowPosition){
+export function EllipsisAndToolTip(parentId, textAlign ,textY , arrowPosition, ){
     this.parentId = parentId
-    this.arrowPosition = arrowPosition || 'center'
+    this.arrowPosition = arrowPosition || "center"
+    this.textAlign = textAlign || "left"
+    this.textY = textY || 21
 }
 EllipsisAndToolTip.prototype = new spreadNS.CellTypes.Text();
 EllipsisAndToolTip.prototype.paint = function (ctx, value, x, y, w, h, style, context) {
+    if(!ctx){
+        return
+    }
     ctx.font = style.font;
-    value = fittingString(ctx, value, w - 2);
-    spreadNS.CellTypes.Text.prototype.paint(ctx, value, x, y, w, h, style, context);
+    
+    let res = fittingString(ctx, value, w - 5);
+    value = res.newStr
+    let isEllipsis = res.isEllipsis
+    ctx.beginPath();
+    ctx.textAlign="start";
+    ctx.fillStyle = '#000';
+    let textWidth = Math.ceil(ctx.measureText(value).width)
+    if(isEllipsis){
+        ctx.fillText(value,x+2,y+this.textY);
+    }else{
+        // ctx.fillText(value,x+2,y+this.textY);
+        if(this.textAlign == 'left'){
+            ctx.fillText(value,x+5,y+this.textY);
+        }else if(this.textAlign == 'center'){
+            ctx.fillText(value,x+(w/2-textWidth/2),y+this.textY);
+        }else if(this.textAlign == 'right'){
+            ctx.fillText(value,x+(w-textWidth-5),y+this.textY);
+        }
+    }
 };
 
 EllipsisAndToolTip.prototype.getHitInfo = function (x, y, cellStyle, cellRect, context,value) {
@@ -383,11 +421,11 @@ EllipsisAndToolTip.prototype.processMouseLeave = function (hitinfo) {
  * @param {number} textY 普通文本竖向偏移量 默认值21
  * @param {number} linkY 超链接文本竖向偏移量 默认值21
  */
-export function HyperLinkTextCell(linkArr,parentId,textY = 21,linkY = 21,textMaxWidth,needTip = true,){
+export function HyperLinkTextCell(linkArr, parentId, textY, linkY, textMaxWidth, needTip = true, ) {
     this.linkArr = linkArr || []
     this.linkTextStr = ""
-    this.textY = textY
-    this.linkY = linkY
+    this.textY = textY || 21
+    this.linkY = linkY || 21
     this.linArea = []
     this.linkNum = linkArr.length
     this.textWidth = 0
@@ -439,13 +477,16 @@ HyperLinkTextCell.prototype = new spreadNS.CellTypes.Base();
 
 HyperLinkTextCell.prototype.paintContent = function (ctx, value, x, y, w, h, style, context) {
     ctx.font = style.font;
-    let fittingres = fittingStringForHyperLink(ctx, value,  w - 2, this.linkTextStr,this.linkNum ,this.textMaxWidth);
-    let newValue = fittingres.newStr
-    this.textWidth = fittingres.textWidth == this.textMaxWidth?this.textMaxWidth:fittingres.textWidth
-    this.textMaxWidth = this.textMaxWidth || fittingres.textMaxWidth
-    let row = context.row
-    if(!this.textWidthArr[row]){
-        this.textWidthArr.push({textWidth:Math.ceil(this.textWidth),text:value})
+    let newValue = ''
+    if(value){
+        let fittingres = fittingStringForHyperLink(ctx, value,  w - 2, this.linkTextStr,this.linkNum ,this.textMaxWidth);
+        newValue = fittingres.newStr
+        this.textWidth = fittingres.textWidth == this.textMaxWidth?this.textMaxWidth:fittingres.textWidth
+        this.textMaxWidth = this.textMaxWidth || fittingres.textMaxWidth
+        let row = context.row
+        if(!this.textWidthArr[row]){
+            this.textWidthArr.push({textWidth:Math.ceil(this.textWidth),text:value})
+        }
     }
     ctx.beginPath();
 
@@ -479,6 +520,9 @@ HyperLinkTextCell.prototype.paintContent = function (ctx, value, x, y, w, h, sty
         }
 };
 HyperLinkTextCell.prototype.getHitInfo = function (x, y, cellStyle, cellRect, context) {
+    
+	let res = ismouseInArea(x, "", context.row, this.linArea,0,this.textWidthArr)
+    this.ismouseInArea = res.ismouseInArea;
 	return {
 		x: x,
 		y: y,
@@ -487,7 +531,9 @@ HyperLinkTextCell.prototype.getHitInfo = function (x, y, cellStyle, cellRect, co
 		cellStyle: cellStyle,
 		cellRect: cellRect,
         sheetArea: context.sheetArea,
-        context:context
+        context:context,
+        isReservedLocation: res.ismouseInArea,
+        index:res.index
 	};
 }
 HyperLinkTextCell.prototype.processMouseDown = function (hitinfo) {
@@ -498,6 +544,12 @@ HyperLinkTextCell.prototype.processMouseDown = function (hitinfo) {
     let res = ismouseInArea(mouseX,"",cellRow,this.linArea,cellX,this.textWidthArr)
     if(res.index>-1){
         let clickFun = this.linkArr[res.index].clickFun
+        if (this._toolTipElement && this._toolTipArrow) {
+            document.getElementById(this.parentId).removeChild(this._toolTipElement);
+            document.getElementById(this.parentId).removeChild(this._toolTipArrow);
+            this._toolTipElement = null;
+            this._toolTipArrow = null
+        }
         clickFun(hitinfo)
     }
 };
@@ -641,6 +693,9 @@ HyperLinkTextCell.prototype.processMouseLeave = function (hitinfo) {
         this._toolTipArrow = null
 	}
 };
+HyperLinkTextCell.prototype.activeOnClick = function(){
+    return !this.ismouseInArea;
+}
 
 /**
  * ismouseInArea 判断鼠标是否在特定范围内 返回{ismouseInArea：true|false， index：number，isInTextArea: true|false} ismouseInArea为是否在区域内，index为在区域数组中的下标,isInTextArea：是否悬浮在普通文本区域
@@ -655,7 +710,7 @@ HyperLinkTextCell.prototype.processMouseLeave = function (hitinfo) {
 let ismouseInArea = (mouseX,mouseY,row,areaArr,cellX,textWidthArr) => {
     let res = {index:-1,ismouseInArea:false,isInTextArea:false}
     // console.log(textWidthArr)
-    if(mouseX < cellX+5+textWidthArr[row].textWidth){
+    if(textWidthArr.length && mouseX < cellX+5+textWidthArr[row].textWidth){
         res = {index:-1,ismouseInArea:false,isInTextArea:true}
         return res
     }
