@@ -207,7 +207,9 @@ TipCellType.prototype.processMouseEnter = function (hitinfo) {
     let { sheet, cellRect, row:cellRow, col:cellCol } = hitinfo
     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
     let cellVAlue = sheet.getValue(cellRow,cellCol)
-
+    if(!cellVAlue){
+        return
+    }
 	if (!document.getElementById("__spread_customTipCellType__")) {
         let div = document.createElement("div");
             div.setAttribute("id",'__spread_customTipCellType__')
@@ -217,6 +219,7 @@ TipCellType.prototype.processMouseEnter = function (hitinfo) {
             div.style.borderRadius = "5px"
             div.style.font = "Arial"
             div.style.background = "#404040"
+            div.style.wordBreak = "break-all"
             div.style.color = "#fff"
             div.style.padding = "6px 8px"
             div.style.zIndex = 1000
@@ -325,7 +328,7 @@ export function EllipsisAndToolTip(parentId, textAlign ,textY , arrowPosition, )
 }
 EllipsisAndToolTip.prototype = new spreadNS.CellTypes.Text();
 EllipsisAndToolTip.prototype.paint = function (ctx, value, x, y, w, h, style, context) {
-    if(!ctx){
+    if(!ctx ||!value){
         return
     }
     ctx.font = style.font;
@@ -368,7 +371,14 @@ EllipsisAndToolTip.prototype.processMouseEnter = function (hitinfo) {
     let { sheet, cellRect, row:cellRow, col:cellCol } = hitinfo
     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
     let cellVAlue = sheet.getValue(cellRow,cellCol)
-
+    if(!cellVAlue){
+        return
+    }
+    if (this._toolTipElement) {
+		document.getElementById(this.parentId).removeChild(this._toolTipElement);
+		document.getElementById(this.parentId).removeChild(this._toolTipArrow);
+		this._toolTipElement = null;
+	}
 	if (!document.getElementById("__spread_customTipCellType__")) {
         let div = document.createElement("div");
             div.setAttribute("id",'__spread_customTipCellType__')
@@ -378,6 +388,7 @@ EllipsisAndToolTip.prototype.processMouseEnter = function (hitinfo) {
             div.style.borderRadius = "5px"
             div.style.font = "Arial"
             div.style.background = "#404040"
+            div.style.wordBreak = "break-all"
             div.style.color = "#fff"
             div.style.padding = "6px 8px"
             div.style.zIndex = 1000
@@ -603,6 +614,7 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
                 div.style.borderRadius = "5px"
                 div.style.font = "Arial"
                 div.style.background = "#404040"
+                div.style.wordBreak = "break-all"
                 div.style.color = "#fff"
                 div.style.padding = "6px 8px"
                 div.style.zIndex = 1000
@@ -657,6 +669,7 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
                 div.style.borderRadius = "5px"
                 div.style.font = "Arial"
                 div.style.background = "#404040"
+                div.style.wordBreak = "break-all"
                 div.style.color = "#fff"
                 div.style.padding = "6px 8px"
                 div.style.zIndex = 1000
@@ -866,6 +879,7 @@ SingleHyperLinkCell.prototype.processMouseMove = function (hitinfo) {
                 div.style.borderRadius = "5px"
                 div.style.font = "Arial"
                 div.style.background = "#404040"
+                div.style.wordBreak = "break-all"
                 div.style.color = "#fff"
                 div.style.padding = "6px 8px"
                 div.style.zIndex = 1000
