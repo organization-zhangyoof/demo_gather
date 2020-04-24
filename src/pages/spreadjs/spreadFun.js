@@ -786,6 +786,7 @@ SingleHyperLinkCell.prototype.paintContent = function (ctx, value, x, y, w, h, s
     let row = context.row
     if(!value){
         this.linkAreaArr[row] = []
+        return
     }
     ctx.font = style.font;
     let res = fittingString(ctx, value, w - 5);
