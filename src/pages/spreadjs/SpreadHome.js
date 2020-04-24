@@ -5,7 +5,7 @@ import {SpreadSheets, Worksheet, Column} from '@grapecity/spread-sheets-react';
 import openImg from '../../assets/square-open.png'
 import closeImg from '../../assets/square-close.png'
 import { Button, Modal } from "antd"
-import {customCellType, TipCellType, EllipsisTextCellType, EllipsisAndToolTip, HyperLinkTextCell,} from './spreadFun'
+import {customCellType, TipCellType, EllipsisTextCellType, EllipsisAndToolTip, HyperLinkTextCell,SingleHyperLinkCell} from './spreadFun'
 
 GC.Spread.Common.CultureManager.culture("zh-cn");
 class SpreadHome extends Component {
@@ -70,6 +70,9 @@ class SpreadHome extends Component {
     initSpreadSheets = (spread) => {
         this.spread = spread;
         this.initSheetOutline(true)
+
+        spread.options.showVerticalScrollbar = true;
+        spread.options.showHorizontalScrollbar = true;
     }
 
     linkClickFun1 = (res) => {
@@ -112,15 +115,24 @@ class SpreadHome extends Component {
         ]
         let columns = [
             // { visible: true, name: "xuhao", displayName: '序号',width:200},
-            { visible: true, name: "nodeType", displayName: '工程划分',width:500, cellType: new customCellType(this.state.data,'partName','','',true)},
+            { visible: true, name: "nodeType", displayName: '工程划分',width:300, cellType: new customCellType(this.state.data,'partName','','',true)},
             { visible: false, name: "HyperLink", displayName: '超链接测试',width:400,},
             { visible: true, name: "name2", displayName: '姓名' ,cellType: new HyperLinkTextCell(linkArr,"__spread_js_box__"),width:300},
             { visible: true, name: "age", displayName: '年龄', width: 400 },
             { visible: true, name: "gender", displayName: '性别', width: 100 },
             { visible: true, name: "remark", displayName: '备注',width:200,cellType: new EllipsisAndToolTip("__spread_js_box__",)},
             { visible: true, name: "department", displayName: '部门',width:200,cellType: new EllipsisTextCellType('right')},
+            // { visible: true, name: "remark", displayName: 'partName',width:200,cellType: new SingleHyperLinkCell("__spread_js_box__",'center','red')},
+            { visible: true, name: "remark", displayName: 'partName',width:200,},
         ]
-        
+        // var h = new SingleHyperLinkCell();
+        // h.parentId = '__spread_js_box__'
+        // h.textAlign = 'center'
+        // h.color = 'green'
+        // h.clickFun = ()=>{
+        //     console.log("132")
+        // }
+        // sheet.setCellType(3, 2, h, GC.Spread.Sheets.SheetArea.viewport);
         sheet.setDataSource(this.state.data);
         sheet.bindColumns(columns)
         // sheet.autoFitColumn(0)
@@ -135,6 +147,14 @@ class SpreadHome extends Component {
             //设置缩进
             sheet.getCell(r,0).textIndent(num)
             sheet.getCell(r,0).locked(false)
+            var h = new SingleHyperLinkCell();
+                h.parentId = '__spread_js_box__'
+                h.textAlign = 'center'
+                h.color = 'green'
+                h.clickFun = ()=>{
+                    this.setState({visible:true})
+                }
+                sheet.setCellType(r, 7, h, GC.Spread.Sheets.SheetArea.viewport);
         }
         //设置标题行及数据行高
         sheet.defaults.colHeaderRowHeight = 48
@@ -142,8 +162,10 @@ class SpreadHome extends Component {
         spreadNs.AutoFitType.cellWithHeader = true
 
         //隐藏行号
-        // sheet.setColumnVisible(0,false,GC.Spread.Sheets.SheetArea.rowHeader)
+        sheet.setColumnVisible(0,false,GC.Spread.Sheets.SheetArea.rowHeader)
         //分组设置
+
+        
 
         sheet.showRowOutline(false)
         sheet.outlineColumn.options({
@@ -154,18 +176,18 @@ class SpreadHome extends Component {
         })
         //控制树的展开收缩需要放在设置outlineColumn.options之后，否则不生效，参数有两个，第一个参数为层级，第二个为是否展开
         // if(isInit){
-            sheet.rowOutlines.expand(0, false);
-            sheet.rowOutlines.expand(1, false);
-            sheet.rowOutlines.expand(2, false);
-            sheet.rowOutlines.expand(3, false);
-            sheet.rowOutlines.expand(4, false);
-            sheet.rowOutlines.expand(5, false);
-            sheet.rowOutlines.expand(6, false);
-            sheet.rowOutlines.expand(7, false);
+            // sheet.rowOutlines.expand(0, false);
+            // sheet.rowOutlines.expand(1, false);
+            // sheet.rowOutlines.expand(2, false);
+            // sheet.rowOutlines.expand(3, false);
+            // sheet.rowOutlines.expand(4, false);
+            // sheet.rowOutlines.expand(5, false);
+            // sheet.rowOutlines.expand(6, false);
+            // sheet.rowOutlines.expand(7, false);
         // }
-        sheet.rowOutlines.setCollapsed(0, true);
+        // sheet.rowOutlines.setCollapsed(0, true);
 
-        sheet.rowOutlines.setCollapsed(1,true);
+        // sheet.rowOutlines.setCollapsed(1,true);
         sheet.outlineColumn.refresh();
     }
 

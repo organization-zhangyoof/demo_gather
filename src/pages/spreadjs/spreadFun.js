@@ -172,7 +172,7 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
 };
 customCellType.prototype.getAutoFitWidth = function (value, text, cellStyle, zoomFactor, context) {
     if(this.isAutoFitColumn){
-        var orginWidth = GC.Spread.Sheets.CellTypes.Text.prototype.getAutoFitWidth.call(this, value, text, cellStyle, zoomFactor, context) || 10;
+        var orginWidth = GC.Spread.Sheets.CellTypes.Text.prototype.getAutoFitWidth.call(this, value, text, cellStyle, zoomFactor, context);
         return orginWidth + this.textWidth;
     }
 }
@@ -275,6 +275,8 @@ TipCellType.prototype.processMouseLeave = function (hitinfo) {
 /**
  * EllipsisTextCellType 超出省略显示...
  *
+ * @param {string} textAlign 文字位置["left","center","right"],默认值为left，居左
+ * @param {number} textY 文字竖方向的偏移量
  */
 export function EllipsisTextCellType(textAlign,textY) {
     this.textAlign = textAlign || 'left'
@@ -740,4 +742,187 @@ let ismouseInArea = (mouseX,mouseY,row,areaArr,cellX,textWidthArr) => {
         }
     }
     return res
+}
+
+
+/**
+ * 使用数据显示内容作为超链接
+ *
+ * @param {string} parentId 表格最外层容器Id position属性应为relative
+ * @param {string} textAlign 文字位置["left","center","right"],默认值为left，居左
+ * @param {string} color 文字颜色 默认值 '#000'
+ * @param {number} textY 文字竖向偏移量 默认值21
+ * @param {boolean} needTip 是否需要toolTip  默认值为true
+ * @param {function} clickFun 点击方法
+ */
+export function SingleHyperLinkCell(parentId, textAlign, color = '#000', textY, needTip = true, clickFun ) {
+    this.parentId = parentId
+    this.textY = textY || 21
+    this.needTip = needTip
+    this.color = color
+    this.textAlign = textAlign || 'center'
+    this.linkAreaArr = []
+    this.clickFun = clickFun
+}
+SingleHyperLinkCell.prototype = new spreadNS.CellTypes.Base();
+
+SingleHyperLinkCell.prototype.paintContent = function (ctx, value, x, y, w, h, style, context) {
+    if(!ctx){
+        return
+    }
+    let row = context.row
+    if(!value){
+        this.linkAreaArr[row] = []
+    }
+    ctx.font = style.font;
+    let res = fittingString(ctx, value, w - 5);
+    value = res.newStr
+    let isEllipsis = res.isEllipsis
+    ctx.beginPath();
+    ctx.textAlign="start";
+    ctx.fillStyle = this.color;
+    let textWidth = Math.ceil(ctx.measureText(value).width)
+    if(isEllipsis){
+        ctx.fillText(value,x+5,y+this.textY);
+        this.linkAreaArr[row] = [{startX:x+5,endX:x+5+textWidth}]
+    }else{
+        if(this.textAlign == 'left'){
+            ctx.fillText(value,x+5,y+this.textY);
+            this.linkAreaArr[row] = [{startX:x+5,endX:x+5+textWidth}]
+        }else if(this.textAlign == 'center'){
+            ctx.fillText(value,x+(w/2-textWidth/2),y+this.textY);
+            this.linkAreaArr[row] = [{startX:x+(w/2-textWidth/2),endX:x+(w/2-textWidth/2)+textWidth}]
+        }else if(this.textAlign == 'right'){
+            ctx.fillText(value,x+(w-textWidth-5),y+this.textY);
+            this.linkAreaArr[row] = [{startX:x+(w-textWidth-5),endX:x+(w-textWidth-5)+textWidth}]
+        }
+    }
+};
+SingleHyperLinkCell.prototype.getHitInfo = function (x, y, cellStyle, cellRect, context) {
+    let res = ismouseInArea(x, "", context.row, this.linkAreaArr,0,[])
+    this.ismouseInArea = res.ismouseInArea;
+	return {
+		x: x,
+		y: y,
+		row: context.row,
+		col: context.col,
+		cellStyle: cellStyle,
+		cellRect: cellRect,
+        sheetArea: context.sheetArea,
+        context:context,
+        isReservedLocation: res.ismouseInArea,
+        index:res.index
+	};
+}
+SingleHyperLinkCell.prototype.processMouseDown = function (hitinfo) {
+
+    let { sheet, cellRect, row:cellRow, col:cellCol,x:mouseX,y:mouseY } = hitinfo
+    let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
+    let cellVAlue = sheet.getValue(cellRow,cellCol)
+    let res = ismouseInArea(mouseX,"",cellRow,this.linkAreaArr,cellX,[])
+    if(res.index>-1){
+        let clickFun = this.clickFun
+        if (this._toolTipElement && this._toolTipArrow) {
+            document.getElementById(this.parentId).removeChild(this._toolTipElement);
+            document.getElementById(this.parentId).removeChild(this._toolTipArrow);
+            this._toolTipElement = null;
+            this._toolTipArrow = null
+        }
+        if(clickFun){
+            clickFun(hitinfo,cellVAlue)
+        }else{
+            return
+        }
+    }
+};
+SingleHyperLinkCell.prototype.processMouseMove = function (hitinfo) {
+    //清除提示
+    let clearTip = () => {
+        if (this._toolTipElement && this._toolTipArrow) {
+            document.getElementById(this.parentId).removeChild(this._toolTipElement);
+            document.getElementById(this.parentId).removeChild(this._toolTipArrow);
+            this._toolTipElement = null;
+            this._toolTipArrow = null
+        }
+    }
+    clearTip()
+    let { sheet, cellRect, row:cellRow, col:cellCol,x:mouseX,y:mouseY } = hitinfo
+    let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
+    let cellVAlue = sheet.getValue(cellRow,cellCol)
+    if(!cellVAlue){
+        return
+    }
+    let res = ismouseInArea(mouseX,"",cellRow,this.linkAreaArr,cellX,[])
+    if(res.ismouseInArea){//鼠标悬浮至超链接文字上
+        setTimeout(function(){
+            document.getElementById("vp_vp").style.cursor  = 'pointer';
+        },0)
+        if (!document.getElementById("__spread_customTipCellType__")) {
+            let div = document.createElement("div");
+                div.setAttribute("id",'__spread_customTipCellType__')
+                div.style.position = "absolute"
+                // div.style.border = "1px #C0C0C0 solid"
+                div.style.boxShadow = "1px 2px 5px rgba(0,0,0,0.4)"
+                div.style.borderRadius = "5px"
+                div.style.font = "Arial"
+                div.style.background = "#404040"
+                div.style.color = "#fff"
+                div.style.padding = "6px 8px"
+                div.style.zIndex = 1000
+                div.style.width = cellWidth + "px"
+    
+            this._toolTipElement = div;
+    
+            //绘制指示箭头
+            let arrow = document.createElement("div");
+                arrow.setAttribute("id",'__spread_customTip_arrow__')
+                arrow.style.position = "absolute"
+                arrow.style.font = "Arial"
+                arrow.style.background = "#404040"
+                arrow.style.width = "10px"
+                arrow.style.height = "10px"
+                arrow.style.color = "#fff"
+                arrow.style.transform= "rotate(45deg) "
+                div.style.zIndex = 999
+    
+            this._toolTipArrow = arrow
+        }
+        this._toolTipElement.innerHTML = cellVAlue
+        this._toolTipElement.style.top = cellY + "px"
+        this._toolTipElement.style.left = cellX + "px"
+        this._toolTipArrow.style.top = cellY - 5 +  "px"
+        this._toolTipArrow.style.left = cellX + "px"
+        document.getElementById(this.parentId).append(this._toolTipElement)
+        document.getElementById(this.parentId).append(this._toolTipArrow)
+    
+        let h = document.getElementById("__spread_customTipCellType__").offsetHeight
+        let w = document.getElementById("__spread_customTipCellType__").offsetWidth
+        this._toolTipElement.style.top = cellY - h -5 + "px"
+        this._toolTipElement.style.left = cellX + "px"
+        // if(this.arrowPosition == "center"){
+            this._toolTipArrow.style.top = cellY - 10 +  "px"
+            this._toolTipArrow.style.left = cellX + w/2 - 7 + "px"
+        // }else if(this.arrowPosition == "left"){
+        //     this._toolTipArrow.style.top = cellY - 10 +  "px"
+        //     let tmpW = w*0.25>15?15:w*0.25
+        //     this._toolTipArrow.style.left = cellX + tmpW + "px"
+        // }else if(this.arrowPosition == "right"){
+        //     this._toolTipArrow.style.top = cellY - 11 +  "px"
+        //     this._toolTipArrow.style.left = cellX + w - w*0.25 - 7 + "px"
+        // }
+    }else{
+        clearTip()
+    }
+    
+};
+SingleHyperLinkCell.prototype.processMouseLeave = function (hitinfo) {
+	if (this._toolTipElement && this._toolTipArrow) {
+		document.getElementById(this.parentId).removeChild(this._toolTipElement);
+		document.getElementById(this.parentId).removeChild(this._toolTipArrow);
+        this._toolTipElement = null;
+        this._toolTipArrow = null
+	}
+};
+SingleHyperLinkCell.prototype.activeOnClick = function(){
+    return !this.ismouseInArea;
 }

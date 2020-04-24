@@ -1,0 +1,106 @@
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+
+*{-webkit-tap-highlight-color: #fff;}
+body{
+    background:'red'
+}
+.sample-tutorial {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+}
+.gc-columnHeader-normal
+{
+    color: #000;
+    background-image: none;
+    background-color: blue;
+    border-style: solid;
+}
+.gc-columnHeader-hover
+{
+    color: #000;
+    background-image: none;
+    background-color: #f68e8e;
+    border-style: solid;
+}
+.gc-columnHeader-selected
+{
+    color: #ee1313;
+    background-image: none;
+    background-color: #fbb4b4;
+    border-style: solid;
+}
+.gc-columnHeader-highlight
+{
+    color: #ee1313;
+    background-image: none;
+    background-color: #fbb4b4;
+    border-style: solid;
+}
+
+.gc-selection
+{
+    background-color: rgba(20,20,20,.2);
+    border-color: #ee1313;
+    color: rgba(240,240,240,.7)
+}
+.gc-drag-indicator
+{
+    border-color: #ee1313
+}
+/* 竖向滚动条 */
+/* .gc-scroll-container, .gc-scroll-corner-all, .ui-widget{
+    width:5px !important;
+    background:red
+} */
+/* .gc-scrollbar-wrapper{
+    height:100% !important;
+    top:0 !important;
+    background: red;
+    width:10px;
+} */
+/* .gc-scroll-bar, .gc-no-user-select, .gc-scroll-handle, .ui-button, .ui-state-default,  .ui-draggable{
+    width:5px !important;
+    background:yellow;
+} */
+/* .gc-scroll-arrow,  .ui-corner-br{
+    display:none !important
+} */
+
+//竖向滚动条
+.gc-no-user-select>table>tr:nth-child(1){
+    td:nth-child(2)>div{
+        background:red !important;
+        width:10px !important;
+        padding:0 1px;
+        .gc-scroll-container{
+            width:10px !important
+        }
+        .gc-scroll-arrow{
+            width:8px !important
+        }
+        .gc-scrollbar-wrapper{
+            width:10px !important
+        }
+    }
+}
+
+//横向滚动条
+.gc-no-user-select>table>tr:nth-child(2){
+    td:first-child{
+        table{
+            tr{
+                td:nth-child(2)>div{
+                        background:yellow !important
+                }
+            }
+        }
+    }
+}
