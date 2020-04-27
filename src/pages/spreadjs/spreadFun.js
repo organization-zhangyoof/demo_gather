@@ -61,12 +61,10 @@ let fittingString = (c, str, maxWidth) => {
  * @param {Array} colorRange 个层架显示颜色集合
  * @param {Array} nodeTypeNameEmun 工程划分枚举值
  * @param {bool} isAutoFitColumn 是否自适应撑开列宽
- * @param {Number} partTextY 工程划分文字竖向偏移量
- * @param {Number} nameTextY 工程划分后文字竖向偏移量
- * @param {Number} partSize 工程划分文字大小
- * @param {Number} nameSize 工程划分后的文字大小
+ * @param {Number} partSize 工程划分文字大小 默认14
+ * @param {Number} nameSize 工程划分后的文字大小 默认14
  */
-export function customCellType(data,nameKey,colorRange,nodeTypeNameEmun,isAutoFitColumn,partTextY,nameTextY,partSize,nameSize,){
+export function customCellType(data,nameKey,colorRange,nodeTypeNameEmun,isAutoFitColumn,partSize,nameSize,){
     const typeEmun = [
         { nodeType: 1, name: "单位工程" },
         { nodeType: 2, name: "子单位工程"},
@@ -84,11 +82,13 @@ export function customCellType(data,nameKey,colorRange,nodeTypeNameEmun,isAutoFi
         { nodeType: 6, partBg: '#FFEEE5', partTextClolr: '#FE9400' },
         // {nodeType:7,partBg:'#F5DBD8',partTextClolr:'#EA2E17'},
     ]
-    this.partSize = partSize;
-    this.nameSize = nameSize;
+    this.partSize = partSize || 14;
+    this.nameSize = nameSize || 14;
+    this.partTextHeight = this.partSize
+    this.nameTextHeight = this.nameSize
     this.data = data;
-    this.partTextY = partTextY || 21
-    this.nameTextY = nameTextY || 20
+    // this.partTextY = partTextY || 30
+    // this.nameTextY = nameTextY || 30
     this.colorRange = colorRange || colorRangeEnum
     this.nameKey = nameKey
     this.nodeTypeNameEmun = nodeTypeNameEmun || typeEmun
@@ -126,12 +126,14 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
         ctx.fillStyle = "#ccc"
     }
     if((this.data[row])[this.nameKey] && index > -1){
-        ctx.fillRect(x+5, y+5, Math.ceil(textInfo.width)+10, h-10);
+        // ctx.fillRect(x+5, y+5, Math.ceil(textInfo.width)+10, h-10);
+        ctx.fillRect(x+5, y+5+this.partTextHeight/2, Math.ceil(textInfo.width)+10, this.partTextHeight+10);
     }
 
     //绘制矩形内文字
     ctx.beginPath();
     ctx.textAlign="start";
+    ctx.textBaseline = 'top';
     if(this.colorRange && this.colorRange.length){
         // let index = findFromArr(value,this.colorRange,true)
         if(index>-1 && (this.data[row])[this.nameKey]){
@@ -144,7 +146,8 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
         ctx.font = this.partSize + "px  Arial";
     }
     if((this.data[row])[this.nameKey]){
-        ctx.fillText(nodeTypeName,x+10,y+this.partTextY);
+        ctx.fillText(nodeTypeName,x+10,y+5+this.partTextHeight);
+        // ctx.fillText(nodeTypeName,x+10,y+5+this.partTextY);
     }
 
     //绘制矩形后面文字
@@ -152,7 +155,7 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
         ctx.beginPath();
         ctx.textAlign="start";
         ctx.fillStyle = '#000';
-
+        ctx.textBaseline = 'top';
         //计算后面跟随文字的宽度
         let afterText = (this.data[row])[this.nameKey];
         textTotalWidth += Math.ceil(ctx.measureText(afterText).width)
@@ -161,7 +164,8 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
             ctx.font = this.nameSize + "px  Arial";
         }
         if(afterText && afterText != "null"){
-            ctx.fillText(afterText,x+Math.ceil(textInfo.width)+20,y+this.nameTextY);
+            // ctx.fillText(afterText,x+Math.ceil(textInfo.width)+20,y+this.nameTextY);
+            ctx.fillText(afterText,x+Math.ceil(textInfo.width)+20,y+5+this.nameTextHeight);
         }
     }
 
@@ -279,11 +283,13 @@ TipCellType.prototype.processMouseLeave = function (hitinfo) {
  * EllipsisTextCellType 超出省略显示...
  *
  * @param {string} textAlign 文字位置["left","center","right"],默认值为left，居左
- * @param {number} textY 文字竖方向的偏移量
+ * @param {number} textSize 文字大小 默认14
  */
-export function EllipsisTextCellType(textAlign,textY) {
+export function EllipsisTextCellType(textAlign,textSize = 14) {
     this.textAlign = textAlign || 'left'
-    this.textY = textY || 21
+    this.textY = 21
+    this.textSize = textSize
+    this.textHeight = this.textSizes
 }
 
 EllipsisTextCellType.prototype = new spreadNS.CellTypes.Text();
@@ -295,16 +301,21 @@ EllipsisTextCellType.prototype.paint = function (ctx, value, x, y, w, h, style, 
     ctx.beginPath();
     ctx.textAlign="start";
     ctx.fillStyle = '#000';
+    ctx.textBaseline = 'top';
     let textWidth = Math.ceil(ctx.measureText(value).width)
     if(isEllipsis){
         ctx.fillText(value,x+2,y+this.textY);
+        ctx.fillText(value,x+2,y+5+this.textHeight);
     }else{
         if(this.textAlign == 'left'){
             ctx.fillText(value,x+5,y+this.textY);
+            ctx.fillText(value,x+5,y+5+this.textHeight);
         }else if(this.textAlign == 'center'){
             ctx.fillText(value,x+(w/2-textWidth/2),y+this.textY);
+            ctx.fillText(value,x+(w/2-textWidth/2),y+5+this.textHeight);
         }else if(this.textAlign == 'right'){
             ctx.fillText(value,x+(w-textWidth-5),y+this.textY);
+            ctx.fillText(value,x+(w-textWidth-5),y+5+this.textHeight);
         }
     }
 };
@@ -318,13 +329,17 @@ EllipsisTextCellType.prototype.paint = function (ctx, value, x, y, w, h, style, 
  * @param {*} parentId 表格最外层容器Id position属性应为relative
  * @param {string} arrowPosition 指示箭头位置取值范围["left","center","right"],默认值为center
  * @param {string} textAlign 文字位置["left","center","right"],默认值为left，居左
- * @param {number} textY 文字竖方向的偏移量
+ * 
+ * @param {number} textSize 文字大小  默认14
  */
-export function EllipsisAndToolTip(parentId, textAlign ,textY , arrowPosition, ){
+export function EllipsisAndToolTip(parentId, textAlign ,textSize = 14 , arrowPosition, ){
     this.parentId = parentId
     this.arrowPosition = arrowPosition || "center"
     this.textAlign = textAlign || "left"
-    this.textY = textY || 21
+    // this.textY = textY || 21
+    this.textY =  21
+    this.textSize = textSize
+    this.textHeight = this.textSize
 }
 EllipsisAndToolTip.prototype = new spreadNS.CellTypes.Text();
 EllipsisAndToolTip.prototype.paint = function (ctx, value, x, y, w, h, style, context) {
@@ -339,17 +354,22 @@ EllipsisAndToolTip.prototype.paint = function (ctx, value, x, y, w, h, style, co
     ctx.beginPath();
     ctx.textAlign="start";
     ctx.fillStyle = '#000';
+    ctx.textBaseline = 'top';
     let textWidth = Math.ceil(ctx.measureText(value).width)
     if(isEllipsis){
-        ctx.fillText(value,x+2,y+this.textY);
+        // ctx.fillText(value,x+2,y+this.textY);
+        ctx.fillText(value,x+5,y+5+this.textHeight);
     }else{
         // ctx.fillText(value,x+2,y+this.textY);
         if(this.textAlign == 'left'){
-            ctx.fillText(value,x+5,y+this.textY);
+            // ctx.fillText(value,x+5,y+this.textY);
+            ctx.fillText(value,x+5,y+5+this.textHeight);
         }else if(this.textAlign == 'center'){
-            ctx.fillText(value,x+(w/2-textWidth/2),y+this.textY);
+            // ctx.fillText(value,x+(w/2-textWidth/2),y+this.textY);
+            ctx.fillText(value,x+(w/2-textWidth/2),y+5+this.textHeight);
         }else if(this.textAlign == 'right'){
-            ctx.fillText(value,x+(w-textWidth-5),y+this.textY);
+            // ctx.fillText(value,x+(w-textWidth-5),y+this.textY);
+            ctx.fillText(value,x+(w-textWidth-5),y+5+this.textHeight);
         }
     }
 };
@@ -454,21 +474,29 @@ EllipsisAndToolTip.prototype.processMouseLeave = function (hitinfo) {
  * @param {array} linkArr 超链接属性 形如：[{name:'引用',color:'red',clickFun:function,tipText}]  name:超链接文本，color:超链接文本颜色，clickFun:超链接点击执行方法,tipText:超链接悬浮显示文字，若不传则显示name
  * @param {string} parentId 表格最外层容器Id position属性应为relative
  * @param {number} textMaxWidth 普通文本宽度 不传则自动计算除超链接的宽度赋予文本宽度，超出隐藏
- * @param {number} textY 普通文本竖向偏移量 默认值21
- * @param {number} linkY 超链接文本竖向偏移量 默认值21
+ * @param {number} textSize 普通文本大小 默认14
+ * @param {number} linkSize 超链接文本大小 默认14
+ * @param {boolean} needTip 是否需要toolTip 默认true
+ * @param {string} linkAlign 无文本时 超链接的水平对齐方式 默认为'right'
+ * 
  */
-export function HyperLinkTextCell(linkArr, parentId, textY, linkY, textMaxWidth, needTip = true, ) {
+export function HyperLinkTextCell(linkArr, parentId,linkAlign = 'center', textSize = 14, linkSize = 14, textMaxWidth, needTip = true, ) {
     this.linkArr = linkArr || []
     this.linkTextStr = ""
-    this.textY = textY || 21
-    this.linkY = linkY || 21
+    this.textY = 21
+    this.linkY = 21
     this.linArea = []
     this.linkNum = 0
     this.textWidth = 0
-    this.textWidthArr = []
+    this.textWidthArr = [] //普通文本宽度集合
     this.textMaxWidth = textMaxWidth
+    this.textSize = textSize
+    this.linkSize = linkSize
+    this.textHeight = this.textSize //普通文本文字高度
+    this.linkHeight = this.linkSize //超链接文本文字高度
     this.needTip = needTip
     this.parentId = parentId
+    this.linkAlign = linkAlign
     if(linkArr){
         this.linkNum = linkArr.length
         for (let i = 0; i < linkArr.length; i++) {
@@ -539,17 +567,33 @@ HyperLinkTextCell.prototype.paintContent = function (ctx, value, x, y, w, h, sty
     //绘制普通文本
         ctx.textAlign="start";
         ctx.fillStyle = '#000';
-        textWidth = this.textMaxWidth+10
+        ctx.textBaseline = 'top';
         if(newValue){
-            ctx.fillText(newValue,x+5,y+this.textY);
+            textWidth = this.textMaxWidth+10
+        }else{
+            if(this.linkAlign == 'right'){
+                textWidth = this.textMaxWidth+10
+            }else if(this.linkAlign == 'left'){
+                textWidth = 0
+            }else if(this.linkAlign == 'center'){
+                let linkInfo = ctx.measureText(this.linkTextStr)
+                textWidth = (w-2)/2 - ((this.linkNum-1)*10 + Math.ceil(linkInfo.width))/2
+            }
+        }
+        
+        if(newValue){
+            // ctx.fillText(newValue,x+5,y+this.textY);
+            ctx.fillText(newValue,x+5,y+5+this.textHeight);
         }
         //绘制超链接文本
         for (let k = 0; k < this.linkArr.length; k++) {
             ctx.beginPath();
             const ele = this.linkArr[k];
             ctx.textAlign="start";
+            ctx.textBaseline = 'top';
             ctx.fillStyle = ele.color || "#000";
-            ctx.fillText(ele.name,x+5+textWidth,y+this.linkY);
+            // ctx.fillText(ele.name,x+5+textWidth,y+this.linkY);
+            ctx.fillText(ele.name,x+5+textWidth,y+5+this.linkHeight);
             let currentLinkTextWidth = Math.ceil(ctx.measureText(ele.name).width);
 
             if(!this.linArea[context.row]){
@@ -785,13 +829,15 @@ let ismouseInArea = (mouseX,mouseY,row,areaArr,cellX,textWidthArr) => {
  * @param {string} parentId 表格最外层容器Id position属性应为relative
  * @param {string} textAlign 文字位置["left","center","right"],默认值为left，居左
  * @param {string} color 文字颜色 默认值 '#000'
- * @param {number} textY 文字竖向偏移量 默认值21
+ * @param {number} textSize 文字大小 默认值14
  * @param {boolean} needTip 是否需要toolTip  默认值为true
  * @param {function} clickFun 点击方法
  */
-export function SingleHyperLinkCell(parentId, textAlign, color = '#000', textY, needTip = true, clickFun ) {
+export function SingleHyperLinkCell(parentId, textAlign, color = '#000', textSize = 14, needTip = true, clickFun ) {
     this.parentId = parentId
-    this.textY = textY || 21
+    this.textY = 21
+    this.textSize = textSize
+    this.textHeight = this.textSize
     this.needTip = needTip
     this.color = color
     this.textAlign = textAlign || 'center'
@@ -815,20 +861,25 @@ SingleHyperLinkCell.prototype.paintContent = function (ctx, value, x, y, w, h, s
     let isEllipsis = res.isEllipsis
     ctx.beginPath();
     ctx.textAlign="start";
+    ctx.textBaseline = 'top';
     ctx.fillStyle = this.color;
     let textWidth = Math.ceil(ctx.measureText(value).width)
     if(isEllipsis){
-        ctx.fillText(value,x+5,y+this.textY);
+        // ctx.fillText(value,x+5,y+this.textY);
+        ctx.fillText(value,x+5,y+5+this.textHeight);
         this.linkAreaArr[row] = [{startX:x+5,endX:x+5+textWidth}]
     }else{
         if(this.textAlign == 'left'){
-            ctx.fillText(value,x+5,y+this.textY);
+            ctx.fillText(value,x+5,y+5+this.textHeight);
+            // ctx.fillText(value,x+5,y+this.textY);
             this.linkAreaArr[row] = [{startX:x+5,endX:x+5+textWidth}]
         }else if(this.textAlign == 'center'){
-            ctx.fillText(value,x+(w/2-textWidth/2),y+this.textY);
+            ctx.fillText(value,x+(w/2-textWidth/2),y+5+this.textHeight);
+            // ctx.fillText(value,x+(w/2-textWidth/2),y+this.textY);
             this.linkAreaArr[row] = [{startX:x+(w/2-textWidth/2),endX:x+(w/2-textWidth/2)+textWidth}]
         }else if(this.textAlign == 'right'){
-            ctx.fillText(value,x+(w-textWidth-5),y+this.textY);
+            ctx.fillText(value,x+(w-textWidth-5),y+5+this.textHeight);
+            // ctx.fillText(value,x+(w-textWidth-5),y+this.textY);
             this.linkAreaArr[row] = [{startX:x+(w-textWidth-5),endX:x+(w-textWidth-5)+textWidth}]
         }
     }
