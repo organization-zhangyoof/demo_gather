@@ -480,7 +480,7 @@ EllipsisAndToolTip.prototype.processMouseLeave = function (hitinfo) {
  * @param {string} linkAlign 无文本时 超链接的水平对齐方式 默认为'right'
  * 
  */
-export function HyperLinkTextCell(linkArr, parentId,linkAlign = 'center', textSize = 14, linkSize = 14, textMaxWidth, needTip = true, ) {
+export function HyperLinkTextCell(linkArr, parentId,linkAlign = 'right', textSize = 14, linkSize = 14, textMaxWidth, needTip = true, ) {
     this.linkArr = linkArr || []
     this.linkTextStr = ""
     this.textY = 21
@@ -638,7 +638,7 @@ HyperLinkTextCell.prototype.processMouseDown = function (hitinfo) {
             this._toolTipElement = null;
             this._toolTipArrow = null;
         }
-        clickFun(hitinfo)
+        clickFun(hitinfo,cellVAlue)
     }
 };
 HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
@@ -736,7 +736,8 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
                 div.style.color = "#fff"
                 div.style.padding = "6px 8px"
                 div.style.zIndex = 1000
-                div.style.width = this.textWidthArr[cellRow].textWidth<50?50:this.textWidthArr[cellRow].textWidth + "px"
+                // div.style.width = this.textWidthArr[cellRow].textWidth<50?50:this.textWidthArr[cellRow].textWidth + "px"
+                div.style.width = this.textMaxWidth + "px"
     
             this._toolTipElement = div;
     
@@ -766,12 +767,12 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
         this._toolTipElement.style.top = cellY - h -5 + "px"
         this._toolTipElement.style.left = cellX + "px"
         // if(this.arrowPosition == "center"){
-            this._toolTipArrow.style.top = cellY - 10 +  "px"
-            this._toolTipArrow.style.left = cellX + w/2 - 7 + "px"
+            // this._toolTipArrow.style.top = cellY - 10 +  "px"
+            // this._toolTipArrow.style.left = cellX + w/2 - 7 + "px"
         // }else if(this.arrowPosition == "left"){
-        //     this._toolTipArrow.style.top = cellY - 10 +  "px"
-        //     let tmpW = w*0.25>15?15:w*0.25
-        //     this._toolTipArrow.style.left = cellX + tmpW + "px"
+            this._toolTipArrow.style.top = cellY - 10 +  "px"
+            let tmpW = w*0.25>15?15:w*0.25
+            this._toolTipArrow.style.left = cellX + tmpW + "px"
         // }else if(this.arrowPosition == "right"){
         //     this._toolTipArrow.style.top = cellY - 11 +  "px"
         //     this._toolTipArrow.style.left = cellX + w - w*0.25 - 7 + "px"
