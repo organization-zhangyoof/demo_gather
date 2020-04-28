@@ -289,7 +289,7 @@ export function EllipsisTextCellType(textAlign,textSize = 14) {
     this.textAlign = textAlign || 'left'
     this.textY = 21
     this.textSize = textSize
-    this.textHeight = this.textSizes
+    this.textHeight = this.textSize
 }
 
 EllipsisTextCellType.prototype = new spreadNS.CellTypes.Text();
@@ -304,17 +304,17 @@ EllipsisTextCellType.prototype.paint = function (ctx, value, x, y, w, h, style, 
     ctx.textBaseline = 'top';
     let textWidth = Math.ceil(ctx.measureText(value).width)
     if(isEllipsis){
-        ctx.fillText(value,x+2,y+this.textY);
+        // ctx.fillText(value,x+2,y+this.textY);
         ctx.fillText(value,x+2,y+5+this.textHeight);
     }else{
         if(this.textAlign == 'left'){
-            ctx.fillText(value,x+5,y+this.textY);
+            // ctx.fillText(value,x+5,y+this.textY);
             ctx.fillText(value,x+5,y+5+this.textHeight);
         }else if(this.textAlign == 'center'){
-            ctx.fillText(value,x+(w/2-textWidth/2),y+this.textY);
+            // ctx.fillText(value,x+(w/2-textWidth/2),y+this.textY);
             ctx.fillText(value,x+(w/2-textWidth/2),y+5+this.textHeight);
         }else if(this.textAlign == 'right'){
-            ctx.fillText(value,x+(w-textWidth-5),y+this.textY);
+            // ctx.fillText(value,x+(w-textWidth-5),y+this.textY);
             ctx.fillText(value,x+(w-textWidth-5),y+5+this.textHeight);
         }
     }
@@ -346,6 +346,7 @@ EllipsisAndToolTip.prototype.paint = function (ctx, value, x, y, w, h, style, co
     if(!ctx ||!value){
         return
     }
+    
     ctx.font = style.font;
     
     let res = fittingString(ctx, value, w - 5);
@@ -488,7 +489,8 @@ export function HyperLinkTextCell(linkArr, parentId,linkAlign = 'right', textSiz
     this.linArea = []
     this.linkNum = 0
     this.textWidth = 0
-    this.textWidthArr = [] //普通文本宽度集合
+    this.textWidthArr = {} //普通文本宽度集合
+    // this.textWidthArr = [] //普通文本宽度集合
     this.textMaxWidth = textMaxWidth
     this.textSize = textSize
     this.linkSize = linkSize
@@ -555,8 +557,11 @@ HyperLinkTextCell.prototype.paintContent = function (ctx, value, x, y, w, h, sty
     this.textWidth = fittingres.textWidth == this.textMaxWidth?this.textMaxWidth:fittingres.textWidth
     this.textMaxWidth = this.textMaxWidth || fittingres.textMaxWidth
     let row = context.row
-    if(!this.textWidthArr[row]){
-        this.textWidthArr.push({textWidth:Math.ceil(this.textWidth),text:value})
+    // if(!this.textWidthArr[row]){
+    //     this.textWidthArr.push({textWidth:Math.ceil(this.textWidth),text:value})
+    // }
+    if(!this.textWidthArr["row"+row]){
+        this.textWidthArr["row"+row] = {textWidth:Math.ceil(this.textWidth),text:value}
     }
     ctx.beginPath();
 
@@ -661,7 +666,9 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
         // clearTip()
         // document.getElementById("vp_vp").style.cursor = "pointer !important"
         setTimeout(function(){
-            document.getElementById("vp_vp").style.cursor  = 'pointer';
+            if(document.getElementById("vp_vp")){
+                document.getElementById("vp_vp").style.cursor  = 'pointer';
+            }
         },0)
         let index = res.index
         let linkTextWidth = (this.linArea[cellRow])[index].endX - (this.linArea[cellRow])[index].startX 
@@ -678,7 +685,8 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
                 div.style.color = "#fff"
                 div.style.padding = "6px 8px"
                 div.style.zIndex = 1000
-                div.style.width = linkTextWidth<50?50+"px":linkTextWidth  + "px"
+                // div.style.width = linkTextWidth<50?50+"px":linkTextWidth  + "px"
+                div.style.width = cellWidth  + "px"
     
             this._toolTipElement = div;
     
@@ -706,7 +714,7 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
         let h = document.getElementById("__spread_customTipCellType__").offsetHeight
         let w = document.getElementById("__spread_customTipCellType__").offsetWidth
         this._toolTipElement.style.top = cellY - h -5 + "px"
-        this._toolTipElement.style.left = linkTextWidth<50?(this.linArea[cellRow])[index].startX - 7 +"px" :(this.linArea[cellRow])[index].startX + "px"
+        // this._toolTipElement.style.left = linkTextWidth<50?(this.linArea[cellRow])[index].startX - 7 +"px" :(this.linArea[cellRow])[index].startX + "px"
         // if(this.arrowPosition == "center"){
         this._toolTipArrow.style.top = cellY - 10 +  "px"
         this._toolTipArrow.style.left = (this.linArea[cellRow])[index].startX+linkTextWidth/2 - 7 + "px"
@@ -737,7 +745,8 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
                 div.style.padding = "6px 8px"
                 div.style.zIndex = 1000
                 // div.style.width = this.textWidthArr[cellRow].textWidth<50?50:this.textWidthArr[cellRow].textWidth + "px"
-                div.style.width = this.textMaxWidth + "px"
+                // div.style.width = this.textMaxWidth + "px"
+                div.style.width = cellWidth + "px"
     
             this._toolTipElement = div;
     
@@ -755,7 +764,7 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
     
             this._toolTipArrow = arrow
         }
-        this._toolTipElement.innerHTML = this.textWidthArr[cellRow].text
+        this._toolTipElement.innerHTML = this.textWidthArr["row"+cellRow].text
         this._toolTipElement.style.top = cellY + "px"
         this._toolTipElement.style.left = cellX + "px"
         this._toolTipArrow.style.top = cellY - 5 +  "px"
@@ -808,7 +817,8 @@ HyperLinkTextCell.prototype.activeOnClick = function(){
 let ismouseInArea = (mouseX,mouseY,row,areaArr,cellX,textWidthArr) => {
     let res = {index:-1,ismouseInArea:false,isInTextArea:false}
     // console.log(textWidthArr)
-    if(textWidthArr.length && mouseX < cellX+5+textWidthArr[row].textWidth){
+    // if(textWidthArr.length && mouseX < cellX+5+textWidthArr[row].textWidth){
+    if(textWidthArr["row"+row] && mouseX < cellX+5+textWidthArr["row"+row].textWidth){
         res = {index:-1,ismouseInArea:false,isInTextArea:true}
         return res
     }
@@ -843,6 +853,7 @@ export function SingleHyperLinkCell(parentId, textAlign, color = '#000', textSiz
     this.color = color
     this.textAlign = textAlign || 'center'
     this.linkAreaArr = []
+    // this.linkAreaArr = {}
     this.clickFun = clickFun
 }
 SingleHyperLinkCell.prototype = new spreadNS.CellTypes.Base();
@@ -873,14 +884,17 @@ SingleHyperLinkCell.prototype.paintContent = function (ctx, value, x, y, w, h, s
         if(this.textAlign == 'left'){
             ctx.fillText(value,x+5,y+5+this.textHeight);
             // ctx.fillText(value,x+5,y+this.textY);
+            // this.linkAreaArr["row"+row] = {startX:x+5,endX:x+5+textWidth}
             this.linkAreaArr[row] = [{startX:x+5,endX:x+5+textWidth}]
         }else if(this.textAlign == 'center'){
             ctx.fillText(value,x+(w/2-textWidth/2),y+5+this.textHeight);
             // ctx.fillText(value,x+(w/2-textWidth/2),y+this.textY);
+            // this.linkAreaArr["row"+row] = {startX:x+(w/2-textWidth/2),endX:x+(w/2-textWidth/2)+textWidth}
             this.linkAreaArr[row] = [{startX:x+(w/2-textWidth/2),endX:x+(w/2-textWidth/2)+textWidth}]
         }else if(this.textAlign == 'right'){
             ctx.fillText(value,x+(w-textWidth-5),y+5+this.textHeight);
             // ctx.fillText(value,x+(w-textWidth-5),y+this.textY);
+            // this.linkAreaArr["row"+row] = {startX:x+(w-textWidth-5),endX:x+(w-textWidth-5)+textWidth}
             this.linkAreaArr[row] = [{startX:x+(w-textWidth-5),endX:x+(w-textWidth-5)+textWidth}]
         }
     }
@@ -916,7 +930,7 @@ SingleHyperLinkCell.prototype.processMouseDown = function (hitinfo) {
     let { sheet, cellRect, row:cellRow, col:cellCol,x:mouseX,y:mouseY } = hitinfo
     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
     let cellVAlue = sheet.getValue(cellRow,cellCol)
-    let res = ismouseInArea(mouseX,"",cellRow,this.linkAreaArr,cellX,[])
+    let res = ismouseInArea(mouseX,'',cellRow,this.linkAreaArr,cellX,{})
     if(res.index>-1){
         if(clickFun){
             clickFun(hitinfo,cellVAlue)
@@ -944,10 +958,12 @@ SingleHyperLinkCell.prototype.processMouseMove = function (hitinfo) {
     if(!cellVAlue){
         return
     }
-    let res = ismouseInArea(mouseX,"",cellRow,this.linkAreaArr,cellX,[])
+    let res = ismouseInArea(mouseX,'',cellRow,this.linkAreaArr,cellX,{})
     if(res.ismouseInArea){//鼠标悬浮至超链接文字上
         setTimeout(function(){
-            document.getElementById("vp_vp").style.cursor  = 'pointer';
+            if (document.getElementById("vp_vp")) {
+              document.getElementById("vp_vp").style.cursor = 'pointer';
+            }
         },0)
         if (!document.getElementById("__spread_customTipCellType__")) {
             let div = document.createElement("div");
