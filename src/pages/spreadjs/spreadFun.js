@@ -329,7 +329,6 @@ EllipsisTextCellType.prototype.paint = function (ctx, value, x, y, w, h, style, 
  * @param {*} parentId 表格最外层容器Id position属性应为relative
  * @param {string} arrowPosition 指示箭头位置取值范围["left","center","right"],默认值为center
  * @param {string} textAlign 文字位置["left","center","right"],默认值为left，居左
- * 
  * @param {number} textSize 文字大小  默认14
  */
 export function EllipsisAndToolTip(parentId, textAlign ,textSize = 14 , arrowPosition, ){
@@ -398,6 +397,9 @@ EllipsisAndToolTip.prototype.processMouseEnter = function (hitinfo) {
     let divDom = document.getElementById("__spread_customTipCellType__")
     let arrowDom = document.getElementById("__spread_customTip_arrow__")
     if (divDom) {
+        if (!document.getElementById(this.parentId)) {
+            return
+        }
 		document.getElementById(this.parentId).removeChild(divDom);
 		document.getElementById(this.parentId).removeChild(arrowDom);
 		this._toolTipElement = null;
@@ -462,6 +464,9 @@ EllipsisAndToolTip.prototype.processMouseLeave = function (hitinfo) {
 	let divDom = document.getElementById("__spread_customTipCellType__")
     let arrowDom = document.getElementById("__spread_customTip_arrow__")
     if (divDom) {
+        if (!document.getElementById(this.parentId)) {
+            return
+        }
 		document.getElementById(this.parentId).removeChild(divDom);
 		document.getElementById(this.parentId).removeChild(arrowDom);
 		this._toolTipElement = null;
@@ -638,6 +643,9 @@ HyperLinkTextCell.prototype.processMouseDown = function (hitinfo) {
         let divDom = document.getElementById("__spread_customTipCellType__")
         let arrowDom = document.getElementById("__spread_customTip_arrow__")
         if (divDom) {
+            if (!document.getElementById(this.parentId)) {
+                return
+            }
             document.getElementById(this.parentId).removeChild(divDom);
             document.getElementById(this.parentId).removeChild(arrowDom);
             this._toolTipElement = null;
@@ -652,6 +660,9 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
         let divDom = document.getElementById("__spread_customTipCellType__")
         let arrowDom = document.getElementById("__spread_customTip_arrow__")
         if (divDom) {
+            if (!document.getElementById(this.parentId)) {
+                return
+            }
             document.getElementById(this.parentId).removeChild(divDom);
             document.getElementById(this.parentId).removeChild(arrowDom);
             this._toolTipElement = null;
@@ -794,6 +805,9 @@ HyperLinkTextCell.prototype.processMouseLeave = function (hitinfo) {
 	let divDom = document.getElementById("__spread_customTipCellType__")
     let arrowDom = document.getElementById("__spread_customTip_arrow__")
     if (divDom) {
+        if (!document.getElementById(this.parentId)) {
+            return
+        }
 		document.getElementById(this.parentId).removeChild(divDom);
 		document.getElementById(this.parentId).removeChild(arrowDom);
 		this._toolTipElement = null;
@@ -918,14 +932,18 @@ SingleHyperLinkCell.prototype.getHitInfo = function (x, y, cellStyle, cellRect, 
 SingleHyperLinkCell.prototype.processMouseDown = function (hitinfo) {
     let clickFun = this.clickFun
     setTimeout(() => {
-      let divDom = document.getElementById("__spread_customTipCellType__")
-      let arrowDom = document.getElementById("__spread_customTip_arrow__")
-      if (divDom) {
-        document.getElementById(this.parentId).removeChild(divDom);
-        document.getElementById(this.parentId).removeChild(arrowDom);
-        this._toolTipElement = null;
-        this._toolTipArrow = null;
-      }
+        let divDom = document.getElementById("__spread_customTipCellType__")
+        let arrowDom = document.getElementById("__spread_customTip_arrow__")
+        
+        if (divDom) {
+            if (!document.getElementById(this.parentId)) {
+                return
+            }
+            document.getElementById(this.parentId).removeChild(divDom);
+            document.getElementById(this.parentId).removeChild(arrowDom);
+            this._toolTipElement = null;
+            this._toolTipArrow = null;
+        }
     }, 0)
     let { sheet, cellRect, row:cellRow, col:cellCol,x:mouseX,y:mouseY } = hitinfo
     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
@@ -945,6 +963,9 @@ SingleHyperLinkCell.prototype.processMouseMove = function (hitinfo) {
         let divDom = document.getElementById("__spread_customTipCellType__")
         let arrowDom = document.getElementById("__spread_customTip_arrow__")
         if (divDom) {
+            if (!document.getElementById(this.parentId)) {
+                return
+            }
             document.getElementById(this.parentId).removeChild(divDom);
             document.getElementById(this.parentId).removeChild(arrowDom);
             this._toolTipElement = null;
@@ -1001,6 +1022,9 @@ SingleHyperLinkCell.prototype.processMouseMove = function (hitinfo) {
         this._toolTipElement.style.left = cellX + "px"
         this._toolTipArrow.style.top = cellY - 5 +  "px"
         this._toolTipArrow.style.left = cellX + "px"
+        if(!document.getElementById(this.parentId)){
+            return
+        }
         document.getElementById(this.parentId).append(this._toolTipElement)
         document.getElementById(this.parentId).append(this._toolTipArrow)
     
@@ -1028,6 +1052,9 @@ SingleHyperLinkCell.prototype.processMouseLeave = function (hitinfo) {
     let divDom = document.getElementById("__spread_customTipCellType__")
     let arrowDom = document.getElementById("__spread_customTip_arrow__")
     if (divDom) {
+        if (!document.getElementById(this.parentId)) {
+            return
+        }
         document.getElementById(this.parentId).removeChild(divDom);
         document.getElementById(this.parentId).removeChild(arrowDom);
         this._toolTipElement = null;
