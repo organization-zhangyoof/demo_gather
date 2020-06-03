@@ -94,7 +94,7 @@ class SpreadHome extends Component {
                 ]
             },()=>{console.log("9191919919191919")})
 
-        },1000)
+        },10000)
     }
     componentDidMount(){
         // this.initSheetOutline();
