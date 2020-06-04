@@ -21,12 +21,10 @@ class SpreadIoHome extends Component {
     }
 
     workbookInitialized = (spread) => {
-        this.spread = spread;
-        let sheet = this.spread.getActiveSheet();
+        this.spread = spread
         var mynamespace = {};
         (function () {
             function _SGS_() {
-                this.sheet = sheet
                 this.name = "_SGS_";
                 this.maxArgs = 4;
                 this.minArgs = 1;
@@ -42,11 +40,17 @@ class SpreadIoHome extends Component {
                 this.typeName = "mynamespace._SGS_";
             }
             _SGS_.prototype = new GC.Spread.CalcEngine.Functions.Function();
-            _SGS_.prototype.evaluate = function (args1,args2) {
+            _SGS_.prototype.evaluate = function (context,args1,args2) {
+                var context = context
+                var sheet = context.source.getSheet()
+                console.log("this.str====",this.str)
                 console.log("args1==="+args1+"===args2==="+args2)
-                console.log(sheet.getTag(0,0))
-                return args1+","+args2
+                var jsonStr = sheet.getTag(0,0)
+                return jsonStr[args1]+","+jsonStr[args2]
             };
+            _SGS_.prototype.isContextSensitive = function(){ //添加此方法后，_SGS_.prototype.evaluate第一个参数就是context，通过context.source.getSheet()可以获取到当前公式所在的sheet
+                return true
+            }
             mynamespace._SGS_ = _SGS_;
         })();
         GC.Spread.CalcEngine.Functions.defineGlobalCustomFunction('_SGS_', new mynamespace._SGS_());
@@ -61,9 +65,9 @@ class SpreadIoHome extends Component {
             console.log(json)
             this.spread.fromJSON(json);
             let sheet = this.spread.getActiveSheet();
-            let obj = {firstname:'raymond',name:'tony'}
+            let obj = {firstName:'raymond',name:'tony'}
             sheet.setTag(0,0,obj)
-            sheet.recalcAll(true)
+            sheet.recalcAll(true)//重新执行所有公式
         }, (e) => {
             console.log(e);
         });
