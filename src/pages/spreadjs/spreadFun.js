@@ -38,7 +38,6 @@ let fittingString = (c, str, maxWidth) => {
     var width = c.measureText(str).width;
     var ellipsis = '…';
     var ellipsisWidth = c.measureText(ellipsis).width;
-    // console.log("ellipsisWidth===",ellipsisWidth)
     if (width <= maxWidth || width <= ellipsisWidth) {
         obj = {newStr:str,isEllipsis:false}
         return obj;
@@ -88,8 +87,6 @@ export function customCellType(data,nameKey,colorRange,nodeTypeNameEmun,isAutoFi
     this.partTextHeight = this.partSize
     this.nameTextHeight = this.nameSize
     this.data = data;
-    // this.partTextY = partTextY || 30
-    // this.nameTextY = nameTextY || 30
     this.colorRange = colorRange || colorRangeEnum
     this.nameKey = nameKey
     this.nodeTypeNameEmun = nodeTypeNameEmun || typeEmun
@@ -111,7 +108,7 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
     ctx.rect(x, y, w, h);
     ctx.clip();
     ctx.beginPath();
-    
+
     //获取文字属性
     var textInfo = ctx.measureText(nodeTypeName)
     //计算矩形宽度并暂时赋值给单元格总宽度
@@ -337,9 +334,9 @@ EllipsisAndToolTip.prototype.paint = function (ctx, value, x, y, w, h, style, co
     if(!ctx ||!value){
         return
     }
-    
+
     ctx.font = style.font;
-    
+
     let res = fittingString(ctx, value, w - 5);
     value = res.newStr
     let isEllipsis = res.isEllipsis
@@ -470,7 +467,7 @@ EllipsisAndToolTip.prototype.processMouseLeave = function (hitinfo) {
  * @param {number} linkSize 超链接文本大小 默认14
  * @param {boolean} needTip 是否需要toolTip 默认true
  * @param {string} linkAlign 无文本时 超链接的水平对齐方式 默认为'right'
- * 
+ *
  */
 export function HyperLinkTextCell(linkArr, parentId,linkAlign = 'right', textSize = 14, linkSize = 14, textMaxWidth, needTip = true, ) {
     this.linkArr = linkArr || []
@@ -497,7 +494,7 @@ export function HyperLinkTextCell(linkArr, parentId,linkAlign = 'right', textSiz
             this.linkTextStr+=item.name
         }
     }
-    
+
     this.plainTextWidth = 0
 }
 /**
@@ -572,7 +569,7 @@ HyperLinkTextCell.prototype.paintContent = function (ctx, value, x, y, w, h, sty
                 textWidth = (w-2)/2 - ((this.linkNum-1)*10 + Math.ceil(linkInfo.width))/2
             }
         }
-        
+
         if(newValue){
             ctx.fillText(newValue,x+5,y+(h-this.textHeight)/2);
         }
@@ -596,7 +593,7 @@ HyperLinkTextCell.prototype.paintContent = function (ctx, value, x, y, w, h, sty
         }
 };
 HyperLinkTextCell.prototype.getHitInfo = function (x, y, cellStyle, cellRect, context) {
-    
+
 	let res = ismouseInArea(x, "", context.row, this.linArea,0,this.textWidthArr)
     this.ismouseInArea = res.ismouseInArea;
 	return {
@@ -675,9 +672,9 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
                 div.style.padding = "6px 8px"
                 div.style.zIndex = 1000
                 div.style.width = cellWidth  + "px"
-    
+
             this._toolTipElement = div;
-    
+
             //绘制指示箭头
             let arrow = document.createElement("div");
                 arrow.setAttribute("id",'__spread_customTip_arrow__')
@@ -689,7 +686,7 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
                 arrow.style.color = "#fff"
                 arrow.style.transform= "rotate(45deg) "
                 div.style.zIndex = 999
-    
+
             this._toolTipArrow = arrow
         }
         this._toolTipElement.innerHTML = (this.linArea[cellRow])[index].tipText
@@ -732,9 +729,9 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
                 div.style.padding = "6px 8px"
                 div.style.zIndex = 1000
                 div.style.width = cellWidth + "px"
-    
+
             this._toolTipElement = div;
-    
+
             //绘制指示箭头
             let arrow = document.createElement("div");
                 arrow.setAttribute("id",'__spread_customTip_arrow__')
@@ -746,7 +743,7 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
                 arrow.style.color = "#fff"
                 arrow.style.transform= "rotate(45deg) "
                 div.style.zIndex = 999
-    
+
             this._toolTipArrow = arrow
         }
         this._toolTipElement.innerHTML = this.textWidthArr["row"+cellRow].text
@@ -898,7 +895,7 @@ SingleHyperLinkCell.prototype.processMouseDown = function (hitinfo) {
     setTimeout(() => {
         let divDom = document.getElementById("__spread_customTipCellType__")
         let arrowDom = document.getElementById("__spread_customTip_arrow__")
-        
+
         if (divDom) {
             if (!document.getElementById(this.parentId)) {
                 return
@@ -963,9 +960,9 @@ SingleHyperLinkCell.prototype.processMouseMove = function (hitinfo) {
                 div.style.padding = "6px 8px"
                 div.style.zIndex = 1000
                 div.style.width = cellWidth + "px"
-    
+
             this._toolTipElement = div;
-    
+
             //绘制指示箭头
             let arrow = document.createElement("div");
                 arrow.setAttribute("id",'__spread_customTip_arrow__')
@@ -977,7 +974,7 @@ SingleHyperLinkCell.prototype.processMouseMove = function (hitinfo) {
                 arrow.style.color = "#fff"
                 arrow.style.transform= "rotate(45deg) "
                 div.style.zIndex = 999
-    
+
             this._toolTipArrow = arrow
         }
         this._toolTipElement.innerHTML = cellVAlue
@@ -990,7 +987,7 @@ SingleHyperLinkCell.prototype.processMouseMove = function (hitinfo) {
         }
         document.getElementById(this.parentId).append(this._toolTipElement)
         document.getElementById(this.parentId).append(this._toolTipArrow)
-    
+
         let h = document.getElementById("__spread_customTipCellType__").offsetHeight
         let w = document.getElementById("__spread_customTipCellType__").offsetWidth
         this._toolTipElement.style.top = cellY - h -5 + "px"
@@ -1009,7 +1006,7 @@ SingleHyperLinkCell.prototype.processMouseMove = function (hitinfo) {
     }else{
         clearTip()
     }
-    
+
 };
 SingleHyperLinkCell.prototype.processMouseLeave = function (hitinfo) {
     let divDom = document.getElementById("__spread_customTipCellType__")
@@ -1117,9 +1114,9 @@ EllipsisOrderLine.prototype.paint = function (ctx, value, x, y, w, h, style, con
     if(!ctx ||!value){
         return
     }
-    
+
     ctx.font = style.font;
-    
+
     let res = fittingStringByLine(ctx, value, w - 10,this.lineNum);
     console.log("1194")
     debugger
