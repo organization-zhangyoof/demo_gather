@@ -5,7 +5,7 @@ import {SpreadSheets, Worksheet, Column} from '@grapecity/spread-sheets-react';
 import openImg from '../../assets/square-open.png'
 import closeImg from '../../assets/square-close.png'
 import { Button, Modal } from "antd"
-import {customCellType, TipCellType, EllipsisTextCellType, EllipsisAndToolTip, HyperLinkTextCell,SingleHyperLinkCell} from './spreadFun'
+import {customCellType, TipCellType, EllipsisTextCellType, EllipsisAndToolTip, HyperLinkTextCell,SingleHyperLinkCell,EllipsisOrderLine} from './spreadFun'
 
 GC.Spread.Common.CultureManager.culture("zh-cn");
 class SpreadHome extends Component {
@@ -73,7 +73,7 @@ class SpreadHome extends Component {
                 data:[
                     // {name:'艾瑞莉娅大数据哈师大很快就暗示的科技按时的痕迹',age:20,gender:0,department:'工程部返回的数据返回快速导航开发计划是的空间',partName:'单位工程',level:'1',nodeType:1,remark:'是多大'},
                     // {name:'艾瑞莉娅大数据哈师大很快就暗示的科技按时的痕迹',age:20,gender:0,department:'工程部返回的数据返回快速导航开发计划是的空间',partName:'单位工程',level:'1',nodeType:1,remark:''},
-                    {name:'艾瑞莉娅大数据哈师大很快就暗示的科技按时的痕迹',age:20,gender:0,department:'工程部返回的数据返回快速导航开发计划是的空间',partName:'单位工程',level:'1',nodeType:1,remark:''},
+                    {name:'艾瑞莉娅大数据哈师大很快就暗示的科技按时的痕迹-1',age:20,gender:0,department:'工程部返回的数据返回快速导航开发计划是的空间',partName:'单位工程',level:'1',nodeType:1,remark:'电视电话就是点击考核数据和点击开始的计划的环境闪电借款红烧鸡块对话框撒谎的开始的计划萨科技打火机卡圣诞节会撒娇实景后端框架sad卡萨很快就的撒款车型在能吃吗真不错科技按数据库洒出'},
                     {name:'瑞文',age:20,gender:0,department:'工程1部',partName:'子单位工程',level:'1-1',nodeType:2,remark:'慌撒的看哈是框架'},
                     {name:null,age:20,gender:0,department:'工程1部',partName:'子单位工程',level:'1-1',nodeType:2,remark:'慌撒的看哈是框架'},
                     {name:'伊泽瑞尔',age:20,gender:0,department:'工程1部材料中心',partName:'分部工程',level:'1-1-1',nodeType:3,remark:'撒德哈卡大数据汇顶科技按数据库的'},
@@ -84,17 +84,17 @@ class SpreadHome extends Component {
                     {name:'费德提克',age:20,gender:0,department:'工程1部材料中心02',partName:'子分部工程',level:'1-1-1-2',nodeType:4,remark:'层次感股有多少'},
                     {name:'纳尔',age:20,gender:0,department:'工程1部实验中心',partName:'分部工程',level:'1-1-2',nodeType:3,remark:'胜多负少的缴费基数的附件时代峻峰看来是点击发送点击父节点收款机房，返回第三方士大夫is电话费对事故已覆盖但是'},
                     {name:'迦娜',age:20,gender:0,department:'工程2部',partName:'子单位工程',level:'1-2',nodeType:2,remark:'于死地环境换成申达股份感受度覆盖但是'},
-                    {name:'厄斐琉斯',age:20,gender:0,department:'事业部',partName:'单位工程',level:'2',nodeType:1,remark:'报错说感觉还V型从'},
+                    {name:'厄斐琉斯-1',age:20,gender:0,department:'事业部',partName:'单位工程',level:'2',nodeType:1,remark:'报错说感觉还型从放大后圣诞节开会附件都是'},
                     {name:'克烈',age:20,gender:0,department:'事业1部',partName:'子单位工程',level:'2-1',nodeType:2,remark:'的跳跃体育'},
                     {name:'克烈',age:20,gender:0,department:'事业部-附属1部的还是接口返回的数据库',partName:'子单位工程',level:'2-1-1',nodeType:2,remark:'的跳跃发货单就多福多寿很费劲东方红郡爱可登体育'},
                     {name:'茂凯',age:20,gender:0,department:'事业2部',partName:'子单位工程',level:'2-2',nodeType:2,remark:'日番谷冬狮'},
-                    {name:'易',age:20,gender:0,department:'销售部',partName:'单位工程',level:'3',nodeType:1,remark:'熊皮哦'},
+                    {name:'易-1',age:20,gender:0,department:'销售部',partName:'单位工程',level:'3',nodeType:1,remark:'熊皮哦'},
                     {name:'内瑟斯',age:20,gender:0,department:'销售1部',partName:'子单位工程',level:'3-1',nodeType:2,remark:'同一个合并'},
                     {name:'拉莫斯',age:20,gender:0,department:'销售2部',partName:'子单位工程',level:'3-2',nodeType:2,remark:'大商股份几乎都是'},
                 ]
             },()=>{console.log("9191919919191919")})
 
-        },10000)
+        },1000)
     }
     componentDidMount(){
         // this.initSheetOutline();
@@ -173,10 +173,11 @@ class SpreadHome extends Component {
             { visible: true, name: "name", displayName: '姓名' ,width:300},
             { visible: true, name: "age", displayName: '年龄', width: 400 },
             { visible: true, name: "gender", displayName: '性别', width: 100 },
-            { visible: true, name: "remark", displayName: '备注',width:200,cellType: new EllipsisAndToolTip("__spread_js_box__",)},
+            { visible: true, name: "remark", displayName: '备注',width:200,cellType: new EllipsisOrderLine("__spread_js_box__",3,)},
             { visible: true, name: "department", displayName: '部门',width:200,cellType: new EllipsisAndToolTip("__spread_js_box__",'center')},
-            // { visible: true, name: "remark", displayName: 'partName',width:200,cellType: new SingleHyperLinkCell("__spread_js_box__",'center','red')},
-            { visible: true, name: "remark", displayName: 'remark',width:200,},
+            { visible: true, name: "remark", displayName: 'partName',width:200,cellType: new SingleHyperLinkCell("__spread_js_box__",'center','red')},
+            // { visible: true, name: "remark", displayName: 'remark',width:200,},
+            // { visible: true, name: "remark", displayName: 'remark',width:200, cellType: new EllipsisOrderLine("__spread_js_box__",2)},
             { visible: true, name: "xuanze", displayName: '选择',width:200,},
         ]
         // let columns = [
@@ -229,10 +230,10 @@ class SpreadHome extends Component {
             
             sheet.setCellType(r, 8, checkBox, GC.Spread.Sheets.SheetArea.viewport);
             sheet.getCell(r,8).locked(false)
-            sheet.setCellType(r, 7, single, GC.Spread.Sheets.SheetArea.viewport);
-            if(r%2 == 0){
+            // sheet.setCellType(r, 7, single, GC.Spread.Sheets.SheetArea.viewport);
+            // if(r%2 == 0){
                 sheet.setCellType(r, 2, hyperLink, GC.Spread.Sheets.SheetArea.viewport);
-            }
+            // }
         }
         
         sheet.bind(GC.Spread.Sheets.Events.CheckBox, function() {
@@ -240,7 +241,7 @@ class SpreadHome extends Component {
         });
         //设置标题行及数据行高
         sheet.defaults.colHeaderRowHeight = 48
-        sheet.defaults.rowHeight = 48
+        sheet.defaults.rowHeight = 70
         spreadNs.AutoFitType.cellWithHeader = true
 
         //隐藏行号
@@ -348,7 +349,7 @@ class SpreadHome extends Component {
                             workbookInitialized={spread => this.initSpreadSheets(spread)}
                             tabStripVisible={false}
                             showVerticalScrollbar={true}
-                            showHorizontalScrollbar={false}
+                            showHorizontalScrollbar={true}
                             allowUserDragDrop={false}
                             allowContextMenu={false}
                             scrollbarMaxAlign={false}

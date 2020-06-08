@@ -75,6 +75,7 @@ export function customCellType(data,nameKey,colorRange,nodeTypeNameEmun,isAutoFi
         // { nodeType: 7, name: "清单"}
     ]
     const colorRangeEnum = [
+        { nodeType: 1, partBg: '#E8F4FF', partTextClolr: '#1890FF' },
         { nodeType: 2, partBg: '#E8F4FF', partTextClolr: '#1890FF' },
         { nodeType: 3, partBg: '#E7F9F9', partTextClolr: '#13C2CD' },
         { nodeType: 4, partBg: '#E7F9F9', partTextClolr: '#13C2CD' },
@@ -118,7 +119,6 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
     let index = findFromArr(value,this.colorRange,true)
     //绘制矩形
     if(this.colorRange && this.colorRange.length){
-        // let index = findFromArr(value,this.colorRange,true)
         if(index>-1 && (this.data[row])[this.nameKey]){
             ctx.fillStyle = this.colorRange[index].partBg;
         }
@@ -126,8 +126,7 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
         ctx.fillStyle = "#ccc"
     }
     if((this.data[row])[this.nameKey] && index > -1){
-        // ctx.fillRect(x+5, y+5, Math.ceil(textInfo.width)+10, h-10);
-        ctx.fillRect(x+5, y+5+this.partTextHeight/2, Math.ceil(textInfo.width)+10, this.partTextHeight+10);
+        ctx.fillRect(x+5, y+(h-this.partTextHeight)/2-5, Math.ceil(textInfo.width)+10, this.partTextHeight+10);
     }
 
     //绘制矩形内文字
@@ -135,7 +134,6 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
     ctx.textAlign="start";
     ctx.textBaseline = 'top';
     if(this.colorRange && this.colorRange.length){
-        // let index = findFromArr(value,this.colorRange,true)
         if(index>-1 && (this.data[row])[this.nameKey]){
             ctx.fillStyle = this.colorRange[index].partTextClolr;
         }
@@ -146,8 +144,7 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
         ctx.font = this.partSize + "px  Arial";
     }
     if((this.data[row])[this.nameKey]){
-        ctx.fillText(nodeTypeName,x+10,y+5+this.partTextHeight);
-        // ctx.fillText(nodeTypeName,x+10,y+5+this.partTextY);
+        ctx.fillText(nodeTypeName,x+10,y+(h-this.partTextHeight)/2+2);
     }
 
     //绘制矩形后面文字
@@ -164,8 +161,7 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
             ctx.font = this.nameSize + "px  Arial";
         }
         if(afterText && afterText != "null"){
-            // ctx.fillText(afterText,x+Math.ceil(textInfo.width)+20,y+this.nameTextY);
-            ctx.fillText(afterText,x+Math.ceil(textInfo.width)+20,y+5+this.nameTextHeight);
+            ctx.fillText(afterText,x+Math.ceil(textInfo.width)+20,y+(h-this.nameTextHeight)/2+2);
         }
     }
 
@@ -304,17 +300,13 @@ EllipsisTextCellType.prototype.paint = function (ctx, value, x, y, w, h, style, 
     ctx.textBaseline = 'top';
     let textWidth = Math.ceil(ctx.measureText(value).width)
     if(isEllipsis){
-        // ctx.fillText(value,x+2,y+this.textY);
         ctx.fillText(value,x+2,y+5+this.textHeight);
     }else{
         if(this.textAlign == 'left'){
-            // ctx.fillText(value,x+5,y+this.textY);
             ctx.fillText(value,x+5,y+5+this.textHeight);
         }else if(this.textAlign == 'center'){
-            // ctx.fillText(value,x+(w/2-textWidth/2),y+this.textY);
             ctx.fillText(value,x+(w/2-textWidth/2),y+5+this.textHeight);
         }else if(this.textAlign == 'right'){
-            // ctx.fillText(value,x+(w-textWidth-5),y+this.textY);
             ctx.fillText(value,x+(w-textWidth-5),y+5+this.textHeight);
         }
     }
@@ -327,14 +319,14 @@ EllipsisTextCellType.prototype.paint = function (ctx, value, x, y, w, h, style, 
  * EllipsisAndToolTip 超出隐藏显示...，并显示toolTip
  *
  * @param {*} parentId 表格最外层容器Id position属性应为relative
- * @param {string} arrowPosition 指示箭头位置取值范围["left","center","right"],默认值为center
+ * @param {string} arrowPosition 指示箭头位置取值范围["left","center","right"],默认值与文字位置保持一致"left"，居左
  * @param {string} textAlign 文字位置["left","center","right"],默认值为left，居左
  * @param {number} textSize 文字大小  默认14
  */
 export function EllipsisAndToolTip(parentId, textAlign ,textSize = 14 , arrowPosition, ){
     this.parentId = parentId
-    this.arrowPosition = arrowPosition || "center"
     this.textAlign = textAlign || "left"
+    this.arrowPosition = arrowPosition || this.textAlign
     // this.textY = textY || 21
     this.textY =  21
     this.textSize = textSize
@@ -357,19 +349,14 @@ EllipsisAndToolTip.prototype.paint = function (ctx, value, x, y, w, h, style, co
     ctx.textBaseline = 'top';
     let textWidth = Math.ceil(ctx.measureText(value).width)
     if(isEllipsis){
-        // ctx.fillText(value,x+2,y+this.textY);
-        ctx.fillText(value,x+5,y+5+this.textHeight);
+        ctx.fillText(value,x+5,y+(h-this.textHeight)/2);
     }else{
-        // ctx.fillText(value,x+2,y+this.textY);
         if(this.textAlign == 'left'){
-            // ctx.fillText(value,x+5,y+this.textY);
-            ctx.fillText(value,x+5,y+5+this.textHeight);
+            ctx.fillText(value,x+5,y+(h-this.textHeight)/2);
         }else if(this.textAlign == 'center'){
-            // ctx.fillText(value,x+(w/2-textWidth/2),y+this.textY);
-            ctx.fillText(value,x+(w/2-textWidth/2),y+5+this.textHeight);
+            ctx.fillText(value,x+(w/2-textWidth/2),y+(h-this.textHeight)/2);
         }else if(this.textAlign == 'right'){
-            // ctx.fillText(value,x+(w-textWidth-5),y+this.textY);
-            ctx.fillText(value,x+(w-textWidth-5),y+5+this.textHeight);
+            ctx.fillText(value,x+(w-textWidth-5),y+(h-this.textHeight)/2);
         }
     }
 };
@@ -409,7 +396,6 @@ EllipsisAndToolTip.prototype.processMouseEnter = function (hitinfo) {
         let div = document.createElement("div");
             div.setAttribute("id",'__spread_customTipCellType__')
             div.style.position = "absolute"
-            // div.style.border = "1px #C0C0C0 solid"
             div.style.boxShadow = "1px 2px 5px rgba(0,0,0,0.4)"
             div.style.borderRadius = "5px"
             div.style.font = "Arial"
@@ -531,7 +517,6 @@ let fittingStringForHyperLink = (c, str, cellWidth,linkTextStr,linkNum,maxWidth)
     let ellipsisWidth = c.measureText(ellipsis).width;
     let hyperLinkTextWidth = c.measureText(linkTextStr).width;
     let textMaxWidth = maxWidth || cellWidth- 20 - hyperLinkTextWidth - 10*(linkNum-1)
-    // console.log("ellipsisWidth===",ellipsisWidth)
     if (width <= textMaxWidth || width <= ellipsisWidth) {
         return result = {
           newStr: str,
@@ -562,9 +547,6 @@ HyperLinkTextCell.prototype.paintContent = function (ctx, value, x, y, w, h, sty
     this.textWidth = fittingres.textWidth == this.textMaxWidth?this.textMaxWidth:fittingres.textWidth
     this.textMaxWidth = this.textMaxWidth || fittingres.textMaxWidth
     let row = context.row
-    // if(!this.textWidthArr[row]){
-    //     this.textWidthArr.push({textWidth:Math.ceil(this.textWidth),text:value})
-    // }
     if(!this.textWidthArr["row"+row]){
         this.textWidthArr["row"+row] = {textWidth:Math.ceil(this.textWidth),text:value}
     }
@@ -592,8 +574,7 @@ HyperLinkTextCell.prototype.paintContent = function (ctx, value, x, y, w, h, sty
         }
         
         if(newValue){
-            // ctx.fillText(newValue,x+5,y+this.textY);
-            ctx.fillText(newValue,x+5,y+5+this.textHeight);
+            ctx.fillText(newValue,x+5,y+(h-this.textHeight)/2);
         }
         //绘制超链接文本
         for (let k = 0; k < this.linkArr.length; k++) {
@@ -602,14 +583,13 @@ HyperLinkTextCell.prototype.paintContent = function (ctx, value, x, y, w, h, sty
             ctx.textAlign="start";
             ctx.textBaseline = 'top';
             ctx.fillStyle = ele.color || "#000";
-            // ctx.fillText(ele.name,x+5+textWidth,y+this.linkY);
-            ctx.fillText(ele.name,x+5+textWidth,y+5+this.linkHeight);
+            ctx.fillText(ele.name,x+5+textWidth,y+(h-this.textHeight)/2);
             let currentLinkTextWidth = Math.ceil(ctx.measureText(ele.name).width);
 
             if(!this.linArea[context.row]){
-                this.linArea[context.row]= [{startX:x+5+textWidth,endX:x+5+textWidth + currentLinkTextWidth,name:ele.name,row:context.row,tipText:ele.tipText||ele.name}]
+                this.linArea[context.row]= [{startX:5+textWidth,endX:5+textWidth + currentLinkTextWidth,name:ele.name,row:context.row,tipText:ele.tipText||ele.name}]
             }else{
-                (this.linArea[context.row])[k]= {startX:x+5+textWidth,endX:x+5+textWidth + currentLinkTextWidth,name:ele.name,row:context.row,tipText:ele.tipText||ele.name}
+                (this.linArea[context.row])[k]= {startX:5+textWidth,endX:5+textWidth + currentLinkTextWidth,name:ele.name,row:context.row,tipText:ele.tipText||ele.name}
             }
 
             textWidth += Math.ceil(ctx.measureText(ele.name).width)+10
@@ -674,8 +654,6 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
     let cellVAlue = sheet.getValue(cellRow,cellCol)
     let res = ismouseInArea(mouseX,"",cellRow,this.linArea,cellX,this.textWidthArr)
     if(res.ismouseInArea){//鼠标悬浮至超链接文字上
-        // clearTip()
-        // document.getElementById("vp_vp").style.cursor = "pointer !important"
         setTimeout(function(){
             if(document.getElementById("vp_vp")){
                 document.getElementById("vp_vp").style.cursor  = 'pointer';
@@ -696,7 +674,6 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
                 div.style.color = "#fff"
                 div.style.padding = "6px 8px"
                 div.style.zIndex = 1000
-                // div.style.width = linkTextWidth<50?50+"px":linkTextWidth  + "px"
                 div.style.width = cellWidth  + "px"
     
             this._toolTipElement = div;
@@ -728,7 +705,7 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
         // this._toolTipElement.style.left = linkTextWidth<50?(this.linArea[cellRow])[index].startX - 7 +"px" :(this.linArea[cellRow])[index].startX + "px"
         // if(this.arrowPosition == "center"){
         this._toolTipArrow.style.top = cellY - 10 +  "px"
-        this._toolTipArrow.style.left = (this.linArea[cellRow])[index].startX+linkTextWidth/2 - 7 + "px"
+        this._toolTipArrow.style.left = cellX+(this.linArea[cellRow])[index].startX+linkTextWidth/2 - 7 + "px"
         // }else if(this.arrowPosition == "left"){
         //     this._toolTipArrow.style.top = cellY - 10 +  "px"
         //     let tmpW = w*0.25>15?15:w*0.25
@@ -746,7 +723,6 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
             let div = document.createElement("div");
                 div.setAttribute("id",'__spread_customTipCellType__')
                 div.style.position = "absolute"
-                // div.style.border = "1px #C0C0C0 solid"
                 div.style.boxShadow = "1px 2px 5px rgba(0,0,0,0.4)"
                 div.style.borderRadius = "5px"
                 div.style.font = "Arial"
@@ -755,8 +731,6 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
                 div.style.color = "#fff"
                 div.style.padding = "6px 8px"
                 div.style.zIndex = 1000
-                // div.style.width = this.textWidthArr[cellRow].textWidth<50?50:this.textWidthArr[cellRow].textWidth + "px"
-                // div.style.width = this.textMaxWidth + "px"
                 div.style.width = cellWidth + "px"
     
             this._toolTipElement = div;
@@ -830,8 +804,6 @@ HyperLinkTextCell.prototype.activeOnClick = function(){
  */
 let ismouseInArea = (mouseX,mouseY,row,areaArr,cellX,textWidthArr) => {
     let res = {index:-1,ismouseInArea:false,isInTextArea:false}
-    // console.log(textWidthArr)
-    // if(textWidthArr.length && mouseX < cellX+5+textWidthArr[row].textWidth){
     if(textWidthArr["row"+row] && mouseX < cellX+5+textWidthArr["row"+row].textWidth){
         res = {index:-1,ismouseInArea:false,isInTextArea:true}
         return res
@@ -839,7 +811,7 @@ let ismouseInArea = (mouseX,mouseY,row,areaArr,cellX,textWidthArr) => {
     let arr = areaArr[row]
     for (let j = 0; j < arr.length; j++) {
         const ele = arr[j];
-        if(mouseX > ele.startX && mouseX < ele.endX){
+        if(mouseX > cellX+ele.startX && mouseX < cellX+ele.endX){
             res = {index:j,ismouseInArea:true,isInTextArea:false}
             break
         }
@@ -867,7 +839,6 @@ export function SingleHyperLinkCell(parentId, textAlign, color = '#000', textSiz
     this.color = color
     this.textAlign = textAlign || 'center'
     this.linkAreaArr = []
-    // this.linkAreaArr = {}
     this.clickFun = clickFun
 }
 SingleHyperLinkCell.prototype = new spreadNS.CellTypes.Base();
@@ -891,25 +862,18 @@ SingleHyperLinkCell.prototype.paintContent = function (ctx, value, x, y, w, h, s
     ctx.fillStyle = this.color;
     let textWidth = Math.ceil(ctx.measureText(value).width)
     if(isEllipsis){
-        // ctx.fillText(value,x+5,y+this.textY);
-        ctx.fillText(value,x+5,y+5+this.textHeight);
-        this.linkAreaArr[row] = [{startX:x+5,endX:x+5+textWidth}]
+        ctx.fillText(value,x+5,y+(h-this.textHeight)/2);
+        this.linkAreaArr[row] = [{startX:5,endX:5+textWidth,name:value}]
     }else{
         if(this.textAlign == 'left'){
-            ctx.fillText(value,x+5,y+5+this.textHeight);
-            // ctx.fillText(value,x+5,y+this.textY);
-            // this.linkAreaArr["row"+row] = {startX:x+5,endX:x+5+textWidth}
-            this.linkAreaArr[row] = [{startX:x+5,endX:x+5+textWidth}]
+            ctx.fillText(value,x+5,y+(h-this.textHeight)/2);
+            this.linkAreaArr[row] = [{startX:5,endX:5+textWidth,name:value}]
         }else if(this.textAlign == 'center'){
-            ctx.fillText(value,x+(w/2-textWidth/2),y+5+this.textHeight);
-            // ctx.fillText(value,x+(w/2-textWidth/2),y+this.textY);
-            // this.linkAreaArr["row"+row] = {startX:x+(w/2-textWidth/2),endX:x+(w/2-textWidth/2)+textWidth}
-            this.linkAreaArr[row] = [{startX:x+(w/2-textWidth/2),endX:x+(w/2-textWidth/2)+textWidth}]
+            ctx.fillText(value,x+(w/2-textWidth/2),y+(h-this.textHeight)/2);
+            this.linkAreaArr[row] = [{startX:(w/2-textWidth/2),endX:(w/2-textWidth/2)+textWidth,name:value}]
         }else if(this.textAlign == 'right'){
-            ctx.fillText(value,x+(w-textWidth-5),y+5+this.textHeight);
-            // ctx.fillText(value,x+(w-textWidth-5),y+this.textY);
-            // this.linkAreaArr["row"+row] = {startX:x+(w-textWidth-5),endX:x+(w-textWidth-5)+textWidth}
-            this.linkAreaArr[row] = [{startX:x+(w-textWidth-5),endX:x+(w-textWidth-5)+textWidth}]
+            ctx.fillText(value,x+(w-textWidth-5),y+(h-this.textHeight)/2);
+            this.linkAreaArr[row] = [{startX:(w-textWidth-5),endX:(w-textWidth-5)+textWidth,name:value}]
         }
     }
 };
@@ -990,7 +954,6 @@ SingleHyperLinkCell.prototype.processMouseMove = function (hitinfo) {
             let div = document.createElement("div");
                 div.setAttribute("id",'__spread_customTipCellType__')
                 div.style.position = "absolute"
-                // div.style.border = "1px #C0C0C0 solid"
                 div.style.boxShadow = "1px 2px 5px rgba(0,0,0,0.4)"
                 div.style.borderRadius = "5px"
                 div.style.font = "Arial"
@@ -1064,3 +1027,240 @@ SingleHyperLinkCell.prototype.processMouseLeave = function (hitinfo) {
 SingleHyperLinkCell.prototype.activeOnClick = function(){
     return !this.ismouseInArea;
 }
+
+
+/**
+ * 根据要显示的行数来生成省略后的文字
+ *
+ * @param {Object} c canvas画笔
+ * @param {String} str 要显示的字符串
+ * @param {Number} maxWidth 最大宽度
+ * @param {Number} lineNum 显示的最大行数
+ */
+let fittingStringByLine = (c, str, maxWidth,lineNum) => {
+    debugger
+    let obj = {newStr:'',isEllipsis:false}
+    var width = str.length;
+    var ellipsis = '…';
+    var ellipsisWidth = c.measureText(ellipsis).width;
+    var isEllipsis = false
+    var tmpArr = []
+    for(var k = 0;k < lineNum; k++){
+        let tmpStr = JSON.parse(JSON.stringify(str))
+        let tmpStrWdith = c.measureText(tmpStr).width
+        let strMaxWidth = 0
+        if(k == lineNum -1 && tmpStrWdith > (k+1)*maxWidth){
+            strMaxWidth = (k+1)*maxWidth - ellipsisWidth
+        }else{
+            strMaxWidth = (k+1)*maxWidth
+        }
+        if(tmpStrWdith>(k-1)*maxWidth && tmpStrWdith>(k)*maxWidth){
+            if(tmpStrWdith <= strMaxWidth){
+                tmpArr[k] = tmpStr
+            }else{
+                for(var len = tmpStr.length; len >0;len--){
+                    tmpStr = tmpStr.substring(0, len);
+                    width = c.measureText(tmpStr).width
+                    if(width <= strMaxWidth){
+                        if(k == lineNum-1){
+                            tmpArr[k] = tmpStr+ellipsis
+                            isEllipsis = true
+                            break
+                        }else{
+                            tmpArr[k] = tmpStr
+                            break
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if(tmpArr.length && tmpArr.length>1){
+        var tempNewArr = []
+        tempNewArr.push(tmpArr[0])
+        for(var q = 0;q<tmpArr.length;q++){
+            if(q <= tmpArr.length-2){
+                var a = tmpArr[q].length
+                var b = tmpArr[q+1].substring(a)
+                tempNewArr.push(b)
+            }
+        }
+        obj = {newStr:tempNewArr,isEllipsis:isEllipsis}
+    }else{
+        obj = {newStr:tmpArr,isEllipsis:isEllipsis}
+    }
+
+    return obj;
+
+}
+
+/**
+ * EllipsisOrderLine 按照定义的行数来显示文字并且超出隐藏显示…，并显示toolTip
+ *
+ * @param {*} parentId 表格最外层容器Id position属性应为relative
+ * @param {string} arrowPosition 指示箭头位置取值范围["left","center","right"],默认值与文字位置保持一致"left"，居左
+ * @param {string} textAlign 文字位置["left","center","right"],默认值为left，居左
+ * @param {number} textSize 文字大小  默认14
+ * @param {number} lineNum 最大显示行数  默认1
+ */
+export function EllipsisOrderLine(parentId,lineNum, textAlign ,textSize = 14 , arrowPosition, ){
+    this.lineNum = lineNum || 1
+    this.parentId = parentId
+    this.textAlign = textAlign || "left"
+    this.arrowPosition = arrowPosition || this.textAlign
+    this.textY =  21
+    this.textSize = textSize
+    this.textHeight = this.textSize
+}
+EllipsisOrderLine.prototype = new spreadNS.CellTypes.Text();
+EllipsisOrderLine.prototype.paint = function (ctx, value, x, y, w, h, style, context) {
+    if(!ctx ||!value){
+        return
+    }
+    
+    ctx.font = style.font;
+    
+    let res = fittingStringByLine(ctx, value, w - 10,this.lineNum);
+    console.log("1194")
+    debugger
+    let valueArr = res.newStr
+    let isEllipsis = res.isEllipsis
+    ctx.beginPath();
+    ctx.textAlign="start";
+    ctx.fillStyle = '#000';
+    ctx.textBaseline = 'top';
+    if(valueArr.length && valueArr.length == 1){
+        let textWidth = Math.ceil(ctx.measureText(valueArr[0]).width)
+        if(isEllipsis){
+            ctx.fillText(valueArr[0],x+5,y+(h-this.textHeight)/2);
+        }else{
+            if(this.textAlign == 'left'){
+                ctx.fillText(valueArr[0],x+5,y+(h-this.textHeight)/2);
+            }else if(this.textAlign == 'center'){
+                ctx.fillText(valueArr[0],x+(w/2-textWidth/2),y+(h-this.textHeight)/2);
+            }else if(this.textAlign == 'right'){
+                ctx.fillText(valueArr[0],x+(w-textWidth-5),y+(h-this.textHeight)/2);
+            }
+        }
+    }else{
+            for(var f= 0;f<valueArr.length;f++){
+                var starty = y+((h-(this.textHeight*valueArr.length)-5*(valueArr.length-1))/2)+(this.textHeight+5)*f
+                var text = valueArr[f]
+                ctx.beginPath();
+                ctx.textAlign="start";
+                ctx.fillStyle = '#000';
+                ctx.textBaseline = 'top';
+                if(f == valueArr.length-1 && !isEllipsis){
+                    let textWidth = Math.ceil(ctx.measureText(valueArr[f]).width)
+                    if(this.textAlign == 'left'){
+                        ctx.fillText(valueArr[f],x+5,starty);
+                    }else if(this.textAlign == 'center'){
+                        ctx.fillText(valueArr[f],x+(w/2-textWidth/2),starty);
+                    }else if(this.textAlign == 'right'){
+                        ctx.fillText(valueArr[f],x+(w-textWidth-5),starty);
+                    }
+                }else{
+                    ctx.fillText(text,x+5,starty);
+                }
+            }
+    }
+};
+
+EllipsisOrderLine.prototype.getHitInfo = function (x, y, cellStyle, cellRect, context,value) {
+	return {
+		x: x,
+		y: y,
+		row: context.row,
+		col: context.col,
+		cellStyle: cellStyle,
+		cellRect: cellRect,
+        sheetArea: context.sheetArea,
+        context:context
+	};
+}
+EllipsisOrderLine.prototype.processMouseEnter = function (hitinfo) {
+
+    let { sheet, cellRect, row:cellRow, col:cellCol } = hitinfo
+    let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
+    let cellVAlue = sheet.getValue(cellRow,cellCol)
+    if(!cellVAlue){
+        return
+    }
+    let divDom = document.getElementById("__spread_customTipCellType__")
+    let arrowDom = document.getElementById("__spread_customTip_arrow__")
+    if (divDom) {
+        if (!document.getElementById(this.parentId)) {
+            return
+        }
+		document.getElementById(this.parentId).removeChild(divDom);
+		document.getElementById(this.parentId).removeChild(arrowDom);
+		this._toolTipElement = null;
+		this._toolTipArrow = null;
+	}
+	if (!document.getElementById("__spread_customTipCellType__")) {
+        let div = document.createElement("div");
+            div.setAttribute("id",'__spread_customTipCellType__')
+            div.style.position = "absolute"
+            div.style.boxShadow = "1px 2px 5px rgba(0,0,0,0.4)"
+            div.style.borderRadius = "5px"
+            div.style.font = "Arial"
+            div.style.background = "#404040"
+            div.style.wordBreak = "break-all"
+            div.style.color = "#fff"
+            div.style.padding = "6px 8px"
+            div.style.zIndex = 1000
+            div.style.width = cellWidth + "px"
+
+        this._toolTipElement = div;
+
+        //绘制指示箭头
+        let arrow = document.createElement("div");
+            arrow.setAttribute("id",'__spread_customTip_arrow__')
+            arrow.style.position = "absolute"
+            arrow.style.font = "Arial"
+            arrow.style.background = "#404040"
+            arrow.style.width = "10px"
+            arrow.style.height = "10px"
+            arrow.style.color = "#fff"
+            arrow.style.transform= "rotate(45deg) "
+            div.style.zIndex = 999
+
+        this._toolTipArrow = arrow
+    }
+    this._toolTipElement.innerHTML = cellVAlue
+    this._toolTipElement.style.top = cellY + "px"
+    this._toolTipElement.style.left = cellX + "px"
+    this._toolTipArrow.style.top = cellY - 5 +  "px"
+    this._toolTipArrow.style.left = cellX + "px"
+    document.getElementById(this.parentId).append(this._toolTipElement)
+    document.getElementById(this.parentId).append(this._toolTipArrow)
+
+    let h = document.getElementById("__spread_customTipCellType__").offsetHeight
+    let w = document.getElementById("__spread_customTipCellType__").offsetWidth
+    this._toolTipElement.style.top = cellY - h -5 + "px"
+    this._toolTipElement.style.left = cellX + "px"
+    if(this.arrowPosition == "center"){
+        this._toolTipArrow.style.top = cellY - 10 +  "px"
+        this._toolTipArrow.style.left = cellX + w/2 - 7 + "px"
+    }else if(this.arrowPosition == "left"){
+        this._toolTipArrow.style.top = cellY - 10 +  "px"
+        let tmpW = w*0.25>15?15:w*0.25
+        this._toolTipArrow.style.left = cellX + tmpW + "px"
+    }else if(this.arrowPosition == "right"){
+        this._toolTipArrow.style.top = cellY - 11 +  "px"
+        this._toolTipArrow.style.left = cellX + w - w*0.15+ "px"
+    }
+};
+EllipsisOrderLine.prototype.processMouseLeave = function (hitinfo) {
+	let divDom = document.getElementById("__spread_customTipCellType__")
+    let arrowDom = document.getElementById("__spread_customTip_arrow__")
+    if (divDom) {
+        if (!document.getElementById(this.parentId)) {
+            return
+        }
+		document.getElementById(this.parentId).removeChild(divDom);
+		document.getElementById(this.parentId).removeChild(arrowDom);
+		this._toolTipElement = null;
+		this._toolTipArrow = null;
+	}
+};
