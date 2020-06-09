@@ -13,10 +13,10 @@ let findFromArr =  (value,arr,isReturnIndex = false) => {
     let index = -1
     for(let i = 0;i<arr.length;i++){
     let item = arr[i]
-    if(item.nodeType == value){
-        result = item.name
-        index = i
-    }
+        if(item.nodeType == value){
+            result = item.name
+            index = i
+        }
     }
     if(isReturnIndex){
         return index
@@ -582,7 +582,7 @@ HyperLinkTextCell.prototype.paintContent = function (ctx, value, x, y, w, h, sty
             ctx.fillStyle = ele.color || "#000";
             ctx.fillText(ele.name,x+5+textWidth,y+(h-this.textHeight)/2);
             let currentLinkTextWidth = Math.ceil(ctx.measureText(ele.name).width);
-
+            //存储绘制的相对于单元格的始末相对坐标，以避免出现横向滚动条时，滚动后坐标相对位置发生改变，导致需要用坐标进行定位的Tips以及点击事件出现异常
             if(!this.linArea[context.row]){
                 this.linArea[context.row]= [{startX:5+textWidth,endX:5+textWidth + currentLinkTextWidth,name:ele.name,row:context.row,tipText:ele.tipText||ele.name}]
             }else{
@@ -1035,7 +1035,6 @@ SingleHyperLinkCell.prototype.activeOnClick = function(){
  * @param {Number} lineNum 显示的最大行数
  */
 let fittingStringByLine = (c, str, maxWidth,lineNum) => {
-    debugger
     let obj = {newStr:'',isEllipsis:false}
     var width = str.length;
     var ellipsis = '…';
@@ -1118,8 +1117,6 @@ EllipsisOrderLine.prototype.paint = function (ctx, value, x, y, w, h, style, con
     ctx.font = style.font;
 
     let res = fittingStringByLine(ctx, value, w - 10,this.lineNum);
-    console.log("1194")
-    debugger
     let valueArr = res.newStr
     let isEllipsis = res.isEllipsis
     ctx.beginPath();
