@@ -62,8 +62,9 @@ let fittingString = (c, str, maxWidth) => {
  * @param {bool} isAutoFitColumn 是否自适应撑开列宽
  * @param {Number} partSize 工程划分文字大小 默认14
  * @param {Number} nameSize 工程划分后的文字大小 默认14
+ * @param {String} nodeTypeKey 工程节点分级字段（非必传字段，不传时，取当前列的字段值作为工程节点分级字段，否则取当前字段作为工程节点分级字段）
  */
-export function customCellType(data,nameKey,colorRange,nodeTypeNameEmun,isAutoFitColumn,partSize,nameSize,){
+export function customCellType(data,nameKey,colorRange,nodeTypeNameEmun,isAutoFitColumn,nodeTypeKey,nameWidth,nodeTypeWidth,partSize,nameSize,){
     const typeEmun = [
         { nodeType: 1, name: "单位工程" },
         { nodeType: 2, name: "子单位工程"},
@@ -92,13 +93,21 @@ export function customCellType(data,nameKey,colorRange,nodeTypeNameEmun,isAutoFi
     this.nodeTypeNameEmun = nodeTypeNameEmun || typeEmun
     this.isAutoFitColumn = isAutoFitColumn || false
     this.textWidth = 0
+    this.nodeTypeKey = nodeTypeKey
+    this.nameWidth = nameWidth
+    this.nodeTypeWidth = nodeTypeWidth
 }
 
 customCellType.prototype = new spreadNS.CellTypes.Text();
 customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style, context) {
     let textTotalWidth = 0
-    let nodeTypeName = findFromArr(value,this.nodeTypeNameEmun)
     let row = context.row
+    let nodeTypeName = ''
+    if(this.nodeTypeKey && this.data && this.data.length){
+        nodeTypeName = findFromArr((this.data[row])[this.nodeTypeKey],this.nodeTypeNameEmun)
+    }else{
+        nodeTypeName = findFromArr(value,this.nodeTypeNameEmun)
+    }
     if (!ctx || !this.data.length) {
         return;
     }
@@ -113,7 +122,12 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
     var textInfo = ctx.measureText(nodeTypeName)
     //计算矩形宽度并暂时赋值给单元格总宽度
     textTotalWidth += Math.ceil(textInfo.width)
-    let index = findFromArr(value,this.colorRange,true)
+    let index = ''
+    if(this.nodeTypeKey && this.data && this.data.length){
+        index = findFromArr((this.data[row])[this.nodeTypeKey],this.colorRange,true)
+    }else{
+        index = findFromArr(value,this.colorRange,true)
+    }
     //绘制矩形
     if(this.colorRange && this.colorRange.length){
         if(index>-1 && (this.data[row])[this.nameKey]){
@@ -152,6 +166,10 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
         ctx.textBaseline = 'top';
         //计算后面跟随文字的宽度
         let afterText = (this.data[row])[this.nameKey];
+        // if (this.nameWidth && this.nameWidth > 0) {
+        //     let newStr = fittingString(ctx,afterText,this.nameWidth)
+        //     afterText = newStr.newStr
+        // }
         textTotalWidth += Math.ceil(ctx.measureText(afterText).width)
 
         if(this.nameSize){
@@ -170,7 +188,7 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
 customCellType.prototype.getAutoFitWidth = function (value, text, cellStyle, zoomFactor, context) {
     if(this.isAutoFitColumn){
         var orginWidth = GC.Spread.Sheets.CellTypes.Text.prototype.getAutoFitWidth.call(this, value, text, cellStyle, zoomFactor, context);
-        return orginWidth + this.textWidth;
+        return orginWidth ;
     }
 }
 
