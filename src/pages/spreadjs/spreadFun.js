@@ -24,6 +24,22 @@ let findFromArr =  (value,arr,isReturnIndex = false) => {
         return result
     }
 }
+//字符转译
+function HTMLEncode(html) {
+    var temp = document.createElement("div");
+    (temp.textContent != null) ? (temp.textContent = html) : (temp.innerText = html);
+    var output = temp.innerHTML;
+    temp = null;
+    return output;
+}
+//字符反转译
+function HTMLDecode(text) { 
+    var temp = document.createElement("div"); 
+    temp.innerHTML = text; 
+    var output = temp.innerText || temp.textContent; 
+    temp = null; 
+    return output; 
+} 
 
 
 /**
@@ -256,7 +272,8 @@ TipCellType.prototype.processMouseEnter = function (hitinfo) {
 
         this._toolTipArrow = arrow
     }
-    this._toolTipElement.innerHTML = cellVAlue
+    var strEncode = HTMLEncode(cellVAlue)
+    this._toolTipElement.innerHTML = strEncode
     this._toolTipElement.style.top = cellY + "px"
     this._toolTipElement.style.left = cellX + "px"
     this._toolTipArrow.style.top = cellY - 5 +  "px"
@@ -437,7 +454,8 @@ EllipsisAndToolTip.prototype.processMouseEnter = function (hitinfo) {
 
         this._toolTipArrow = arrow
     }
-    this._toolTipElement.innerHTML = cellVAlue
+    var strEncode = HTMLEncode(cellVAlue)
+    this._toolTipElement.innerHTML = strEncode
     this._toolTipElement.style.top = cellY + "px"
     this._toolTipElement.style.left = cellX + "px"
     this._toolTipArrow.style.top = cellY - 5 +  "px"
@@ -707,7 +725,9 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
 
             this._toolTipArrow = arrow
         }
-        this._toolTipElement.innerHTML = (this.linArea[cellRow])[index].tipText
+        var strEncode = HTMLEncode((this.linArea[cellRow])[index].tipText)
+        this._toolTipElement.innerHTML = strEncode
+        // this._toolTipElement.innerHTML = (this.linArea[cellRow])[index].tipText
         this._toolTipElement.style.top = cellY + "px"
         this._toolTipElement.style.left = cellX + "px"
         this._toolTipArrow.style.top = cellY - 5 +  "px"
@@ -764,7 +784,9 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
 
             this._toolTipArrow = arrow
         }
-        this._toolTipElement.innerHTML = this.textWidthArr["row"+cellRow].text
+        // this._toolTipElement.innerHTML = this.textWidthArr["row"+cellRow].text
+        var strEncode = HTMLEncode((this.textWidthArr["row"+cellRow].text))
+        this._toolTipElement.innerHTML = strEncode
         this._toolTipElement.style.top = cellY + "px"
         this._toolTipElement.style.left = cellX + "px"
         this._toolTipArrow.style.top = cellY - 5 +  "px"
@@ -995,7 +1017,9 @@ SingleHyperLinkCell.prototype.processMouseMove = function (hitinfo) {
 
             this._toolTipArrow = arrow
         }
-        this._toolTipElement.innerHTML = cellVAlue
+        // this._toolTipElement.innerHTML = cellVAlue
+        var strEncode = HTMLEncode(cellVAlue)
+        this._toolTipElement.innerHTML = strEncode
         this._toolTipElement.style.top = cellY + "px"
         this._toolTipElement.style.left = cellX + "px"
         this._toolTipArrow.style.top = cellY - 5 +  "px"
@@ -1239,7 +1263,8 @@ EllipsisOrderLine.prototype.processMouseEnter = function (hitinfo) {
 
         this._toolTipArrow = arrow
     }
-    this._toolTipElement.innerHTML = cellVAlue
+    var strEncode = HTMLEncode(cellVAlue)
+    this._toolTipElement.innerHTML = strEncode
     this._toolTipElement.style.top = cellY + "px"
     this._toolTipElement.style.left = cellX + "px"
     this._toolTipArrow.style.top = cellY - 5 +  "px"

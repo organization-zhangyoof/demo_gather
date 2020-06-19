@@ -40,7 +40,7 @@ class SpreadHome extends Component {
                     // {name:'艾瑞莉娅大数据哈师大很快就暗示的科技按时的痕迹',age:20,gender:0,department:'工程部返回的数据返回快速导航开发计划是的空间',partName:'partName单位工程',level:'1',nodeType:1,remark:''},
                     {name:'艾瑞莉娅大数据哈师大很快就暗示的科技按时的痕迹-1',age:20,gender:0,department:'工程部返回的数据返回快速导航开发计划是的空间',partName:'1partName单位工程沙迪克讲哈圣诞节阿萨德',level:'1',nodeType:1,remark:'电视电话就是点击考核数据和点击开始的计划的环境闪电借款红烧鸡块对话框撒谎的开始的计划萨科技打火机卡圣诞节会撒娇实景后端框架sad卡萨很快就的撒款车型在能吃吗真不错科技按数据库洒出'},
                     // {name:'瑞文',age:20,gender:0,department:'工程1部',partName:'2partName子单位工程大恒科技对话框是骄傲的',level:'1-1',nodeType:2,remark:'慌撒的看哈是框架'},
-                    {name:null,age:20,gender:0,department:'工程1部',partName:'2partName子单位工程山东省科技奥迪卡斯基多拉数据的',level:'1-1',nodeType:2,remark:'慌撒的看哈是框架'},
+                    {name:null,age:20,gender:0,department:'工程1部',partName:'2partName子单位工程山东省科技奥迪卡斯基多拉数据的',level:'1-1',nodeType:2,remark:'慌撒的看哈是框架<html><div><span></span></div>'},
                     {name:'伊泽瑞尔',age:20,gender:0,department:'工程1部材料中心',partName:'3partName分部工程圣诞节卡回复晶科科技实的数据啊按时',level:'1-1-1',nodeType:3,remark:'撒德哈卡大数据汇顶科技按数据库的'},
                     // {name:'莫德凯撒',age:20,gender:0,department:'工程1部材料中心01',partName:'4partName子分部工程奥术大师多',level:'1-1-1-1',nodeType:4,remark:'第三方的深V说的'},
                     // {name:'劫',age:20,gender:0,department:'工程1部材料中心01',partName:'5partName实体单元奥术大师建档立卡静安寺',level:'1-1-1-1-1',nodeType:5,remark:'包括交换机'},
