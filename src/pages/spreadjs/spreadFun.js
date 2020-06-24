@@ -75,7 +75,7 @@ let fittingString = (c, str, maxWidth) => {
  * @param {String} nameKey 工程分项后面所要跟随那个字段的值
  * @param {Array} colorRange 个层架显示颜色集合
  * @param {Array} nodeTypeNameEmun 工程划分枚举值
- * @param {bool} isAutoFitColumn 是否自适应撑开列宽
+ * @param {Boolean} isAutoFitColumn 是否自适应撑开列宽
  * @param {Number} partSize 工程划分文字大小 默认14
  * @param {Number} nameSize 工程划分后的文字大小 默认14
  * @param {String} nodeTypeKey 工程节点分级字段（非必传字段，不传时，取当前列的字段值作为工程节点分级字段，否则取当前字段作为工程节点分级字段）
@@ -204,7 +204,7 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
 customCellType.prototype.getAutoFitWidth = function (value, text, cellStyle, zoomFactor, context) {
     if(this.isAutoFitColumn){
         var orginWidth = GC.Spread.Sheets.CellTypes.Text.prototype.getAutoFitWidth.call(this, value, text, cellStyle, zoomFactor, context);
-        return orginWidth ;
+        return orginWidth + this.textWidth ;
     }
 }
 
@@ -581,7 +581,7 @@ HyperLinkTextCell.prototype.paintContent = function (ctx, value, x, y, w, h, sty
     this.textMaxWidth = this.textMaxWidth || fittingres.textMaxWidth
     let row = context.row
     if(!this.textWidthArr["row"+row]){
-        this.textWidthArr["row"+row] = {textWidth:Math.ceil(this.textWidth),text:value}
+        this.textWidthArr["row"+row] = {textWidth:Math.ceil(this.textWidth),text:value} //存储普通文本长度及文本内容
     }
     ctx.beginPath();
 
@@ -669,10 +669,10 @@ HyperLinkTextCell.prototype.processMouseDown = function (hitinfo) {
 };
 HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
     //清除提示
-    let clearTip = () => {
+    let clearTip = () => {//删除toolTips的DOM元素
         let divDom = document.getElementById("__spread_customTipCellType__")
         let arrowDom = document.getElementById("__spread_customTip_arrow__")
-        if (divDom) {
+        if (divDom) { 
             if (!document.getElementById(this.parentId)) {
                 return
             }
