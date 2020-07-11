@@ -76,11 +76,16 @@ let fittingString = (c, str, maxWidth) => {
  * @param {Array} colorRange 个层架显示颜色集合
  * @param {Array} nodeTypeNameEmun 工程划分枚举值
  * @param {Boolean} isAutoFitColumn 是否自适应撑开列宽
+ * @param {String} nodeTypeKey 工程节点分级字段（非必传字段，不传时，取当前列的字段值作为工程节点分级字段，否则取当前字段作为工程节点分级字段）
+ * @param {Boolean} isNeedTip 是否需要提示，默认值为false
+ * @param {String} parentId  表格最外层容器Id position属性应为relative(注：isNeedTip 为 true 时必传)
+ * @param {Array<String>} stringArr 提示所需要的字段集合，默认显示工程分项后面的字段
+ * @param {String} linkChart  提示内容多个字段的连接符，默认“-”
  * @param {Number} partSize 工程划分文字大小 默认14
  * @param {Number} nameSize 工程划分后的文字大小 默认14
- * @param {String} nodeTypeKey 工程节点分级字段（非必传字段，不传时，取当前列的字段值作为工程节点分级字段，否则取当前字段作为工程节点分级字段）
+ *
  */
-export function customCellType(data,nameKey,colorRange,nodeTypeNameEmun,isAutoFitColumn,nodeTypeKey,nameWidth,nodeTypeWidth,partSize,nameSize,){
+export function customCellType(data,nameKey,colorRange,nodeTypeNameEmun,isAutoFitColumn,nodeTypeKey,isNeedTip,parentId,stringArr,linkChart,partSize,nameSize,){
     const typeEmun = [
         { nodeType: 1, name: "单位工程" },
         { nodeType: 2, name: "子单位工程"},
@@ -110,8 +115,10 @@ export function customCellType(data,nameKey,colorRange,nodeTypeNameEmun,isAutoFi
     this.isAutoFitColumn = isAutoFitColumn || false
     this.textWidth = 0
     this.nodeTypeKey = nodeTypeKey
-    this.nameWidth = nameWidth
-    this.nodeTypeWidth = nodeTypeWidth
+    this.parentId = parentId
+    this.isNeedTip = isNeedTip
+    this.stringArr = stringArr || []
+    this.linkChart = linkChart || '-'
 }
 
 customCellType.prototype = new spreadNS.CellTypes.Text();
@@ -128,10 +135,10 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
         return;
     }
 
-    ctx.save();
+    // ctx.save();
 
-    ctx.rect(x, y, w, h);
-    ctx.clip();
+    // ctx.rect(x, y, w, h);
+    // ctx.clip();
     ctx.beginPath();
 
     //获取文字属性
@@ -182,10 +189,6 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
         ctx.textBaseline = 'top';
         //计算后面跟随文字的宽度
         let afterText = (this.data[row])[this.nameKey];
-        // if (this.nameWidth && this.nameWidth > 0) {
-        //     let newStr = fittingString(ctx,afterText,this.nameWidth)
-        //     afterText = newStr.newStr
-        // }
         textTotalWidth += Math.ceil(ctx.measureText(afterText).width)
 
         if(this.nameSize){
@@ -199,14 +202,94 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
     //列宽的撑开是根据最后一次算的值的大小来撑开的，如果值小于目前的宽度则不进行赋值
     this.textWidth = textTotalWidth > this.textWidth ? textTotalWidth : this.textWidth
     // this.textWidth = textTotalWidth
-    ctx.restore();
+    // ctx.restore();
 };
 customCellType.prototype.getAutoFitWidth = function (value, text, cellStyle, zoomFactor, context) {
     if(this.isAutoFitColumn){
         var orginWidth = GC.Spread.Sheets.CellTypes.Text.prototype.getAutoFitWidth.call(this, value, text, cellStyle, zoomFactor, context);
-        return orginWidth + this.textWidth ;
+        return orginWidth + this.textWidth*0.6 ;
     }
 }
+customCellType.prototype.getHitInfo = function (x, y, cellStyle, cellRect, context,value) {
+	return {
+		x: x,
+		y: y,
+		row: context.row,
+		col: context.col,
+		cellStyle: cellStyle,
+		cellRect: cellRect,
+        sheetArea: context.sheetArea,
+        context:context
+	};
+}
+customCellType.prototype.processMouseMove = function (hitinfo) {
+    if(!this.isNeedTip){
+        return
+    }
+    let { sheet, cellRect, row:cellRow, col:cellCol,x:mouseX,y:mouseY } = hitinfo
+    if(!cellRect){
+        let divDom = document.getElementById("__spread_customTipCellType__")
+        if (divDom) {
+            if (!document.getElementById(this.parentId)) {
+                return
+            }
+            document.getElementById(this.parentId).removeChild(divDom);
+            this._toolTipElement = null;
+            this._toolTipArrow = null;
+        }
+        return
+    }
+    let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
+    let cellVAlue = sheet.getValue(cellRow,cellCol)
+    if(!cellVAlue){
+        return
+    }
+    let divDom = document.getElementById("__spread_customTipCellType__")
+    if (divDom) {
+        if (!document.getElementById(this.parentId)) {
+            return
+        }
+		document.getElementById(this.parentId).removeChild(divDom);
+		this._toolTipElement = null;
+	}
+	if (!document.getElementById("__spread_customTipCellType__")) {
+        let div = document.createElement("div");
+            div.setAttribute("id",'__spread_customTipCellType__')
+            div.style.position = "absolute"
+            div.style.boxShadow = "1px 2px 5px rgba(0,0,0,0.4)"
+            div.style.borderRadius = "5px"
+            div.style.font = "Arial"
+            div.style.background = "#404040"
+            div.style.wordBreak = "break-all"
+            div.style.color = "#fff"
+            div.style.padding = "6px 8px"
+            div.style.zIndex = 1000
+            div.style.width = cellWidth + "px"
+
+        this._toolTipElement = div;
+    }
+    var strEncode = HTMLEncode(cellVAlue)
+    this._toolTipElement.innerHTML = strEncode
+    this._toolTipElement.style.top = cellY + "px"
+    this._toolTipElement.style.left = cellX + "px"
+
+    document.getElementById(this.parentId).append(this._toolTipElement)
+
+    let h = document.getElementById("__spread_customTipCellType__").offsetHeight
+    let w = document.getElementById("__spread_customTipCellType__").offsetWidth
+    this._toolTipElement.style.top = cellY - h  + "px"
+    this._toolTipElement.style.left = cellX + "px"
+};
+customCellType.prototype.processMouseLeave = function (hitinfo) {
+	let divDom = document.getElementById("__spread_customTipCellType__")
+    if (divDom) {
+        if (!document.getElementById(this.parentId)) {
+            return
+        }
+		document.getElementById(this.parentId).removeChild(divDom);
+		this._toolTipElement = null;
+	}
+};
 
 
 /**
