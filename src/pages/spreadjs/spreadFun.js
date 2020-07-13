@@ -352,12 +352,41 @@ customCellType.prototype.processMouseLeave = function (hitinfo) {
  * @param {*} parentId 表格最外层容器Id position属性应为relative
  * @param {string} arrowPosition 指示箭头位置取值范围["left","center","right"],默认值为center
  */
-export function TipCellType(parentId,arrowPosition) {
+export function TipCellType(parentId,arrowPosition,textSize = 14) {
     this.parentId = parentId
     this.arrowPosition = arrowPosition || 'center'
+    this.textSize = textSize
+    this.textHeight = this.textSize
 }
-TipCellType.prototype = new GC.Spread.Sheets.CellTypes.Text();
+// TipCellType.prototype = new GC.Spread.Sheets.CellTypes.Text();
+TipCellType.prototype = new spreadNS.CellTypes.Text();
+TipCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style, context) {
+    if(!ctx ||!value){
+        return
+    }
 
+    ctx.font = style.font;
+
+    let res = fittingString(ctx, value, w - 5);
+    value = res.newStr
+    let isEllipsis = res.isEllipsis
+    ctx.beginPath();
+    ctx.textAlign="start";
+    ctx.fillStyle = '#000';
+    ctx.textBaseline = 'top';
+    let textWidth = Math.ceil(ctx.measureText(value).width)
+    // if(isEllipsis){
+        ctx.fillText(value,x+5,y+(h-this.textHeight)/2);
+    // }else{
+    //     if(this.textAlign == 'left'){
+    //         ctx.fillText(value,x+5,y+(h-this.textHeight)/2);
+    //     }else if(this.textAlign == 'center'){
+    //         ctx.fillText(value,x+(w/2-textWidth/2),y+(h-this.textHeight)/2);
+    //     }else if(this.textAlign == 'right'){
+    //         ctx.fillText(value,x+(w-textWidth-5),y+(h-this.textHeight)/2);
+    //     }
+    // }
+};
 TipCellType.prototype.getHitInfo = function (x, y, cellStyle, cellRect, context,value) {
 	return {
 		x: x,
@@ -464,7 +493,7 @@ export function EllipsisTextCellType(textAlign,textSize = 14) {
 }
 
 EllipsisTextCellType.prototype = new spreadNS.CellTypes.Text();
-EllipsisTextCellType.prototype.paint = function (ctx, value, x, y, w, h, style, context) {
+EllipsisTextCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style, context) {
     ctx.font = style.font;
     let res = fittingString(ctx, value, w - 5);
     value = res.newStr
@@ -508,7 +537,7 @@ export function EllipsisAndToolTip(parentId, textAlign ,textSize = 14 , arrowPos
     this.textHeight = this.textSize
 }
 EllipsisAndToolTip.prototype = new spreadNS.CellTypes.Text();
-EllipsisAndToolTip.prototype.paint = function (ctx, value, x, y, w, h, style, context) {
+EllipsisAndToolTip.prototype.paintContent = function (ctx, value, x, y, w, h, style, context) {
     if(!ctx ||!value){
         return
     }
@@ -1294,7 +1323,7 @@ export function EllipsisOrderLine(parentId,lineNum, textAlign ,textSize = 14 , a
     this.textHeight = this.textSize
 }
 EllipsisOrderLine.prototype = new spreadNS.CellTypes.Text();
-EllipsisOrderLine.prototype.paint = function (ctx, value, x, y, w, h, style, context) {
+EllipsisOrderLine.prototype.paintContent = function (ctx, value, x, y, w, h, style, context) {
     if(!ctx ||!value){
         return
     }

@@ -107,7 +107,9 @@ class SpreadHome extends Component {
         ]
         let columns = [
             // { visible: true, name: "xuhao", displayName: '序号',width:200},
-            { visible: true, name: "age", displayName: '工程划分',width:500, cellType: new customCellType(this.state.data,'partName','','',true,"nodeType",true,"__spread_js_box__",['nodeType','partName','remark'])},
+            // { visible: true, name: "age", displayName: '工程划分',width:500, cellType: new customCellType(this.state.data,'partName','','',true,'nodeType',true,"__spread_js_box__",['partName'])},
+            // { visible: true, name: "age", displayName: '工程划分',width:500, cellType: new customCellType(this.state.data,'partName','','',true,"",true,"__spread_js_box__",['partName','remark'])},
+            { visible: true, name: "partName", displayName: '工程划分',width:500, cellType: new TipCellType("__spread_js_box__")},
             // { visible: false, name: "HyperLink", displayName: '超链接测试',width:400,},
             { visible: true, name: "name", displayName: '姓名' ,cellType: new HyperLinkTextCell(linkArr,"__spread_js_box__"),width:300},
             { visible: true, name: "name", displayName: '姓名' ,width:300},
