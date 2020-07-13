@@ -118,7 +118,7 @@ class SpreadHome extends Component {
             { visible: true, name: "remark", displayName: 'partName',width:200,cellType: new SingleHyperLinkCell("__spread_js_box__",'center','red')},
             // { visible: true, name: "remark", displayName: 'remark',width:200,},
             // { visible: true, name: "remark", displayName: 'remark',width:200, cellType: new EllipsisOrderLine("__spread_js_box__",2)},
-            // { visible: true, name: "xuanze", displayName: '选择',width:200,},
+            { visible: true, name: "xuanze", displayName: '选择',width:200,},
         ]
         
         if(this.state.data){
@@ -156,9 +156,11 @@ class SpreadHome extends Component {
                 sheet.setCellType(r, 2, hyperLink, GC.Spread.Sheets.SheetArea.viewport);
             // }
         }
-        
-        sheet.bind(GC.Spread.Sheets.Events.CheckBox, function() {
-            console.log(123)
+        //非保护状态下，阻止编辑
+        sheet.bind(GC.Spread.Sheets.Events.EditStarting, function (sender, args) {
+            args.cancel = true
+            console.log("Start cell editing.sender===",sender);
+            console.log("Start cell editing.args===",args);
         });
         //设置标题行及数据行高
         sheet.defaults.colHeaderRowHeight = 48
@@ -192,13 +194,6 @@ class SpreadHome extends Component {
         // sheet.rowOutlines.setCollapsed(0, true);
 
         // sheet.rowOutlines.setCollapsed(1,true);
-
-        sheet.bind(GC.Spread.Sheets.Events.RangeGroupStateChanging, function (e, info) {    
-            console.log("Level (" + info.level + ")");
-        });
-        sheet.bind(GC.Spread.Sheets.Events.rangGroupStateChanged, function (e, info) {    
-            console.log("Level (" + info.level + ")");
-        });
 
         sheet.outlineColumn.refresh();
         //在使用分组列自带的复选框时，可以如下方法来设置复选框是否被选中。第一个参数为行号 第二个参数为是否被选中
