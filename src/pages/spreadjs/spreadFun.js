@@ -79,7 +79,7 @@ let fittingString = (c, str, maxWidth) => {
  * @param {String} nodeTypeKey 工程节点分级字段（非必传字段，不传时，取当前列的字段值作为工程节点分级字段，否则取当前字段作为工程节点分级字段）
  * @param {Boolean} isNeedTip 是否需要提示，默认值为false
  * @param {String} parentId  表格最外层容器Id position属性应为relative(注：isNeedTip 为 true 时必传)
- * @param {Array<String>} stringArr 提示所需要的字段集合，默认显示工程分项后面的字段
+ * @param {Array<String>} stringArr 提示所需要的字段集合，默认显示当前单元格value
  * @param {String} linkChart  提示内容多个字段的连接符，默认“-”
  * @param {Number} partSize 工程划分文字大小 默认14
  * @param {Number} nameSize 工程划分后的文字大小 默认14
@@ -222,7 +222,7 @@ customCellType.prototype.getHitInfo = function (x, y, cellStyle, cellRect, conte
         context:context
 	};
 }
-customCellType.prototype.processMouseMove = function (hitinfo) {
+customCellType.prototype.processMouseEnter = function (hitinfo) {
     if(!this.isNeedTip){
         return
     }
@@ -267,27 +267,81 @@ customCellType.prototype.processMouseMove = function (hitinfo) {
             div.style.width = cellWidth + "px"
 
         this._toolTipElement = div;
+        //绘制指示箭头
+        let arrow = document.createElement("div");
+            arrow.setAttribute("id",'__spread_customTip_arrow__')
+            arrow.style.position = "absolute"
+            arrow.style.font = "Arial"
+            arrow.style.background = "#404040"
+            arrow.style.width = "10px"
+            arrow.style.height = "10px"
+            arrow.style.color = "#fff"
+            arrow.style.transform= "rotate(45deg) "
+            div.style.zIndex = 999
+
+        this._toolTipArrow = arrow
     }
-    var strEncode = HTMLEncode(cellVAlue)
+    var strEncode = ''
+    if(this.stringArr && this.stringArr.length){
+        var showStrArr = []
+        for (var s = 0; s < this.stringArr.length; s++) {
+            var ele = this.stringArr[s];
+            if (ele == this.nodeTypeKey){
+                showStrArr.push(findFromArr((this.data[cellRow])[this.nodeTypeKey],this.nodeTypeNameEmun))
+            }else{
+                showStrArr.push(this.data[cellRow][ele])
+            }
+        }
+        if(showStrArr.length){
+            var str = ''
+            if(this.linkChart){
+                str = showStrArr.join(this.linkChart)
+            }else{
+                str = showStrArr.join('-')
+            }
+            strEncode = HTMLEncode(str)
+        }
+    }else{
+        strEncode = HTMLEncode(cellVAlue)
+    }
+    if(!strEncode){
+        return
+    }
     this._toolTipElement.innerHTML = strEncode
     this._toolTipElement.style.top = cellY + "px"
     this._toolTipElement.style.left = cellX + "px"
-
+    this._toolTipArrow.style.top = cellY - 5 +  "px"
+    this._toolTipArrow.style.left = cellX + "px"
     document.getElementById(this.parentId).append(this._toolTipElement)
+    document.getElementById(this.parentId).append(this._toolTipArrow)
 
     let h = document.getElementById("__spread_customTipCellType__").offsetHeight
     let w = document.getElementById("__spread_customTipCellType__").offsetWidth
-    this._toolTipElement.style.top = cellY - h  + "px"
+    this._toolTipElement.style.top = cellY - h + "px"
     this._toolTipElement.style.left = cellX + "px"
+    // if(this.arrowPosition == "center"){
+        this._toolTipArrow.style.top = cellY - 5 +  "px"
+        this._toolTipArrow.style.left = cellX + w/2 - 7 + "px"
+    // }else if(this.arrowPosition == "left"){
+    //     this._toolTipArrow.style.top = cellY - 10 +  "px"
+    //     let tmpW = w*0.25>15?15:w*0.25
+    //     this._toolTipArrow.style.left = cellX + tmpW + "px"
+    // }else if(this.arrowPosition == "right"){
+    //     this._toolTipArrow.style.top = cellY - 11 +  "px"
+    //     this._toolTipArrow.style.left = cellX + w - w*0.25 - 7 + "px"
+    // }
 };
 customCellType.prototype.processMouseLeave = function (hitinfo) {
 	let divDom = document.getElementById("__spread_customTipCellType__")
+    let arrowDom = document.getElementById("__spread_customTip_arrow__")
     if (divDom) {
         if (!document.getElementById(this.parentId)) {
             return
         }
 		document.getElementById(this.parentId).removeChild(divDom);
+		document.getElementById(this.parentId).removeChild(arrowDom);
 		this._toolTipElement = null;
+		this._toolTipArrow = null;
 	}
 };
 
@@ -381,10 +435,16 @@ TipCellType.prototype.processMouseEnter = function (hitinfo) {
     }
 };
 TipCellType.prototype.processMouseLeave = function (hitinfo) {
-	if (this._toolTipElement) {
-		document.getElementById(this.parentId).removeChild(this._toolTipElement);
-		document.getElementById(this.parentId).removeChild(this._toolTipArrow);
+	let divDom = document.getElementById("__spread_customTipCellType__")
+    let arrowDom = document.getElementById("__spread_customTip_arrow__")
+    if (divDom) {
+        if (!document.getElementById(this.parentId)) {
+            return
+        }
+		document.getElementById(this.parentId).removeChild(divDom);
+		document.getElementById(this.parentId).removeChild(arrowDom);
 		this._toolTipElement = null;
+		this._toolTipArrow = null;
 	}
 };
 
