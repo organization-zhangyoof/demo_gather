@@ -16,7 +16,6 @@ class SpreadHome extends Component {
             visible:false,
         }
     }
-
     componentDidUpdate(prevProps, prevState) {
         
         if (this.state.data && this.state.data.length) {
@@ -39,14 +38,14 @@ class SpreadHome extends Component {
                     // {name:'艾瑞莉娅大数据哈师大很快就暗示的科技按时的痕迹',age:20,gender:0,department:'工程部返回的数据返回快速导航开发计划是的空间',partName:'partName单位工程',level:'1',nodeType:1,remark:'是多大'},
                     // {name:'艾瑞莉娅大数据哈师大很快就暗示的科技按时的痕迹',age:20,gender:0,department:'工程部返回的数据返回快速导航开发计划是的空间',partName:'partName单位工程',level:'1',nodeType:1,remark:''},
                     {name:'艾瑞莉娅大数据哈师大很快就暗示的科技按时的痕迹-1',age:20,gender:0,department:'工程部返回的数据返回快速导航开发计划是的空间',partName:'1partName单位工程沙迪克讲哈圣诞节阿萨德',level:'1',nodeType:1,remark:'电视电话就是点击考核数据和点击开始的计划的环境闪电借款红烧鸡块对话框撒谎的开始的计划萨科技打火机卡圣诞节会撒娇实景后端框架sad卡萨很快就的撒款车型在能吃吗真不错科技按数据库洒出'},
-                    {name:'瑞文',age:20,gender:0,department:'工程1部',partName:'2partName子单位工程大恒科技对话框是骄傲的',level:'1-1',nodeType:2,remark:'慌撒的看哈是框架'},
-                    {name:null,age:20,gender:0,department:'工程1部',partName:'2partName子单位工程山东省科技奥迪卡斯基多拉数据的',level:'1-1',nodeType:2,remark:'慌撒的看哈是框架<html><div><span></span></div>'},
-                    {name:'伊泽瑞尔',age:20,gender:0,department:'工程1部材料中心',partName:'3partName分部工程圣诞节卡回复晶科科技实的数据啊按时',level:'1-1-1',nodeType:3,remark:'撒德哈卡大数据汇顶科技按数据库的'},
-                    {name:'莫德凯撒',age:20,gender:0,department:'工程1部材料中心01',partName:'4partName子分部工程奥术大师多',level:'1-1-1-1',nodeType:4,remark:'第三方的深V说的'},
-                    {name:'劫',age:20,gender:0,department:'工程1部材料中心01',partName:'5partName实体单元奥术大师建档立卡静安寺',level:'1-1-1-1-1',nodeType:5,remark:'包括交换机'},
-                    {name:'奥瑞利安·索尔',age:20,gender:0,department:'工程1部材料中心01',partName:'6partName分项工程我去额为群殴IE噢轻的哈吉斯客户端会计师微碰破千万我我去问问打开了收没收到吗',level:'1-1-1-1-1-1',nodeType:6,remark:'才下班成就感圣诞节'},
-                    {name:'奥瑞利安·索尔',age:20,gender:0,department:'工程1部材料中心01',partName:'6partName吉斯客户端会计师微碰破千万我我去问',level:'1-1-1-1-1-1',nodeType:6,remark:'才下班成就感圣诞节'},
-                    {name:'卡西奥佩娅',age:20,gender:0,department:'工程1部材料中心01',partName:'7partName清单水电费拉防控来得及萨里看风景',level:'1-1-1-1-1-1-1',nodeType:7,remark:'出生地更富于'},
+                    {name:'瑞文',age:20,gender:0,department:'工程1部',partName:'2partName子单位工',level:'1-1',nodeType:2,remark:'慌撒的看哈是框架'},
+                    {name:null,age:20,gender:0,department:'工程1部',partName:'2partName子单位工程',level:'1-1',nodeType:2,remark:'慌撒的看哈是框架<html><div><span></span></div>'},
+                    {name:'伊泽瑞尔',age:20,gender:0,department:'工程1部材料中心',partName:'3partName分部工程圣',level:'1-1-1',nodeType:3,remark:'撒德哈卡大数据汇顶科技按数据库的'},
+                    {name:'莫德凯撒',age:20,gender:0,department:'工程1部材料中心01',partName:'4partName子分部工',level:'1-1-1-1',nodeType:4,remark:'第三方的深V说的'},
+                    {name:'劫',age:20,gender:0,department:'工程1部材料中心01',partName:'5partName实体单元',level:'1-1-1-1-1',nodeType:5,remark:'包括交换机'},
+                    {name:'奥瑞利安·索尔',age:20,gender:0,department:'工程1部材料中心01',partName:'6partName分项工程我',level:'1-1-1-1-1-1',nodeType:6,remark:'才下班成就感圣诞节'},
+                    {name:'奥瑞利安·索尔',age:20,gender:0,department:'工程1部材料中心01',partName:'6partName吉斯客户端',level:'1-1-1-1-1-1',nodeType:6,remark:'才下班成就感圣诞节'},
+                    {name:'卡西奥佩娅',age:20,gender:0,department:'工程1部材料中心01',partName:'7partName清单水',level:'1-1-1-1-1-1-1',nodeType:7,remark:'出生地更富于'},
                     {name:'费德提克',age:20,gender:0,department:'工程1部材料中心02',partName:'partName子分部工程',level:'1-1-1-2',nodeType:4,remark:'层次感股有多少'},
                     {name:'纳尔',age:20,gender:0,department:'工程1部实验中心',partName:'partName分部工程',level:'1-1-2',nodeType:3,remark:'胜多负少的缴费基数的附件时代峻峰看来是点击发送点击父节点收款机房，返回第三方士大夫is电话费对事故已覆盖但是'},
                     {name:'迦娜',age:20,gender:0,department:'工程2部',partName:'partName子单位工程',level:'1-2',nodeType:2,remark:'于死地环境换成申达股份感受度覆盖但是'},
@@ -107,9 +106,9 @@ class SpreadHome extends Component {
         ]
         let columns = [
             // { visible: true, name: "xuhao", displayName: '序号',width:200},
-            // { visible: true, name: "age", displayName: '工程划分',width:500, cellType: new customCellType(this.state.data,'partName','','',true,'nodeType',true,"__spread_js_box__",['partName'])},
+            { visible: true, name: "age", displayName: '工程划分',width:200, cellType: new customCellType(this.state.data,'partName','','',true,'nodeType','',"__spread_js_box__")},
             // { visible: true, name: "age", displayName: '工程划分',width:500, cellType: new customCellType(this.state.data,'partName','','',true,"",true,"__spread_js_box__",['partName','remark'])},
-            { visible: true, name: "partName", displayName: '工程划分',width:500, cellType: new TipCellType("__spread_js_box__")},
+            // { visible: true, name: "partName", displayName: '工程划分',width:500, cellType: new TipCellType("__spread_js_box__")},
             // { visible: false, name: "HyperLink", displayName: '超链接测试',width:400,},
             { visible: true, name: "name", displayName: '姓名' ,cellType: new HyperLinkTextCell(linkArr,"__spread_js_box__"),width:300},
             { visible: true, name: "name", displayName: '姓名' ,width:300},
@@ -122,12 +121,11 @@ class SpreadHome extends Component {
             // { visible: true, name: "remark", displayName: 'remark',width:200, cellType: new EllipsisOrderLine("__spread_js_box__",2)},
             { visible: true, name: "xuanze", displayName: '选择',width:200,},
         ]
-        
+
         if(this.state.data){
             sheet.setDataSource(this.state.data);
             sheet.bindColumns(columns)
         }
-        
 
         let spreadNs = GC.Spread.Sheets
 

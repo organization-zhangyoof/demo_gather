@@ -33,13 +33,13 @@ function HTMLEncode(html) {
     return output;
 }
 //字符反转译
-function HTMLDecode(text) { 
-    var temp = document.createElement("div"); 
-    temp.innerHTML = text; 
-    var output = temp.innerText || temp.textContent; 
-    temp = null; 
-    return output; 
-} 
+function HTMLDecode(text) {
+    var temp = document.createElement("div");
+    temp.innerHTML = text;
+    var output = temp.innerText || temp.textContent;
+    temp = null;
+    return output;
+}
 
 
 /**
@@ -69,7 +69,7 @@ let fittingString = (c, str, maxWidth) => {
 }
 
 /**
- * customCellType  用于spreadJS表格单元格显示层级，不同层级显示不同颜色
+ * customCellType  用于spreadJS表格单元格显示层级，不同层级显示不同颜色,当文本宽度超出的时候nameKey所对应的字段会显示为...
  *
  * @param {Array} data 所要展示的的数据
  * @param {String} nameKey 工程分项后面所要跟随那个字段的值
@@ -77,9 +77,9 @@ let fittingString = (c, str, maxWidth) => {
  * @param {Array} nodeTypeNameEmun 工程划分枚举值
  * @param {Boolean} isAutoFitColumn 是否自适应撑开列宽
  * @param {String} nodeTypeKey 工程节点分级字段（非必传字段，不传时，取当前列的字段值作为工程节点分级字段，否则取当前字段作为工程节点分级字段）
- * @param {Boolean} isNeedTip 是否需要提示，默认值为false
+ * @param {Boolean} isNeedTip 是否需要提示，默认值为true
  * @param {String} parentId  表格最外层容器Id position属性应为relative(注：isNeedTip 为 true 时必传)
- * @param {Array<String>} stringArr 提示所需要的字段集合，默认显示当前单元格value
+ * @param {Array<String>} stringArr 提示所需要的字段集合，默认显示当前单元格nameKey所对应的字段值
  * @param {String} linkChart  提示内容多个字段的连接符，默认“-”
  * @param {Number} partSize 工程划分文字大小 默认14
  * @param {Number} nameSize 工程划分后的文字大小 默认14
@@ -116,13 +116,14 @@ export function customCellType(data,nameKey,colorRange,nodeTypeNameEmun,isAutoFi
     this.textWidth = 0
     this.nodeTypeKey = nodeTypeKey
     this.parentId = parentId
-    this.isNeedTip = isNeedTip
+    this.isNeedTip =  typeof isNeedTip == 'boolean' ? (isNeedTip.toString() == 'false'?isNeedTip = false:isNeedTip = true):isNeedTip = true
     this.stringArr = stringArr || []
     this.linkChart = linkChart || '-'
 }
 
 customCellType.prototype = new spreadNS.CellTypes.Text();
 customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style, context) {
+    
     let textTotalWidth = 0
     let row = context.row
     let nodeTypeName = ''
@@ -175,7 +176,7 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
         ctx.fillStyle = "#000"
     }
     if(this.partSize){
-        ctx.font = this.partSize + "px  Arial";
+        ctx.font = this.partSize + "px";
     }
     if((this.data[row])[this.nameKey]){
         ctx.fillText(nodeTypeName,x+10,y+(h-this.partTextHeight)/2+2);
@@ -192,9 +193,12 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
         textTotalWidth += Math.ceil(ctx.measureText(afterText).width)
 
         if(this.nameSize){
-            ctx.font = this.nameSize + "px  Arial";
+            ctx.font = this.nameSize + "px";
         }
         if(afterText && afterText != "null"){
+            let afterTextWidth = w-Math.ceil(textInfo.width)-20-5
+            let tmpObj = fittingString(ctx,afterText,afterTextWidth)
+            afterText = tmpObj.newStr
             ctx.fillText(afterText,x+Math.ceil(textInfo.width)+20,y+(h-this.nameTextHeight)/2+2);
         }
     }
@@ -224,6 +228,9 @@ customCellType.prototype.getHitInfo = function (x, y, cellStyle, cellRect, conte
 }
 customCellType.prototype.processMouseEnter = function (hitinfo) {
     if(!this.isNeedTip){
+        return
+    }
+    if(!this.parentId || !document.getElementById(this.parentId)){
         return
     }
     let { sheet, cellRect, row:cellRow, col:cellCol,x:mouseX,y:mouseY } = hitinfo
@@ -302,7 +309,7 @@ customCellType.prototype.processMouseEnter = function (hitinfo) {
             strEncode = HTMLEncode(str)
         }
     }else{
-        strEncode = HTMLEncode(cellVAlue)
+        strEncode = HTMLEncode(this.data[cellRow][this.nameKey])
     }
     if(!strEncode){
         return
@@ -743,6 +750,7 @@ let fittingStringForHyperLink = (c, str, cellWidth,linkTextStr,linkNum,maxWidth)
 }
 HyperLinkTextCell.prototype = new spreadNS.CellTypes.Base();
 
+// HyperLinkTextCell.prototype.paintContent = function (ctx, value, x, y, w, h, style, context) {
 HyperLinkTextCell.prototype.paintContent = function (ctx, value, x, y, w, h, style, context) {
     ctx.font = style.font;
     let newValue = ''
