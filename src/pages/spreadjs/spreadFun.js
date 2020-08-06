@@ -123,7 +123,7 @@ export function customCellType(data,nameKey,colorRange,nodeTypeNameEmun,isAutoFi
 
 customCellType.prototype = new spreadNS.CellTypes.Text();
 customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style, context) {
-    
+
     let textTotalWidth = 0
     let row = context.row
     let nodeTypeName = ''
@@ -176,7 +176,7 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
         ctx.fillStyle = "#000"
     }
     if(this.partSize){
-        ctx.font = this.partSize + "px";
+        ctx.font = this.partSize + "px Arial";
     }
     if((this.data[row])[this.nameKey]){
         ctx.fillText(nodeTypeName,x+10,y+(h-this.partTextHeight)/2+2);
@@ -189,12 +189,12 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
         ctx.fillStyle = '#000';
         ctx.textBaseline = 'top';
         //计算后面跟随文字的宽度
+        if(this.nameSize){
+            ctx.font = this.nameSize + "px Arial";
+        }
         let afterText = (this.data[row])[this.nameKey];
         textTotalWidth += Math.ceil(ctx.measureText(afterText).width)
 
-        if(this.nameSize){
-            ctx.font = this.nameSize + "px";
-        }
         if(afterText && afterText != "null"){
             let afterTextWidth = w-Math.ceil(textInfo.width)-20-5
             let tmpObj = fittingString(ctx,afterText,afterTextWidth)
@@ -372,7 +372,7 @@ TipCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style, co
         return
     }
 
-    ctx.font = style.font;
+    ctx.font = this.textSize + 'px Arial'
 
     let res = fittingString(ctx, value, w - 5);
     value = res.newStr
@@ -501,7 +501,7 @@ export function EllipsisTextCellType(textAlign,textSize = 14) {
 
 EllipsisTextCellType.prototype = new spreadNS.CellTypes.Text();
 EllipsisTextCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style, context) {
-    ctx.font = style.font;
+    ctx.font = this.textSize + 'px Arial'
     let res = fittingString(ctx, value, w - 5);
     value = res.newStr
     let isEllipsis = res.isEllipsis
@@ -549,7 +549,7 @@ EllipsisAndToolTip.prototype.paintContent = function (ctx, value, x, y, w, h, st
         return
     }
 
-    ctx.font = style.font;
+    ctx.font = this.textSize + 'px Arial'
 
     let res = fittingString(ctx, value, w - 5);
     value = res.newStr
@@ -754,22 +754,22 @@ HyperLinkTextCell.prototype = new spreadNS.CellTypes.Base();
 HyperLinkTextCell.prototype.paintContent = function (ctx, value, x, y, w, h, style, context) {
     ctx.font = style.font;
     let newValue = ''
-
-    let fittingres = fittingStringForHyperLink(ctx, value,  w - 2, this.linkTextStr,this.linkNum ,this.textMaxWidth);
-    newValue = fittingres.newStr
-    this.textWidth = fittingres.textWidth == this.textMaxWidth?this.textMaxWidth:fittingres.textWidth
-    this.textMaxWidth = this.textMaxWidth || fittingres.textMaxWidth
-    let row = context.row
-    if(!this.textWidthArr["row"+row]){
-        this.textWidthArr["row"+row] = {textWidth:Math.ceil(this.textWidth),text:value} //存储普通文本长度及文本内容
-    }
-    ctx.beginPath();
-
-    // //获取文字属性
-    let textInfo = ctx.measureText(newValue)
-    // //计算矩形宽度并暂时赋值给单元格总宽度
     let textWidth = 0
-    //绘制普通文本
+    if(value){
+        ctx.font = this.textSize + 'px Arial';
+        let fittingres = fittingStringForHyperLink(ctx, value,  w - 2, this.linkTextStr,this.linkNum ,this.textMaxWidth);
+        newValue = fittingres.newStr
+        this.textWidth = fittingres.textWidth == this.textMaxWidth?this.textMaxWidth:fittingres.textWidth
+        this.textMaxWidth = this.textMaxWidth || fittingres.textMaxWidth
+        let row = context.row
+        if(!this.textWidthArr["row"+row]){
+            this.textWidthArr["row"+row] = {textWidth:Math.ceil(this.textWidth),text:value} //存储普通文本长度及文本内容
+        }
+        ctx.beginPath();
+
+        // //获取文字属性
+        let textInfo = ctx.measureText(newValue)
+        //绘制普通文本
         ctx.textAlign="start";
         ctx.fillStyle = '#000';
         ctx.textBaseline = 'top';
@@ -789,6 +789,7 @@ HyperLinkTextCell.prototype.paintContent = function (ctx, value, x, y, w, h, sty
         if(newValue){
             ctx.fillText(newValue,x+5,y+(h-this.textHeight)/2);
         }
+    }
         //绘制超链接文本
         for (let k = 0; k < this.linkArr.length; k++) {
             ctx.beginPath();
@@ -796,6 +797,7 @@ HyperLinkTextCell.prototype.paintContent = function (ctx, value, x, y, w, h, sty
             ctx.textAlign="start";
             ctx.textBaseline = 'top';
             ctx.fillStyle = ele.color || "#000";
+            ctx.font = this.linkSize +'px Arial'
             ctx.fillText(ele.name,x+5+textWidth,y+(h-this.textHeight)/2);
             let currentLinkTextWidth = Math.ceil(ctx.measureText(ele.name).width);
             //存储绘制的相对于单元格的始末相对坐标，以避免出现横向滚动条时，滚动后坐标相对位置发生改变，导致需要用坐标进行定位的Tips以及点击事件出现异常
@@ -852,7 +854,7 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
     let clearTip = () => {//删除toolTips的DOM元素
         let divDom = document.getElementById("__spread_customTipCellType__")
         let arrowDom = document.getElementById("__spread_customTip_arrow__")
-        if (divDom) { 
+        if (divDom) {
             if (!document.getElementById(this.parentId)) {
                 return
             }
@@ -872,6 +874,9 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
                 document.getElementById("vp_vp").style.cursor  = 'pointer';
             }
         },0)
+        if(!this.needTip){
+            return
+        }
         let index = res.index
         let linkTextWidth = (this.linArea[cellRow])[index].endX - (this.linArea[cellRow])[index].startX 
         if (!document.getElementById("__spread_customTipCellType__")) {
@@ -1069,7 +1074,7 @@ SingleHyperLinkCell.prototype.paintContent = function (ctx, value, x, y, w, h, s
         this.linkAreaArr[row] = []
         return
     }
-    ctx.font = style.font;
+    ctx.font = this.textSize + 'px Arial'
     let res = fittingString(ctx, value, w - 5);
     value = res.newStr
     let isEllipsis = res.isEllipsis
@@ -1167,6 +1172,9 @@ SingleHyperLinkCell.prototype.processMouseMove = function (hitinfo) {
               document.getElementById("vp_vp").style.cursor = 'pointer';
             }
         },0)
+        if(!this.needTip){
+            return
+        }
         if (!document.getElementById("__spread_customTipCellType__")) {
             let div = document.createElement("div");
                 div.setAttribute("id",'__spread_customTipCellType__')
@@ -1336,8 +1344,8 @@ EllipsisOrderLine.prototype.paintContent = function (ctx, value, x, y, w, h, sty
         return
     }
 
-    ctx.font = style.font;
 
+    ctx.font = this.textSize + 'px Arial'
     let res = fittingStringByLine(ctx, value, w - 10,this.lineNum);
     let valueArr = res.newStr
     let isEllipsis = res.isEllipsis

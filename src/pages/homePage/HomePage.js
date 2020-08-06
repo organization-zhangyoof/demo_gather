@@ -24,6 +24,7 @@ class HomePage extends Component {
                     <Button onClick={()=>router.push('/spreadJS')} className = {styles.btn}>跳转至spread</Button>
                     <Button onClick={()=>router.push('/spreadIo')} className = {styles.btn}>跳转至spread导入导出</Button>
                     <Button onClick={()=>router.push('/basetest')} className = {styles.btn}>跳转至BaseTest</Button>
+                    <Button onClick={()=>router.push('/spreadDesign')} className = {styles.btn}>跳转至spread设计器</Button>
                     {/* <Link to="/page1">Go to list page1</Link> */}
                 </div>
                 <div className = {styles.container}>

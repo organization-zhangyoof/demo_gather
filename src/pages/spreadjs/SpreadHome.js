@@ -37,7 +37,7 @@ class SpreadHome extends Component {
                 data:[
                     // {name:'艾瑞莉娅大数据哈师大很快就暗示的科技按时的痕迹',age:20,gender:0,department:'工程部返回的数据返回快速导航开发计划是的空间',partName:'partName单位工程',level:'1',nodeType:1,remark:'是多大'},
                     // {name:'艾瑞莉娅大数据哈师大很快就暗示的科技按时的痕迹',age:20,gender:0,department:'工程部返回的数据返回快速导航开发计划是的空间',partName:'partName单位工程',level:'1',nodeType:1,remark:''},
-                    {name:'艾瑞莉娅大数据哈师大很快就暗示的科技按时的痕迹-1',age:20,gender:0,department:'工程部返回的数据返回快速导航开发计划是的空间',partName:'1partName单位工程沙迪克讲哈圣诞节阿萨德',level:'1',nodeType:1,remark:'电视电话就是点击考核数据和点击开始的计划的环境闪电借款红烧鸡块对话框撒谎的开始的计划萨科技打火机卡圣诞节会撒娇实景后端框架sad卡萨很快就的撒款车型在能吃吗真不错科技按数据库洒出'},
+                    {name:'艾瑞莉娅大数据哈师大很快就暗示的科技按时的痕迹-1',age:20,gender:0,department:'工程部返回的数据返回快速导航开发计划是的空间',partName:'1partName单位工程沙迪克讲哈圣诞节阿萨德',level:'1',nodeType:1,remark:'工程部话就是点击考核数据和点击开始的计划的环境闪电借款红烧鸡块对话框撒谎的开始的计划萨科技打火机卡圣诞节会撒娇实景后端框架sad卡萨很快就的撒款车型在能吃吗真不错科技按数据库洒出'},
                     {name:'瑞文',age:20,gender:0,department:'工程1部',partName:'2partName子单位工',level:'1-1',nodeType:2,remark:'慌撒的看哈是框架'},
                     {name:null,age:20,gender:0,department:'工程1部',partName:'2partName子单位工程',level:'1-1',nodeType:2,remark:'慌撒的看哈是框架<html><div><span></span></div>'},
                     {name:'伊泽瑞尔',age:20,gender:0,department:'工程1部材料中心',partName:'3partName分部工程圣',level:'1-1-1',nodeType:3,remark:'撒德哈卡大数据汇顶科技按数据库的'},
@@ -49,7 +49,7 @@ class SpreadHome extends Component {
                     {name:'费德提克',age:20,gender:0,department:'工程1部材料中心02',partName:'partName子分部工程',level:'1-1-1-2',nodeType:4,remark:'层次感股有多少'},
                     {name:'纳尔',age:20,gender:0,department:'工程1部实验中心',partName:'partName分部工程',level:'1-1-2',nodeType:3,remark:'胜多负少的缴费基数的附件时代峻峰看来是点击发送点击父节点收款机房，返回第三方士大夫is电话费对事故已覆盖但是'},
                     {name:'迦娜',age:20,gender:0,department:'工程2部',partName:'partName子单位工程',level:'1-2',nodeType:2,remark:'于死地环境换成申达股份感受度覆盖但是'},
-                    {name:'厄斐琉斯-1',age:20,gender:0,department:'事业部',partName:'partName单位工程',level:'2',nodeType:1,remark:'报错说感觉还型从放大后圣诞节开会附件都是'},
+                    {name:'厄斐琉斯-1',age:20,gender:0,department:'事业部',partName:'partName单位工程',level:'2',nodeType:1,remark:'事业部感觉还型从放大后圣诞节开会附件都是'},
                     {name:'克烈',age:20,gender:0,department:'事业1部',partName:'partName子单位工程',level:'2-1',nodeType:2,remark:'的跳跃体育'},
                     {name:'克烈',age:20,gender:0,department:'事业部-附属1部的还是接口返回的数据库',partName:'partName子单位工程',level:'2-1-1',nodeType:2,remark:'的跳跃发货单就多福多寿很费劲东方红郡爱可登体育'},
                     {name:'茂凯',age:20,gender:0,department:'事业2部',partName:'partName子单位工程',level:'2-2',nodeType:2,remark:'日番谷冬狮'},
@@ -99,7 +99,7 @@ class SpreadHome extends Component {
         });
         //rangeGroupStateChanging
         //rangGroupStateChanged
-        sheet.options.isProtected = true
+        sheet.options.isProtected = false
         let linkArr = [
             {name:'超链接',color:'red',clickFun:(res)=>this.linkClickFun1(res),tipText:''},
             {name:'引用',color:'blue',clickFun:this.linkClickFun2}
@@ -110,8 +110,8 @@ class SpreadHome extends Component {
             // { visible: true, name: "age", displayName: '工程划分',width:500, cellType: new customCellType(this.state.data,'partName','','',true,"",true,"__spread_js_box__",['partName','remark'])},
             // { visible: true, name: "partName", displayName: '工程划分',width:500, cellType: new TipCellType("__spread_js_box__")},
             // { visible: false, name: "HyperLink", displayName: '超链接测试',width:400,},
-            { visible: true, name: "name", displayName: '姓名' ,cellType: new HyperLinkTextCell(linkArr,"__spread_js_box__"),width:300},
-            { visible: true, name: "name", displayName: '姓名' ,width:300},
+            { visible: true, name: "name", displayName: '姓名' ,cellType: new HyperLinkTextCell(linkArr,"__spread_js_box__",'','',12,'',false),width:300},
+            // { visible: true, name: "name", displayName: '姓名' ,width:300},
             { visible: true, name: "age", displayName: '年龄', width: 400 },
             { visible: true, name: "gender", displayName: '性别', width: 100 },
             { visible: true, name: "remark", displayName: '备注',width:200,cellType: new EllipsisOrderLine("__spread_js_box__",3,)},
@@ -157,11 +157,11 @@ class SpreadHome extends Component {
             // }
         }
         //非保护状态下，阻止编辑
-        sheet.bind(GC.Spread.Sheets.Events.EditStarting, function (sender, args) {
-            args.cancel = true
-            console.log("Start cell editing.sender===",sender);
-            console.log("Start cell editing.args===",args);
-        });
+        // sheet.bind(GC.Spread.Sheets.Events.EditStarting, function (sender, args) {
+        //     args.cancel = true
+        //     console.log("Start cell editing.sender===",sender);
+        //     console.log("Start cell editing.args===",args);
+        // });
         //设置标题行及数据行高
         sheet.defaults.colHeaderRowHeight = 48
         sheet.defaults.rowHeight = 48
@@ -225,11 +225,13 @@ class SpreadHome extends Component {
             sheet.repaint()
         }
         const clickCellHandler = (sheet,sheetName,row,col,cancel) =>{
+            let sheets = this.spread.getActiveSheet();
             // console.log("sheet======",sheet)
             // console.log("sheetName======",sheetName)
             // console.log("row======",row)
             // console.log("col======",col)
             // console.log("cancel======",cancel)
+            console.log("00000====",sheets.getCell(row,col).locked())
         }
         let columns = [
             // { visible: true, name: "xuhao", displayName: '序号',width:200},
@@ -267,7 +269,7 @@ class SpreadHome extends Component {
                             showVerticalScrollbar={true}
                             showHorizontalScrollbar={true}
                             allowUserDragDrop={false}
-                            allowContextMenu={false}
+                            allowContextMenu={true} //是否允许右键菜单
                             scrollbarMaxAlign={false}
                             allowUserResize = {true}
                             //   valueChanged={onCellrefresh}
