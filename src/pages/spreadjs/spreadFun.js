@@ -26,19 +26,76 @@ let findFromArr =  (value,arr,isReturnIndex = false) => {
 }
 //字符转译
 function HTMLEncode(html) {
-    var temp = document.createElement("div");
+    let temp = document.createElement("div");
     (temp.textContent != null) ? (temp.textContent = html) : (temp.innerText = html);
-    var output = temp.innerHTML;
+    let output = temp.innerHTML;
     temp = null;
     return output;
 }
 //字符反转译
 function HTMLDecode(text) {
-    var temp = document.createElement("div");
+    let temp = document.createElement("div");
     temp.innerHTML = text;
-    var output = temp.innerText || temp.textContent;
+    let output = temp.innerText || temp.textContent;
     temp = null;
     return output;
+}
+
+/**
+ * //字符截取
+ * @param {*} c canvas画笔
+ * @param {*} str 原本的字符
+ * @param {*} len 原本的字符长度
+ * @param {*} textMaxWidth 字符绘制区的宽度
+ * @param {*} end 原始字符长度
+ * @param {*} start 原始字符起始长度  0
+ */
+let strReduce = (c,str,len,textMaxWidth,end,start) => {
+    textMaxWidth = textMaxWidth - 0.5
+    len =  Math.ceil(len - (end - start)/2)
+    let copyStr = (JSON.parse(JSON.stringify(str))).slice(0,len)
+    //目前长度减一后截取的字符绘制长度
+    let tmpMinWidth = c.measureText((JSON.parse(JSON.stringify(str))).slice(0,len-1)).width
+    //目前字符的绘制长度
+    let tmpWidth = c.measureText(copyStr).width
+    //目前长度加一后截取的字符绘制长度
+    let tmpMaxWidth = c.measureText((JSON.parse(JSON.stringify(str))).slice(0,len+1)).width
+    //若减一后的绘制长度小于限定长度，加一后的绘制长度大于限定长度，且目前字符绘制长度小于限定长度或者等于限制长度;或者截至为止与目前的字符截取长度位一致即 end==len (若不加此判断因为是向上取整，在偶然的情况下会出现死循环)
+    if((tmpMinWidth < textMaxWidth && tmpMaxWidth > textMaxWidth && (tmpWidth< textMaxWidth || tmpWidth == textMaxWidth))  || end == len){
+        if(end == len){//极端情况下会出现end==len，但此时截取出的文字的绘制长度依然大于限定长度，则取当前截取位减一的文本作为绘制文本
+            if(tmpWidth > textMaxWidth){
+                copyStr = JSON.parse(JSON.stringify(str)).slice(0,len-1)
+            }
+        }
+        return copyStr
+    }else if(tmpWidth > textMaxWidth){
+        end = len
+        return strReduce(c,str,len,textMaxWidth,end,start)
+    }else if(tmpWidth < textMaxWidth){
+        start = len
+        return strAdd(c,str,len,textMaxWidth,end,start)
+    }
+}
+/**
+ * //字符增加
+ * @param {*} c canvas画笔
+ * @param {*} str 原本的字符
+ * @param {*} len 原本的字符长度
+ * @param {*} textMaxWidth 字符绘制区的宽度
+ * @param {*} end 原始字符长度
+ * @param {*} start 原始字符起始长度  0
+ */
+let strAdd = (c,str,len,textMaxWidth,end,start) => {
+    len =  Math.ceil(len + (end - start)/2)
+    let copyStr = (JSON.parse(JSON.stringify(str))).slice(0,len)
+    let tmpWidth = c.measureText(copyStr).width
+    if(tmpWidth > textMaxWidth){
+        end = len
+        return strReduce(c,str,len,textMaxWidth,end,start)
+    }else if(tmpWidth < textMaxWidth){
+        start = len
+        return strAdd(c,str,len,textMaxWidth,end,start)
+    }
 }
 
 
@@ -47,23 +104,22 @@ function HTMLDecode(text) {
  *
  * @param {*} c canvas画笔
  * @param {*} str 要显示的字符串
- * @param {*} maxWidth 最大宽度
+ * @param {*} maxWidth 最大宽度SingleHyperLinkCell
  */
 let fittingString = (c, str, maxWidth) => {
     let obj = {newStr:'',isEllipsis:false}
-    var width = c.measureText(str).width;
-    var ellipsis = '…';
-    var ellipsisWidth = c.measureText(ellipsis).width;
+    let width = c.measureText(str).width;
+    let ellipsis = '…';
+    let len = JSON.parse(JSON.stringify(str)).length;
+    let start = 0;
+    let end = JSON.parse(JSON.stringify(str)).length;
+    let ellipsisWidth = c.measureText(ellipsis).width;
     if (width <= maxWidth || width <= ellipsisWidth) {
         obj = {newStr:str,isEllipsis:false}
         return obj;
     } else {
-        var len = str.length;
-        while (width >= maxWidth - ellipsisWidth && len-- > 0) {
-            str = str.substring(0, len);
-            width = c.measureText(str).width;
-        }
-        obj = {newStr:str + ellipsis,isEllipsis:true}
+        let newStr = strReduce(c,str,len,maxWidth - ellipsisWidth,end,start)
+        obj = {newStr:newStr + ellipsis,isEllipsis:true}
         return obj;
     }
 }
@@ -143,7 +199,7 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
     ctx.beginPath();
 
     //获取文字属性
-    var textInfo = ctx.measureText(nodeTypeName)
+    let textInfo = ctx.measureText(nodeTypeName)
     //计算矩形宽度并暂时赋值给单元格总宽度
     textTotalWidth += Math.ceil(textInfo.width)
     let index = ''
@@ -210,7 +266,7 @@ customCellType.prototype.paintContent = function (ctx, value, x, y, w, h, style,
 };
 customCellType.prototype.getAutoFitWidth = function (value, text, cellStyle, zoomFactor, context) {
     if(this.isAutoFitColumn){
-        var orginWidth = GC.Spread.Sheets.CellTypes.Text.prototype.getAutoFitWidth.call(this, value, text, cellStyle, zoomFactor, context);
+        let orginWidth = GC.Spread.Sheets.CellTypes.Text.prototype.getAutoFitWidth.call(this, value, text, cellStyle, zoomFactor, context);
         return orginWidth + this.textWidth*0.6 ;
     }
 }
@@ -288,11 +344,11 @@ customCellType.prototype.processMouseEnter = function (hitinfo) {
 
         this._toolTipArrow = arrow
     }
-    var strEncode = ''
+    let strEncode = ''
     if(this.stringArr && this.stringArr.length){
-        var showStrArr = []
-        for (var s = 0; s < this.stringArr.length; s++) {
-            var ele = this.stringArr[s];
+        let showStrArr = []
+        for (let s = 0; s < this.stringArr.length; s++) {
+            let ele = this.stringArr[s];
             if (ele == this.nodeTypeKey){
                 showStrArr.push(findFromArr((this.data[cellRow])[this.nodeTypeKey],this.nodeTypeNameEmun))
             }else{
@@ -300,7 +356,7 @@ customCellType.prototype.processMouseEnter = function (hitinfo) {
             }
         }
         if(showStrArr.length){
-            var str = ''
+            let str = ''
             if(this.linkChart){
                 str = showStrArr.join(this.linkChart)
             }else{
@@ -409,6 +465,18 @@ TipCellType.prototype.getHitInfo = function (x, y, cellStyle, cellRect, context,
 TipCellType.prototype.processMouseEnter = function (hitinfo) {
 
     let { sheet, cellRect, row:cellRow, col:cellCol } = hitinfo
+    if(!cellRect){
+        let divDom = document.getElementById("__spread_customTipCellType__")
+        if (divDom) {
+            if (!document.getElementById(this.parentId)) {
+                return
+            }
+            document.getElementById(this.parentId).removeChild(divDom);
+            this._toolTipElement = null;
+            this._toolTipArrow = null;
+        }
+        return
+    }
     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
     let cellVAlue = sheet.getValue(cellRow,cellCol)
     if(!cellVAlue){
@@ -445,7 +513,7 @@ TipCellType.prototype.processMouseEnter = function (hitinfo) {
 
         this._toolTipArrow = arrow
     }
-    var strEncode = HTMLEncode(cellVAlue)
+    let strEncode = HTMLEncode(cellVAlue)
     this._toolTipElement.innerHTML = strEncode
     this._toolTipElement.style.top = cellY + "px"
     this._toolTipElement.style.left = cellX + "px"
@@ -587,6 +655,18 @@ EllipsisAndToolTip.prototype.getHitInfo = function (x, y, cellStyle, cellRect, c
 EllipsisAndToolTip.prototype.processMouseEnter = function (hitinfo) {
 
     let { sheet, cellRect, row:cellRow, col:cellCol } = hitinfo
+    if(!cellRect){
+        let divDom = document.getElementById("__spread_customTipCellType__")
+        if (divDom) {
+            if (!document.getElementById(this.parentId)) {
+                return
+            }
+            document.getElementById(this.parentId).removeChild(divDom);
+            this._toolTipElement = null;
+            this._toolTipArrow = null;
+        }
+        return
+    }
     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
     let cellVAlue = sheet.getValue(cellRow,cellCol)
     if(!cellVAlue){
@@ -633,7 +713,7 @@ EllipsisAndToolTip.prototype.processMouseEnter = function (hitinfo) {
 
         this._toolTipArrow = arrow
     }
-    var strEncode = HTMLEncode(cellVAlue)
+    let strEncode = HTMLEncode(cellVAlue)
     this._toolTipElement.innerHTML = strEncode
     this._toolTipElement.style.top = cellY + "px"
     this._toolTipElement.style.left = cellX + "px"
@@ -712,6 +792,7 @@ export function HyperLinkTextCell(linkArr, parentId,linkAlign = 'right', textSiz
 
     this.plainTextWidth = 0
 }
+
 /**
  * 用于过滤并形成最后需要省略显示的文字
  *
@@ -722,6 +803,9 @@ export function HyperLinkTextCell(linkArr, parentId,linkAlign = 'right', textSiz
 let fittingStringForHyperLink = (c, str, cellWidth,linkTextStr,linkNum,maxWidth) => {
     let result = ''
     let width = 0
+    let start = 0
+    let end = JSON.parse(JSON.stringify(str)).length
+    let len = JSON.parse(JSON.stringify(str)).length
     if(str){
         width = c.measureText(str).width;
     }
@@ -736,13 +820,15 @@ let fittingStringForHyperLink = (c, str, cellWidth,linkTextStr,linkNum,maxWidth)
           textMaxWidth: textMaxWidth
         };
     } else {
-        let len = str.length;
-        while (width >= textMaxWidth - ellipsisWidth && len-- > 0) {
-            str = str.substring(0, len);
-            width = c.measureText(str).width;
-        }
+        // while (width >= textMaxWidth - ellipsisWidth && len-- > 0) {
+        //     str = str.substring(0, len);
+        //     width = c.measureText(str).width;
+        // }
+        // textMaxWidth = textMaxWidth - ellipsisWidth
+        let newStr = strReduce(c,str,len,textMaxWidth - ellipsisWidth,end,start)
         return result = {
-          newStr: str + ellipsis,
+        //   newStr: str + ellipsis,
+          newStr: newStr + ellipsis,
           textWidth: textMaxWidth,
           textMaxWidth: textMaxWidth
         };
@@ -830,6 +916,18 @@ HyperLinkTextCell.prototype.getHitInfo = function (x, y, cellStyle, cellRect, co
 HyperLinkTextCell.prototype.processMouseDown = function (hitinfo) {
 
     let { sheet, cellRect, row:cellRow, col:cellCol,x:mouseX,y:mouseY } = hitinfo
+    if(!cellRect){
+        let divDom = document.getElementById("__spread_customTipCellType__")
+        if (divDom) {
+            if (!document.getElementById(this.parentId)) {
+                return
+            }
+            document.getElementById(this.parentId).removeChild(divDom);
+            this._toolTipElement = null;
+            this._toolTipArrow = null;
+        }
+        return
+    }
     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
     let cellVAlue = sheet.getValue(cellRow,cellCol)
     let res = ismouseInArea(mouseX,"",cellRow,this.linArea,cellX,this.textWidthArr)
@@ -865,6 +963,18 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
         }
     }
     let { sheet, cellRect, row:cellRow, col:cellCol,x:mouseX,y:mouseY } = hitinfo
+    if(!cellRect){
+        let divDom = document.getElementById("__spread_customTipCellType__")
+        if (divDom) {
+            if (!document.getElementById(this.parentId)) {
+                return
+            }
+            document.getElementById(this.parentId).removeChild(divDom);
+            this._toolTipElement = null;
+            this._toolTipArrow = null;
+        }
+        return
+    }
     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
     let cellVAlue = sheet.getValue(cellRow,cellCol)
     let res = ismouseInArea(mouseX,"",cellRow,this.linArea,cellX,this.textWidthArr)
@@ -910,7 +1020,7 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
 
             this._toolTipArrow = arrow
         }
-        var strEncode = HTMLEncode((this.linArea[cellRow])[index].tipText)
+        let strEncode = HTMLEncode((this.linArea[cellRow])[index].tipText)
         this._toolTipElement.innerHTML = strEncode
         // this._toolTipElement.innerHTML = (this.linArea[cellRow])[index].tipText
         this._toolTipElement.style.top = cellY + "px"
@@ -970,7 +1080,7 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
             this._toolTipArrow = arrow
         }
         // this._toolTipElement.innerHTML = this.textWidthArr["row"+cellRow].text
-        var strEncode = HTMLEncode((this.textWidthArr["row"+cellRow].text))
+        let strEncode = HTMLEncode((this.textWidthArr["row"+cellRow].text))
         this._toolTipElement.innerHTML = strEncode
         this._toolTipElement.style.top = cellY + "px"
         this._toolTipElement.style.left = cellX + "px"
@@ -1132,6 +1242,18 @@ SingleHyperLinkCell.prototype.processMouseDown = function (hitinfo) {
         }
     }, 0)
     let { sheet, cellRect, row:cellRow, col:cellCol,x:mouseX,y:mouseY } = hitinfo
+    if(!cellRect){
+        let divDom = document.getElementById("__spread_customTipCellType__")
+        if (divDom) {
+            if (!document.getElementById(this.parentId)) {
+                return
+            }
+            document.getElementById(this.parentId).removeChild(divDom);
+            this._toolTipElement = null;
+            this._toolTipArrow = null;
+        }
+        return
+    }
     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
     let cellVAlue = sheet.getValue(cellRow,cellCol)
     let res = ismouseInArea(mouseX,'',cellRow,this.linkAreaArr,cellX,{})
@@ -1160,6 +1282,18 @@ SingleHyperLinkCell.prototype.processMouseMove = function (hitinfo) {
     }
     clearTip()
     let { sheet, cellRect, row:cellRow, col:cellCol,x:mouseX,y:mouseY } = hitinfo
+    if(!cellRect){
+        let divDom = document.getElementById("__spread_customTipCellType__")
+        if (divDom) {
+            if (!document.getElementById(this.parentId)) {
+                return
+            }
+            document.getElementById(this.parentId).removeChild(divDom);
+            this._toolTipElement = null;
+            this._toolTipArrow = null;
+        }
+        return
+    }
     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
     let cellVAlue = sheet.getValue(cellRow,cellCol)
     if(!cellVAlue){
@@ -1206,7 +1340,7 @@ SingleHyperLinkCell.prototype.processMouseMove = function (hitinfo) {
             this._toolTipArrow = arrow
         }
         // this._toolTipElement.innerHTML = cellVAlue
-        var strEncode = HTMLEncode(cellVAlue)
+        let strEncode = HTMLEncode(cellVAlue)
         this._toolTipElement.innerHTML = strEncode
         this._toolTipElement.style.top = cellY + "px"
         this._toolTipElement.style.left = cellX + "px"
@@ -1265,16 +1399,26 @@ SingleHyperLinkCell.prototype.activeOnClick = function(){
  * @param {Number} lineNum 显示的最大行数
  */
 let fittingStringByLine = (c, str, maxWidth,lineNum) => {
+    maxWidth = maxWidth 
+    //初始化返回对象obj
     let obj = {newStr:'',isEllipsis:false}
-    var width = str.length;
-    var ellipsis = '…';
-    var ellipsisWidth = c.measureText(ellipsis).width;
-    var isEllipsis = false
-    var tmpArr = []
-    for(var k = 0;k < lineNum; k++){
+    //
+    let width = 0;
+    let ellipsis = '…';
+    //省略符的绘制宽度
+    let ellipsisWidth = c.measureText(ellipsis).width;
+    //初始化是否省略为false
+    let isEllipsis = false
+    //初始化临时数组为空
+    let tmpArr = []
+    for(let k = 0;k < lineNum; k++){
         let tmpStr = JSON.parse(JSON.stringify(str))
         let tmpStrWdith = c.measureText(tmpStr).width
         let strMaxWidth = 0
+        let start = 0
+        let end = JSON.parse(JSON.stringify(str)).length
+        let len = JSON.parse(JSON.stringify(str)).length
+        
         if(k == lineNum -1 && tmpStrWdith > (k+1)*maxWidth){
             strMaxWidth = (k+1)*maxWidth - ellipsisWidth
         }else{
@@ -1284,30 +1428,25 @@ let fittingStringByLine = (c, str, maxWidth,lineNum) => {
             if(tmpStrWdith <= strMaxWidth){
                 tmpArr[k] = tmpStr
             }else{
-                for(var len = tmpStr.length; len >0;len--){
-                    tmpStr = tmpStr.substring(0, len);
-                    width = c.measureText(tmpStr).width
-                    if(width <= strMaxWidth){
-                        if(k == lineNum-1){
-                            tmpArr[k] = tmpStr+ellipsis
-                            isEllipsis = true
-                            break
-                        }else{
-                            tmpArr[k] = tmpStr
-                            break
-                        }
-                    }
+                tmpStr = strReduce(c,str,len,strMaxWidth,end,start)
+                if(k == lineNum-1){
+                    tmpArr[k] = tmpStr+ellipsis
+                    isEllipsis = true
+                    // break
+                }else{
+                    tmpArr[k] = tmpStr
+                    // break
                 }
             }
         }
     }
     if(tmpArr.length && tmpArr.length>1){
-        var tempNewArr = []
+        let tempNewArr = []
         tempNewArr.push(tmpArr[0])
-        for(var q = 0;q<tmpArr.length;q++){
+        for(let q = 0;q<tmpArr.length;q++){
             if(q <= tmpArr.length-2){
-                var a = tmpArr[q].length
-                var b = tmpArr[q+1].substring(a)
+                let a = tmpArr[q].length
+                let b = tmpArr[q+1].substring(a)
                 tempNewArr.push(b)
             }
         }
@@ -1367,9 +1506,9 @@ EllipsisOrderLine.prototype.paintContent = function (ctx, value, x, y, w, h, sty
             }
         }
     }else{
-            for(var f= 0;f<valueArr.length;f++){
-                var starty = y+((h-(this.textHeight*valueArr.length)-5*(valueArr.length-1))/2)+(this.textHeight+5)*f
-                var text = valueArr[f]
+            for(let f= 0;f<valueArr.length;f++){
+                let starty = y+((h-(this.textHeight*valueArr.length)-5*(valueArr.length-1))/2)+(this.textHeight+5)*f
+                let text = valueArr[f]
                 ctx.beginPath();
                 ctx.textAlign="start";
                 ctx.fillStyle = '#000';
@@ -1405,6 +1544,18 @@ EllipsisOrderLine.prototype.getHitInfo = function (x, y, cellStyle, cellRect, co
 EllipsisOrderLine.prototype.processMouseEnter = function (hitinfo) {
 
     let { sheet, cellRect, row:cellRow, col:cellCol } = hitinfo
+    if(!cellRect){
+        let divDom = document.getElementById("__spread_customTipCellType__")
+        if (divDom) {
+            if (!document.getElementById(this.parentId)) {
+                return
+            }
+            document.getElementById(this.parentId).removeChild(divDom);
+            this._toolTipElement = null;
+            this._toolTipArrow = null;
+        }
+        return
+    }
     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
     let cellVAlue = sheet.getValue(cellRow,cellCol)
     if(!cellVAlue){
@@ -1451,7 +1602,7 @@ EllipsisOrderLine.prototype.processMouseEnter = function (hitinfo) {
 
         this._toolTipArrow = arrow
     }
-    var strEncode = HTMLEncode(cellVAlue)
+    let strEncode = HTMLEncode(cellVAlue)
     this._toolTipElement.innerHTML = strEncode
     this._toolTipElement.style.top = cellY + "px"
     this._toolTipElement.style.left = cellX + "px"
