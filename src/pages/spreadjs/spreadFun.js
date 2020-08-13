@@ -290,16 +290,19 @@ customCellType.prototype.processMouseEnter = function (hitinfo) {
         return
     }
     let { sheet, cellRect, row:cellRow, col:cellCol,x:mouseX,y:mouseY } = hitinfo
-    if(!cellRect){
-        let divDom = document.getElementById("__spread_customTipCellType__")
-        if (divDom) {
-            if (!document.getElementById(this.parentId)) {
-                return
-            }
-            document.getElementById(this.parentId).removeChild(divDom);
-            this._toolTipElement = null;
-            this._toolTipArrow = null;
+    //清除已有的弹框及下方黑三角
+    let divDom = document.getElementById("__spread_customTipCellType__")
+    let arrowDom = document.getElementById("__spread_customTip_arrow__")
+    if (divDom) {
+        if (!document.getElementById(this.parentId)) {
+            return
         }
+        document.getElementById(this.parentId).removeChild(divDom);
+        document.getElementById(this.parentId).removeChild(arrowDom);
+        this._toolTipElement = null;
+        this._toolTipArrow = null;
+    }
+    if(!cellRect){
         return
     }
     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
@@ -307,14 +310,6 @@ customCellType.prototype.processMouseEnter = function (hitinfo) {
     if(!cellVAlue){
         return
     }
-    let divDom = document.getElementById("__spread_customTipCellType__")
-    if (divDom) {
-        if (!document.getElementById(this.parentId)) {
-            return
-        }
-		document.getElementById(this.parentId).removeChild(divDom);
-		this._toolTipElement = null;
-	}
 	if (!document.getElementById("__spread_customTipCellType__")) {
         let div = document.createElement("div");
             div.setAttribute("id",'__spread_customTipCellType__')
@@ -465,18 +460,22 @@ TipCellType.prototype.getHitInfo = function (x, y, cellStyle, cellRect, context,
 TipCellType.prototype.processMouseEnter = function (hitinfo) {
 
     let { sheet, cellRect, row:cellRow, col:cellCol } = hitinfo
-    if(!cellRect){
-        let divDom = document.getElementById("__spread_customTipCellType__")
-        if (divDom) {
-            if (!document.getElementById(this.parentId)) {
-                return
-            }
-            document.getElementById(this.parentId).removeChild(divDom);
-            this._toolTipElement = null;
-            this._toolTipArrow = null;
+    //清除已有的弹框及下方黑三角
+    let divDom = document.getElementById("__spread_customTipCellType__")
+    let arrowDom = document.getElementById("__spread_customTip_arrow__")
+    if (divDom) {
+        if (!document.getElementById(this.parentId)) {
+            return
         }
+        document.getElementById(this.parentId).removeChild(divDom);
+        document.getElementById(this.parentId).removeChild(arrowDom);
+        this._toolTipElement = null;
+        this._toolTipArrow = null;
+    }
+    if(!cellRect){
         return
     }
+
     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
     let cellVAlue = sheet.getValue(cellRow,cellCol)
     if(!cellVAlue){
@@ -655,16 +654,19 @@ EllipsisAndToolTip.prototype.getHitInfo = function (x, y, cellStyle, cellRect, c
 EllipsisAndToolTip.prototype.processMouseEnter = function (hitinfo) {
 
     let { sheet, cellRect, row:cellRow, col:cellCol } = hitinfo
-    if(!cellRect){
-        let divDom = document.getElementById("__spread_customTipCellType__")
-        if (divDom) {
-            if (!document.getElementById(this.parentId)) {
-                return
-            }
-            document.getElementById(this.parentId).removeChild(divDom);
-            this._toolTipElement = null;
-            this._toolTipArrow = null;
+    //清除已有的弹框及下方黑三角
+    let divDom = document.getElementById("__spread_customTipCellType__")
+    let arrowDom = document.getElementById("__spread_customTip_arrow__")
+    if (divDom) {
+        if (!document.getElementById(this.parentId)) {
+            return
         }
+        document.getElementById(this.parentId).removeChild(divDom);
+        document.getElementById(this.parentId).removeChild(arrowDom);
+        this._toolTipElement = null;
+        this._toolTipArrow = null;
+    }
+    if(!cellRect){
         return
     }
     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
@@ -672,17 +674,6 @@ EllipsisAndToolTip.prototype.processMouseEnter = function (hitinfo) {
     if(!cellVAlue){
         return
     }
-    let divDom = document.getElementById("__spread_customTipCellType__")
-    let arrowDom = document.getElementById("__spread_customTip_arrow__")
-    if (divDom) {
-        if (!document.getElementById(this.parentId)) {
-            return
-        }
-		document.getElementById(this.parentId).removeChild(divDom);
-		document.getElementById(this.parentId).removeChild(arrowDom);
-		this._toolTipElement = null;
-		this._toolTipArrow = null;
-	}
 	if (!document.getElementById("__spread_customTipCellType__")) {
         let div = document.createElement("div");
             div.setAttribute("id",'__spread_customTipCellType__')
@@ -916,16 +907,19 @@ HyperLinkTextCell.prototype.getHitInfo = function (x, y, cellStyle, cellRect, co
 HyperLinkTextCell.prototype.processMouseDown = function (hitinfo) {
 
     let { sheet, cellRect, row:cellRow, col:cellCol,x:mouseX,y:mouseY } = hitinfo
-    if(!cellRect){
-        let divDom = document.getElementById("__spread_customTipCellType__")
-        if (divDom) {
-            if (!document.getElementById(this.parentId)) {
-                return
-            }
-            document.getElementById(this.parentId).removeChild(divDom);
-            this._toolTipElement = null;
-            this._toolTipArrow = null;
+    //清除已有的弹框及下方黑三角
+    let divDom = document.getElementById("__spread_customTipCellType__")
+    let arrowDom = document.getElementById("__spread_customTip_arrow__")
+    if (divDom) {
+        if (!document.getElementById(this.parentId)) {
+            return
         }
+        document.getElementById(this.parentId).removeChild(divDom);
+        document.getElementById(this.parentId).removeChild(arrowDom);
+        this._toolTipElement = null;
+        this._toolTipArrow = null;
+    }
+    if(!cellRect){
         return
     }
     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
@@ -949,30 +943,19 @@ HyperLinkTextCell.prototype.processMouseDown = function (hitinfo) {
 };
 HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
     //清除提示
-    let clearTip = () => {//删除toolTips的DOM元素
-        let divDom = document.getElementById("__spread_customTipCellType__")
-        let arrowDom = document.getElementById("__spread_customTip_arrow__")
-        if (divDom) {
-            if (!document.getElementById(this.parentId)) {
-                return
-            }
-            document.getElementById(this.parentId).removeChild(divDom);
-            document.getElementById(this.parentId).removeChild(arrowDom);
-            this._toolTipElement = null;
-            this._toolTipArrow = null;
+    let divDom = document.getElementById("__spread_customTipCellType__")
+    let arrowDom = document.getElementById("__spread_customTip_arrow__")
+    if (divDom) {
+        if (!document.getElementById(this.parentId)) {
+            return
         }
+        document.getElementById(this.parentId).removeChild(divDom);
+        document.getElementById(this.parentId).removeChild(arrowDom);
+        this._toolTipElement = null;
+        this._toolTipArrow = null;
     }
     let { sheet, cellRect, row:cellRow, col:cellCol,x:mouseX,y:mouseY } = hitinfo
     if(!cellRect){
-        let divDom = document.getElementById("__spread_customTipCellType__")
-        if (divDom) {
-            if (!document.getElementById(this.parentId)) {
-                return
-            }
-            document.getElementById(this.parentId).removeChild(divDom);
-            this._toolTipElement = null;
-            this._toolTipArrow = null;
-        }
         return
     }
     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
@@ -1103,8 +1086,6 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
         //     this._toolTipArrow.style.top = cellY - 11 +  "px"
         //     this._toolTipArrow.style.left = cellX + w - w*0.25 - 7 + "px"
         // }
-    }else{
-        clearTip()
     }
 };
 HyperLinkTextCell.prototype.processMouseLeave = function (hitinfo) {
@@ -1267,31 +1248,19 @@ SingleHyperLinkCell.prototype.processMouseDown = function (hitinfo) {
 };
 SingleHyperLinkCell.prototype.processMouseMove = function (hitinfo) {
     //清除提示
-    let clearTip = () => {
-        let divDom = document.getElementById("__spread_customTipCellType__")
-        let arrowDom = document.getElementById("__spread_customTip_arrow__")
-        if (divDom) {
-            if (!document.getElementById(this.parentId)) {
-                return
-            }
-            document.getElementById(this.parentId).removeChild(divDom);
-            document.getElementById(this.parentId).removeChild(arrowDom);
-            this._toolTipElement = null;
-            this._toolTipArrow = null;
+    let divDom = document.getElementById("__spread_customTipCellType__")
+    let arrowDom = document.getElementById("__spread_customTip_arrow__")
+    if (divDom) {
+        if (!document.getElementById(this.parentId)) {
+            return
         }
+        document.getElementById(this.parentId).removeChild(divDom);
+        document.getElementById(this.parentId).removeChild(arrowDom);
+        this._toolTipElement = null;
+        this._toolTipArrow = null;
     }
-    clearTip()
     let { sheet, cellRect, row:cellRow, col:cellCol,x:mouseX,y:mouseY } = hitinfo
     if(!cellRect){
-        let divDom = document.getElementById("__spread_customTipCellType__")
-        if (divDom) {
-            if (!document.getElementById(this.parentId)) {
-                return
-            }
-            document.getElementById(this.parentId).removeChild(divDom);
-            this._toolTipElement = null;
-            this._toolTipArrow = null;
-        }
         return
     }
     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
@@ -1367,8 +1336,6 @@ SingleHyperLinkCell.prototype.processMouseMove = function (hitinfo) {
         //     this._toolTipArrow.style.top = cellY - 11 +  "px"
         //     this._toolTipArrow.style.left = cellX + w - w*0.25 - 7 + "px"
         // }
-    }else{
-        clearTip()
     }
 
 };
@@ -1542,25 +1509,7 @@ EllipsisOrderLine.prototype.getHitInfo = function (x, y, cellStyle, cellRect, co
 	};
 }
 EllipsisOrderLine.prototype.processMouseEnter = function (hitinfo) {
-
-    let { sheet, cellRect, row:cellRow, col:cellCol } = hitinfo
-    if(!cellRect){
-        let divDom = document.getElementById("__spread_customTipCellType__")
-        if (divDom) {
-            if (!document.getElementById(this.parentId)) {
-                return
-            }
-            document.getElementById(this.parentId).removeChild(divDom);
-            this._toolTipElement = null;
-            this._toolTipArrow = null;
-        }
-        return
-    }
-    let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
-    let cellVAlue = sheet.getValue(cellRow,cellCol)
-    if(!cellVAlue){
-        return
-    }
+    //清除已有的提示
     let divDom = document.getElementById("__spread_customTipCellType__")
     let arrowDom = document.getElementById("__spread_customTip_arrow__")
     if (divDom) {
@@ -1572,6 +1521,15 @@ EllipsisOrderLine.prototype.processMouseEnter = function (hitinfo) {
 		this._toolTipElement = null;
 		this._toolTipArrow = null;
 	}
+    let { sheet, cellRect, row:cellRow, col:cellCol } = hitinfo
+    if(!cellRect){
+        return
+    }
+    let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
+    let cellVAlue = sheet.getValue(cellRow,cellCol)
+    if(!cellVAlue){
+        return
+    }
 	if (!document.getElementById("__spread_customTipCellType__")) {
         let div = document.createElement("div");
             div.setAttribute("id",'__spread_customTipCellType__')
