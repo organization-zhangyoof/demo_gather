@@ -50,8 +50,8 @@ function HTMLDecode(text) {
  * @param {*} end 原始字符长度
  * @param {*} start 原始字符起始长度  0
  */
-let strReduce = (c,str,len,textMaxWidth,end,start) => {
-    textMaxWidth = textMaxWidth - 0.5
+let strReduce = (c,str,len,maxWidth,end,start) => {
+    maxWidth = maxWidth - 0.5
     len =  Math.ceil(len - (end - start)/2)
     let copyStr = (JSON.parse(JSON.stringify(str))).slice(0,len)
     //目前长度减一后截取的字符绘制长度
@@ -61,19 +61,21 @@ let strReduce = (c,str,len,textMaxWidth,end,start) => {
     //目前长度加一后截取的字符绘制长度
     let tmpMaxWidth = c.measureText((JSON.parse(JSON.stringify(str))).slice(0,len+1)).width
     //若减一后的绘制长度小于限定长度，加一后的绘制长度大于限定长度，且目前字符绘制长度小于限定长度或者等于限制长度;或者截至为止与目前的字符截取长度位一致即 end==len (若不加此判断因为是向上取整，在偶然的情况下会出现死循环)
-    if((tmpMinWidth < textMaxWidth && tmpMaxWidth > textMaxWidth && (tmpWidth< textMaxWidth || tmpWidth == textMaxWidth))  || end == len){
+    if((tmpMinWidth < maxWidth && tmpMaxWidth > maxWidth && (tmpWidth< maxWidth || tmpWidth == maxWidth))  || end == len){
         if(end == len){//极端情况下会出现end==len，但此时截取出的文字的绘制长度依然大于限定长度，则取当前截取位减一的文本作为绘制文本
-            if(tmpWidth > textMaxWidth){
+            if(tmpWidth > maxWidth){
                 copyStr = JSON.parse(JSON.stringify(str)).slice(0,len-1)
             }
         }
         return copyStr
-    }else if(tmpWidth > textMaxWidth){
+    }else if(tmpMaxWidth == maxWidth){
+        return (JSON.parse(JSON.stringify(str))).slice(0,len+1)
+    }else if(tmpWidth > maxWidth){
         end = len
-        return strReduce(c,str,len,textMaxWidth,end,start)
-    }else if(tmpWidth < textMaxWidth){
+        return strReduce(c,str,len,maxWidth,end,start)
+    }else if(tmpWidth < maxWidth){
         start = len
-        return strAdd(c,str,len,textMaxWidth,end,start)
+        return strAdd(c,str,len,maxWidth,end,start)
     }
 }
 /**
@@ -85,16 +87,16 @@ let strReduce = (c,str,len,textMaxWidth,end,start) => {
  * @param {*} end 原始字符长度
  * @param {*} start 原始字符起始长度  0
  */
-let strAdd = (c,str,len,textMaxWidth,end,start) => {
+let strAdd = (c,str,len,maxWidth,end,start) => {
     len =  Math.ceil(len + (end - start)/2)
     let copyStr = (JSON.parse(JSON.stringify(str))).slice(0,len)
     let tmpWidth = c.measureText(copyStr).width
-    if(tmpWidth > textMaxWidth){
+    if(tmpWidth > maxWidth){
         end = len
-        return strReduce(c,str,len,textMaxWidth,end,start)
-    }else if(tmpWidth < textMaxWidth){
+        return strReduce(c,str,len,maxWidth,end,start)
+    }else if(tmpWidth < maxWidth){
         start = len
-        return strAdd(c,str,len,textMaxWidth,end,start)
+        return strAdd(c,str,len,maxWidth,end,start)
     }
 }
 
@@ -1366,7 +1368,7 @@ SingleHyperLinkCell.prototype.activeOnClick = function(){
  * @param {Number} lineNum 显示的最大行数
  */
 let fittingStringByLine = (c, str, maxWidth,lineNum) => {
-    maxWidth = maxWidth 
+    maxWidth = maxWidth
     //初始化返回对象obj
     let obj = {newStr:'',isEllipsis:false}
     //
