@@ -97,6 +97,8 @@ let strAdd = (c,str,len,maxWidth,end,start) => {
     }else if(tmpWidth < maxWidth){
         start = len
         return strAdd(c,str,len,maxWidth,end,start)
+    }else if(tmpWidth == maxWidth){
+        return copyStr
     }
 }
 
