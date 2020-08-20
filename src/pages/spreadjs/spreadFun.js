@@ -856,19 +856,16 @@ HyperLinkTextCell.prototype.paintContent = function (ctx, value, x, y, w, h, sty
         ctx.textBaseline = 'top';
         if(newValue){
             textWidth = this.textMaxWidth+10
-        }else{
-            if(this.linkAlign == 'right'){
-                textWidth = this.textMaxWidth+10
-            }else if(this.linkAlign == 'left'){
-                textWidth = 0
-            }else if(this.linkAlign == 'center'){
-                let linkInfo = ctx.measureText(this.linkTextStr)
-                textWidth = (w-2)/2 - ((this.linkNum-1)*10 + Math.ceil(linkInfo.width))/2
-            }
-        }
-
-        if(newValue){
             ctx.fillText(newValue,x+5,y+(h-this.textHeight)/2);
+        }
+    }else{
+        if(this.linkAlign == 'right'){
+            textWidth = this.textMaxWidth+10
+        }else if(this.linkAlign == 'left'){
+            textWidth = 0
+        }else if(this.linkAlign == 'center'){
+            let linkInfo = ctx.measureText(this.linkTextStr)
+            textWidth = (w-2)/2 - ((this.linkNum-1)*10 + Math.ceil(linkInfo.width))/2
         }
     }
         //绘制超链接文本
