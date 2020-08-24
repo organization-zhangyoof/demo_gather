@@ -859,6 +859,8 @@ HyperLinkTextCell.prototype.paintContent = function (ctx, value, x, y, w, h, sty
             ctx.fillText(newValue,x+5,y+(h-this.textHeight)/2);
         }
     }else{
+        let hyperLinkTextWidth = ctx.measureText(this.linkTextStr).width;
+        this.textMaxWidth = w-2 - 20 - hyperLinkTextWidth - 10*(this.linkNum-1)
         if(this.linkAlign == 'right'){
             textWidth = this.textMaxWidth+10
         }else if(this.linkAlign == 'left'){
