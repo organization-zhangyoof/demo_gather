@@ -145,7 +145,7 @@ let fittingString = (c, str, maxWidth) => {
  * @param {Number} nameSize 工程划分后的文字大小 默认14
  *
  */
-export function customCellType(data,nameKey,colorRange,nodeTypeNameEmun,isAutoFitColumn,nodeTypeKey,isNeedTip,parentId,stringArr,linkChart,partSize,nameSize,){
+export function customCellType(data,nameKey,colorRange,nodeTypeNameEmun,isAutoFitColumn,nodeTypeKey,isNeedTip,parentId,stringArr,linkChart,partSize,nameSize,lineHeight){
     const typeEmun = [
         { nodeType: 1, name: "单位工程" },
         { nodeType: 2, name: "子单位工程"},
@@ -179,6 +179,7 @@ export function customCellType(data,nameKey,colorRange,nodeTypeNameEmun,isAutoFi
     this.isNeedTip =  typeof isNeedTip == 'boolean' ? (isNeedTip.toString() == 'false'?isNeedTip = false:isNeedTip = true):isNeedTip = true
     this.stringArr = stringArr || []
     this.linkChart = linkChart || '-'
+    this.lineHeight = lineHeight || 48
 }
 
 customCellType.prototype = new spreadNS.CellTypes.Text();
@@ -290,19 +291,22 @@ customCellType.prototype.processMouseEnter = function (hitinfo) {
     if(!this.isNeedTip){
         return
     }
-    if(!this.parentId || !document.getElementById(this.parentId)){
-        return
-    }
-    let { sheet, cellRect, row:cellRow, col:cellCol,x:mouseX,y:mouseY } = hitinfo
+    let event = event || window.event;
+    let mousePageX  = event.pageX;
+    let mousePageY  = event.pageY;
+    let screenWidth = document.body.clientWidth
+    let { sheet, cellRect, row:cellRow, col:cellCol, x:mouseX,y:mouseY } = hitinfo
+    let xDiff = mousePageX - mouseX
+    let yDiff = mousePageY - mouseY
     //清除已有的弹框及下方黑三角
     let divDom = document.getElementById("__spread_customTipCellType__")
     let arrowDom = document.getElementById("__spread_customTip_arrow__")
     if (divDom) {
-        if (!document.getElementById(this.parentId)) {
+        if (!document.getElementById('root')) {
             return
         }
-        document.getElementById(this.parentId).removeChild(divDom);
-        document.getElementById(this.parentId).removeChild(arrowDom);
+        document.getElementById('root').removeChild(divDom);
+        document.getElementById('root').removeChild(arrowDom);
         this._toolTipElement = null;
         this._toolTipArrow = null;
     }
@@ -310,10 +314,13 @@ customCellType.prototype.processMouseEnter = function (hitinfo) {
         return
     }
     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
+    let cellPageX = cellX + xDiff
+    let cellPageY = cellY + yDiff
     let cellVAlue = sheet.getValue(cellRow,cellCol)
     if(!cellVAlue){
         return
     }
+    let maxWidth = cellWidth>350?cellWidth:350
 	if (!document.getElementById("__spread_customTipCellType__")) {
         let div = document.createElement("div");
             div.setAttribute("id",'__spread_customTipCellType__')
@@ -326,9 +333,11 @@ customCellType.prototype.processMouseEnter = function (hitinfo) {
             div.style.color = "#fff"
             div.style.padding = "6px 8px"
             div.style.zIndex = 1000
-            div.style.width = cellWidth + "px"
+            div.style.minWidth = cellWidth  + "px"
+            div.style.maxWidth = maxWidth  + "px"
 
         this._toolTipElement = div;
+
         //绘制指示箭头
         let arrow = document.createElement("div");
             arrow.setAttribute("id",'__spread_customTip_arrow__')
@@ -370,38 +379,47 @@ customCellType.prototype.processMouseEnter = function (hitinfo) {
         return
     }
     this._toolTipElement.innerHTML = strEncode
-    this._toolTipElement.style.top = cellY + "px"
-    this._toolTipElement.style.left = cellX + "px"
-    this._toolTipArrow.style.top = cellY - 5 +  "px"
-    this._toolTipArrow.style.left = cellX + "px"
-    document.getElementById(this.parentId).append(this._toolTipElement)
-    document.getElementById(this.parentId).append(this._toolTipArrow)
+    document.getElementById('root').append(this._toolTipElement)
+    document.getElementById('root').append(this._toolTipArrow)
 
     let h = document.getElementById("__spread_customTipCellType__").offsetHeight
     let w = document.getElementById("__spread_customTipCellType__").offsetWidth
-    this._toolTipElement.style.top = cellY - h + "px"
-    this._toolTipElement.style.left = cellX + "px"
+    let topVal = 0
+    let leftVal = cellPageX
+    let arrowTop = cellPageY
+    if(h<cellPageY){
+        topVal = cellPageY - h -5
+        arrowTop = cellPageY-12
+    }else{
+        topVal = cellPageY + this.lineHeight + 5
+        arrowTop = cellPageY + this.lineHeight
+    }
+    if(leftVal+w>screenWidth){
+        leftVal = leftVal - (leftVal + w -screenWidth )
+    }
+    this._toolTipElement.style.top = topVal + "px"
+    this._toolTipElement.style.left = leftVal + "px"
     // if(this.arrowPosition == "center"){
-        this._toolTipArrow.style.top = cellY - 5 +  "px"
-        this._toolTipArrow.style.left = cellX + w/2 - 7 + "px"
+        this._toolTipArrow.style.top = arrowTop+  "px"
+        this._toolTipArrow.style.left = cellPageX + cellWidth/2 - 7 + "px"
     // }else if(this.arrowPosition == "left"){
-    //     this._toolTipArrow.style.top = cellY - 10 +  "px"
-    //     let tmpW = w*0.25>15?15:w*0.25
-    //     this._toolTipArrow.style.left = cellX + tmpW + "px"
+        // this._toolTipArrow.style.top = arrowTop +  "px"
+        // let tmpW = cellWidth*0.25>15?15:cellWidth*0.25
+        // this._toolTipArrow.style.left = cellPageX + tmpW + "px"
     // }else if(this.arrowPosition == "right"){
-    //     this._toolTipArrow.style.top = cellY - 11 +  "px"
-    //     this._toolTipArrow.style.left = cellX + w - w*0.25 - 7 + "px"
+        // this._toolTipArrow.style.top = arrowTop +  "px"
+        // this._toolTipArrow.style.left = cellPageX + cellWidth - cellWidth*0.15+ "px"
     // }
 };
 customCellType.prototype.processMouseLeave = function (hitinfo) {
 	let divDom = document.getElementById("__spread_customTipCellType__")
     let arrowDom = document.getElementById("__spread_customTip_arrow__")
     if (divDom) {
-        if (!document.getElementById(this.parentId)) {
+        if (!document.getElementById('root')) {
             return
         }
-		document.getElementById(this.parentId).removeChild(divDom);
-		document.getElementById(this.parentId).removeChild(arrowDom);
+		document.getElementById('root').removeChild(divDom);
+		document.getElementById('root').removeChild(arrowDom);
 		this._toolTipElement = null;
 		this._toolTipArrow = null;
 	}
@@ -414,11 +432,12 @@ customCellType.prototype.processMouseLeave = function (hitinfo) {
  * @param {*} parentId 表格最外层容器Id position属性应为relative
  * @param {string} arrowPosition 指示箭头位置取值范围["left","center","right"],默认值为center
  */
-export function TipCellType(parentId,arrowPosition,textSize = 14) {
+export function TipCellType(parentId,arrowPosition,textSize,lineHeight) {
     this.parentId = parentId
     this.arrowPosition = arrowPosition || 'center'
-    this.textSize = textSize
+    this.textSize = textSize || 14
     this.textHeight = this.textSize
+    this.lineHeight = lineHeight || 48
 }
 // TipCellType.prototype = new GC.Spread.Sheets.CellTypes.Text();
 TipCellType.prototype = new spreadNS.CellTypes.Text();
@@ -462,34 +481,40 @@ TipCellType.prototype.getHitInfo = function (x, y, cellStyle, cellRect, context,
 	};
 }
 TipCellType.prototype.processMouseEnter = function (hitinfo) {
-
-    let { sheet, cellRect, row:cellRow, col:cellCol } = hitinfo
+    let event = event || window.event;
+    let mousePageX  = event.pageX;
+    let mousePageY  = event.pageY;
+    let screenWidth = document.body.clientWidth
+    let { sheet, cellRect, row:cellRow, col:cellCol, x:mouseX,y:mouseY } = hitinfo
+    let xDiff = mousePageX - mouseX
+    let yDiff = mousePageY - mouseY
     //清除已有的弹框及下方黑三角
     let divDom = document.getElementById("__spread_customTipCellType__")
     let arrowDom = document.getElementById("__spread_customTip_arrow__")
     if (divDom) {
-        if (!document.getElementById(this.parentId)) {
+        if (!document.getElementById('root')) {
             return
         }
-        document.getElementById(this.parentId).removeChild(divDom);
-        document.getElementById(this.parentId).removeChild(arrowDom);
+        document.getElementById('root').removeChild(divDom);
+        document.getElementById('root').removeChild(arrowDom);
         this._toolTipElement = null;
         this._toolTipArrow = null;
     }
     if(!cellRect){
         return
     }
-
     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
+    let cellPageX = cellX + xDiff
+    let cellPageY = cellY + yDiff
     let cellVAlue = sheet.getValue(cellRow,cellCol)
     if(!cellVAlue){
         return
     }
+    let maxWidth = cellWidth>350?cellWidth:350
 	if (!document.getElementById("__spread_customTipCellType__")) {
         let div = document.createElement("div");
             div.setAttribute("id",'__spread_customTipCellType__')
             div.style.position = "absolute"
-            // div.style.border = "1px #C0C0C0 solid"
             div.style.boxShadow = "1px 2px 5px rgba(0,0,0,0.4)"
             div.style.borderRadius = "5px"
             div.style.font = "Arial"
@@ -498,7 +523,8 @@ TipCellType.prototype.processMouseEnter = function (hitinfo) {
             div.style.color = "#fff"
             div.style.padding = "6px 8px"
             div.style.zIndex = 1000
-            div.style.width = cellWidth + "px"
+            div.style.minWidth = cellWidth  + "px"
+            div.style.maxWidth = maxWidth  + "px"
 
         this._toolTipElement = div;
 
@@ -518,38 +544,47 @@ TipCellType.prototype.processMouseEnter = function (hitinfo) {
     }
     let strEncode = HTMLEncode(cellVAlue)
     this._toolTipElement.innerHTML = strEncode
-    this._toolTipElement.style.top = cellY + "px"
-    this._toolTipElement.style.left = cellX + "px"
-    this._toolTipArrow.style.top = cellY - 5 +  "px"
-    this._toolTipArrow.style.left = cellX + "px"
-    document.getElementById(this.parentId).append(this._toolTipElement)
-    document.getElementById(this.parentId).append(this._toolTipArrow)
+    document.getElementById('root').append(this._toolTipElement)
+    document.getElementById('root').append(this._toolTipArrow)
 
     let h = document.getElementById("__spread_customTipCellType__").offsetHeight
     let w = document.getElementById("__spread_customTipCellType__").offsetWidth
-    this._toolTipElement.style.top = cellY - h -5 + "px"
-    this._toolTipElement.style.left = cellX + "px"
+    let topVal = 0
+    let leftVal = cellPageX
+    let arrowTop = cellPageY
+    if(h<cellPageY){
+        topVal = cellPageY - h -5
+        arrowTop = cellPageY-12
+    }else{
+        topVal = cellPageY + this.lineHeight + 5
+        arrowTop = cellPageY + this.lineHeight
+    }
+    if(leftVal+w>screenWidth){
+        leftVal = leftVal - (leftVal + w -screenWidth )
+    }
+    this._toolTipElement.style.top = topVal + "px"
+    this._toolTipElement.style.left = leftVal + "px"
     if(this.arrowPosition == "center"){
-        this._toolTipArrow.style.top = cellY - 10 +  "px"
-        this._toolTipArrow.style.left = cellX + w/2 - 7 + "px"
+        this._toolTipArrow.style.top = arrowTop+  "px"
+        this._toolTipArrow.style.left = cellPageX + cellWidth/2 - 7 + "px"
     }else if(this.arrowPosition == "left"){
-        this._toolTipArrow.style.top = cellY - 10 +  "px"
-        let tmpW = w*0.25>15?15:w*0.25
-        this._toolTipArrow.style.left = cellX + tmpW + "px"
+        this._toolTipArrow.style.top = arrowTop +  "px"
+        let tmpW = cellWidth*0.25>15?15:cellWidth*0.25
+        this._toolTipArrow.style.left = cellPageX + tmpW + "px"
     }else if(this.arrowPosition == "right"){
-        this._toolTipArrow.style.top = cellY - 11 +  "px"
-        this._toolTipArrow.style.left = cellX + w - w*0.25 - 7 + "px"
+        this._toolTipArrow.style.top = arrowTop +  "px"
+        this._toolTipArrow.style.left = cellPageX + cellWidth - cellWidth*0.15+ "px"
     }
 };
 TipCellType.prototype.processMouseLeave = function (hitinfo) {
 	let divDom = document.getElementById("__spread_customTipCellType__")
     let arrowDom = document.getElementById("__spread_customTip_arrow__")
     if (divDom) {
-        if (!document.getElementById(this.parentId)) {
+        if (!document.getElementById('root')) {
             return
         }
-		document.getElementById(this.parentId).removeChild(divDom);
-		document.getElementById(this.parentId).removeChild(arrowDom);
+		document.getElementById('root').removeChild(divDom);
+		document.getElementById('root').removeChild(arrowDom);
 		this._toolTipElement = null;
 		this._toolTipArrow = null;
 	}
@@ -605,14 +640,15 @@ EllipsisTextCellType.prototype.paintContent = function (ctx, value, x, y, w, h, 
  * @param {string} textAlign 文字位置["left","center","right"],默认值为left，居左
  * @param {number} textSize 文字大小  默认14
  */
-export function EllipsisAndToolTip(parentId, textAlign ,textSize = 14 , arrowPosition, ){
+export function EllipsisAndToolTip(parentId, textAlign ,textSize, arrowPosition, lineHeight){
     this.parentId = parentId
-    this.textAlign = textAlign || "left"
-    this.arrowPosition = arrowPosition || this.textAlign
+    this.textAlign = textAlign || "center"
+    this.arrowPosition = arrowPosition || 'right'
     // this.textY = textY || 21
     this.textY =  21
-    this.textSize = textSize
+    this.textSize = textSize || 14
     this.textHeight = this.textSize
+    this.lineHeight = lineHeight || 48
 }
 EllipsisAndToolTip.prototype = new spreadNS.CellTypes.Text();
 EllipsisAndToolTip.prototype.paintContent = function (ctx, value, x, y, w, h, style, context) {
@@ -656,17 +692,22 @@ EllipsisAndToolTip.prototype.getHitInfo = function (x, y, cellStyle, cellRect, c
 	};
 }
 EllipsisAndToolTip.prototype.processMouseEnter = function (hitinfo) {
-
-    let { sheet, cellRect, row:cellRow, col:cellCol } = hitinfo
+    let event = event || window.event;
+    let mousePageX  = event.pageX;
+    let mousePageY  = event.pageY;
+    let screenWidth = document.body.clientWidth
+    let { sheet, cellRect, row:cellRow, col:cellCol, x:mouseX,y:mouseY } = hitinfo
+    let xDiff = mousePageX - mouseX
+    let yDiff = mousePageY - mouseY
     //清除已有的弹框及下方黑三角
     let divDom = document.getElementById("__spread_customTipCellType__")
     let arrowDom = document.getElementById("__spread_customTip_arrow__")
     if (divDom) {
-        if (!document.getElementById(this.parentId)) {
+        if (!document.getElementById('root')) {
             return
         }
-        document.getElementById(this.parentId).removeChild(divDom);
-        document.getElementById(this.parentId).removeChild(arrowDom);
+        document.getElementById('root').removeChild(divDom);
+        document.getElementById('root').removeChild(arrowDom);
         this._toolTipElement = null;
         this._toolTipArrow = null;
     }
@@ -674,10 +715,13 @@ EllipsisAndToolTip.prototype.processMouseEnter = function (hitinfo) {
         return
     }
     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
+    let cellPageX = cellX + xDiff
+    let cellPageY = cellY + yDiff
     let cellVAlue = sheet.getValue(cellRow,cellCol)
     if(!cellVAlue){
         return
     }
+    let maxWidth = cellWidth>350?cellWidth:350
 	if (!document.getElementById("__spread_customTipCellType__")) {
         let div = document.createElement("div");
             div.setAttribute("id",'__spread_customTipCellType__')
@@ -690,7 +734,8 @@ EllipsisAndToolTip.prototype.processMouseEnter = function (hitinfo) {
             div.style.color = "#fff"
             div.style.padding = "6px 8px"
             div.style.zIndex = 1000
-            div.style.width = cellWidth + "px"
+            div.style.minWidth = cellWidth  + "px"
+            div.style.maxWidth = maxWidth  + "px"
 
         this._toolTipElement = div;
 
@@ -710,38 +755,47 @@ EllipsisAndToolTip.prototype.processMouseEnter = function (hitinfo) {
     }
     let strEncode = HTMLEncode(cellVAlue)
     this._toolTipElement.innerHTML = strEncode
-    this._toolTipElement.style.top = cellY + "px"
-    this._toolTipElement.style.left = cellX + "px"
-    this._toolTipArrow.style.top = cellY - 5 +  "px"
-    this._toolTipArrow.style.left = cellX + "px"
-    document.getElementById(this.parentId).append(this._toolTipElement)
-    document.getElementById(this.parentId).append(this._toolTipArrow)
+    document.getElementById('root').append(this._toolTipElement)
+    document.getElementById('root').append(this._toolTipArrow)
 
     let h = document.getElementById("__spread_customTipCellType__").offsetHeight
     let w = document.getElementById("__spread_customTipCellType__").offsetWidth
-    this._toolTipElement.style.top = cellY - h -5 + "px"
-    this._toolTipElement.style.left = cellX + "px"
+    let topVal = 0
+    let leftVal = cellPageX
+    let arrowTop = cellPageY
+    if(h<cellPageY){
+        topVal = cellPageY - h -5
+        arrowTop = cellPageY-12
+    }else{
+        topVal = cellPageY + this.lineHeight + 5
+        arrowTop = cellPageY + this.lineHeight
+    }
+    if(leftVal+w>screenWidth){
+        leftVal = leftVal - (leftVal + w -screenWidth )
+    }
+    this._toolTipElement.style.top = topVal + "px"
+    this._toolTipElement.style.left = leftVal + "px"
     if(this.arrowPosition == "center"){
-        this._toolTipArrow.style.top = cellY - 10 +  "px"
-        this._toolTipArrow.style.left = cellX + w/2 - 7 + "px"
+        this._toolTipArrow.style.top = arrowTop+  "px"
+        this._toolTipArrow.style.left = cellPageX + cellWidth/2 - 7 + "px"
     }else if(this.arrowPosition == "left"){
-        this._toolTipArrow.style.top = cellY - 10 +  "px"
-        let tmpW = w*0.25>15?15:w*0.25
-        this._toolTipArrow.style.left = cellX + tmpW + "px"
+        this._toolTipArrow.style.top = arrowTop +  "px"
+        let tmpW = cellWidth*0.25>15?15:cellWidth*0.25
+        this._toolTipArrow.style.left = cellPageX + tmpW + "px"
     }else if(this.arrowPosition == "right"){
-        this._toolTipArrow.style.top = cellY - 11 +  "px"
-        this._toolTipArrow.style.left = cellX + w - w*0.25 - 7 + "px"
+        this._toolTipArrow.style.top = arrowTop +  "px"
+        this._toolTipArrow.style.left = cellPageX + cellWidth - cellWidth*0.15+ "px"
     }
 };
 EllipsisAndToolTip.prototype.processMouseLeave = function (hitinfo) {
 	let divDom = document.getElementById("__spread_customTipCellType__")
     let arrowDom = document.getElementById("__spread_customTip_arrow__")
     if (divDom) {
-        if (!document.getElementById(this.parentId)) {
+        if (!document.getElementById('root')) {
             return
         }
-		document.getElementById(this.parentId).removeChild(divDom);
-		document.getElementById(this.parentId).removeChild(arrowDom);
+		document.getElementById('root').removeChild(divDom);
+		document.getElementById('root').removeChild(arrowDom);
 		this._toolTipElement = null;
 		this._toolTipArrow = null;
 	}
@@ -759,7 +813,7 @@ EllipsisAndToolTip.prototype.processMouseLeave = function (hitinfo) {
  * @param {string} linkAlign 无文本时 超链接的水平对齐方式 默认为'right'
  *
  */
-export function HyperLinkTextCell(linkArr, parentId,linkAlign = 'right', textSize = 14, linkSize = 14, textMaxWidth, needTip = true, ) {
+export function HyperLinkTextCell(linkArr, parentId,linkAlign, textSize, linkSize, textMaxWidth, needTip = true,lineHeight ) {
     this.linkArr = linkArr || []
     this.linkTextStr = ""
     this.textY = 21
@@ -770,13 +824,14 @@ export function HyperLinkTextCell(linkArr, parentId,linkAlign = 'right', textSiz
     this.textWidthArr = {} //普通文本宽度集合
     // this.textWidthArr = [] //普通文本宽度集合
     this.textMaxWidth = textMaxWidth
-    this.textSize = textSize
-    this.linkSize = linkSize
+    this.textSize = textSize || 14
+    this.linkSize = linkSize || 14
     this.textHeight = this.textSize //普通文本文字高度
     this.linkHeight = this.linkSize //超链接文本文字高度
     this.needTip = needTip
     this.parentId = parentId
-    this.linkAlign = linkAlign
+    this.linkAlign = linkAlign || 'right'
+    this.lineHeight = lineHeight || 48
     if(linkArr){
         this.linkNum = linkArr.length
         for (let i = 0; i < linkArr.length; i++) {
@@ -945,25 +1000,34 @@ HyperLinkTextCell.prototype.processMouseDown = function (hitinfo) {
     }
 };
 HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
+    let event = event || window.event;
+    let mousePageX  = event.pageX;
+    let mousePageY  = event.pageY;
+    let screenWidth = document.body.clientWidth
     //清除提示
     let divDom = document.getElementById("__spread_customTipCellType__")
     let arrowDom = document.getElementById("__spread_customTip_arrow__")
     if (divDom) {
-        if (!document.getElementById(this.parentId)) {
+        if (!document.getElementById('root')) {
             return
         }
-        document.getElementById(this.parentId).removeChild(divDom);
-        document.getElementById(this.parentId).removeChild(arrowDom);
+        document.getElementById('root').removeChild(divDom);
+        document.getElementById('root').removeChild(arrowDom);
         this._toolTipElement = null;
         this._toolTipArrow = null;
     }
     let { sheet, cellRect, row:cellRow, col:cellCol,x:mouseX,y:mouseY } = hitinfo
+    let xDiff = mousePageX - mouseX
+    let yDiff = mousePageY - mouseY
     if(!cellRect){
         return
     }
     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
+    let cellPageX = cellX + xDiff
+    let cellPageY = cellY + yDiff
     let cellVAlue = sheet.getValue(cellRow,cellCol)
     let res = ismouseInArea(mouseX,"",cellRow,this.linArea,cellX,this.textWidthArr)
+    let maxWidth = cellWidth>350?cellWidth:350
     if(res.ismouseInArea){//鼠标悬浮至超链接文字上
         setTimeout(function(){
             if(document.getElementById("vp_vp")){
@@ -988,7 +1052,8 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
                 div.style.color = "#fff"
                 div.style.padding = "6px 8px"
                 div.style.zIndex = 1000
-                div.style.width = cellWidth  + "px"
+                div.style.minWidth = cellWidth  + "px"
+                div.style.maxWidth = maxWidth  + "px"
 
             this._toolTipElement = div;
 
@@ -1008,28 +1073,27 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
         }
         let strEncode = HTMLEncode((this.linArea[cellRow])[index].tipText)
         this._toolTipElement.innerHTML = strEncode
-        // this._toolTipElement.innerHTML = (this.linArea[cellRow])[index].tipText
-        this._toolTipElement.style.top = cellY + "px"
-        this._toolTipElement.style.left = cellX + "px"
-        this._toolTipArrow.style.top = cellY - 5 +  "px"
-        this._toolTipArrow.style.left = cellX+this.textMaxWidth + "px"
-        document.getElementById(this.parentId).append(this._toolTipElement)
-        document.getElementById(this.parentId).append(this._toolTipArrow)
+        document.getElementById('root').append(this._toolTipElement)
+        document.getElementById('root').append(this._toolTipArrow)
         let h = document.getElementById("__spread_customTipCellType__").offsetHeight
         let w = document.getElementById("__spread_customTipCellType__").offsetWidth
-        this._toolTipElement.style.top = cellY - h -5 + "px"
-        // this._toolTipElement.style.left = linkTextWidth<50?(this.linArea[cellRow])[index].startX - 7 +"px" :(this.linArea[cellRow])[index].startX + "px"
-        // if(this.arrowPosition == "center"){
-        this._toolTipArrow.style.top = cellY - 10 +  "px"
-        this._toolTipArrow.style.left = cellX+(this.linArea[cellRow])[index].startX+linkTextWidth/2 - 7 + "px"
-        // }else if(this.arrowPosition == "left"){
-        //     this._toolTipArrow.style.top = cellY - 10 +  "px"
-        //     let tmpW = w*0.25>15?15:w*0.25
-        //     this._toolTipArrow.style.left = cellX + tmpW + "px"
-        // }else if(this.arrowPosition == "right"){
-        //     this._toolTipArrow.style.top = cellY - 11 +  "px"
-        //     this._toolTipArrow.style.left = cellX + w - w*0.25 - 7 + "px"
-        // }
+        let topVal = 0
+        let leftVal = cellPageX
+        let arrowTop = cellPageY
+        if(h<cellPageY){
+            topVal = cellPageY - h -5
+            arrowTop = cellPageY-12
+        }else{
+            topVal = cellPageY + this.lineHeight + 5
+            arrowTop = cellPageY + this.lineHeight
+        }
+        if(leftVal+w>screenWidth){
+            leftVal = leftVal - (leftVal + w -screenWidth )
+        }
+        this._toolTipElement.style.top = topVal + "px"
+        this._toolTipElement.style.left = leftVal + "px"
+        this._toolTipArrow.style.top = arrowTop +  "px"
+        this._toolTipArrow.style.left = cellPageX+(this.linArea[cellRow])[index].startX+linkTextWidth/2 - 7 + "px"
     }else if(res.isInTextArea && this.needTip){//鼠标悬浮至普通文本上
         if(!cellVAlue){
             return
@@ -1047,7 +1111,8 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
                 div.style.color = "#fff"
                 div.style.padding = "6px 8px"
                 div.style.zIndex = 1000
-                div.style.width = cellWidth + "px"
+                div.style.minWidth = cellWidth  + "px"
+                div.style.maxWidth = maxWidth  + "px"
 
             this._toolTipElement = div;
 
@@ -1068,38 +1133,39 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
         // this._toolTipElement.innerHTML = this.textWidthArr["row"+cellRow].text
         let strEncode = HTMLEncode((this.textWidthArr["row"+cellRow].text))
         this._toolTipElement.innerHTML = strEncode
-        this._toolTipElement.style.top = cellY + "px"
-        this._toolTipElement.style.left = cellX + "px"
-        this._toolTipArrow.style.top = cellY - 5 +  "px"
-        this._toolTipArrow.style.left = cellX + "px"
-        document.getElementById(this.parentId).append(this._toolTipElement)
-        document.getElementById(this.parentId).append(this._toolTipArrow)
+        document.getElementById('root').append(this._toolTipElement)
+        document.getElementById('root').append(this._toolTipArrow)
         let h = document.getElementById("__spread_customTipCellType__").offsetHeight
         let w = document.getElementById("__spread_customTipCellType__").offsetWidth
-        this._toolTipElement.style.top = cellY - h -5 + "px"
-        this._toolTipElement.style.left = cellX + "px"
-        // if(this.arrowPosition == "center"){
-            // this._toolTipArrow.style.top = cellY - 10 +  "px"
-            // this._toolTipArrow.style.left = cellX + w/2 - 7 + "px"
-        // }else if(this.arrowPosition == "left"){
-            this._toolTipArrow.style.top = cellY - 10 +  "px"
-            let tmpW = w*0.25>15?15:w*0.25
-            this._toolTipArrow.style.left = cellX + tmpW + "px"
-        // }else if(this.arrowPosition == "right"){
-        //     this._toolTipArrow.style.top = cellY - 11 +  "px"
-        //     this._toolTipArrow.style.left = cellX + w - w*0.25 - 7 + "px"
-        // }
+        let topVal = 0
+        let leftVal = cellPageX
+        let arrowTop = cellPageY
+        if(h<cellPageY){
+            topVal = cellPageY - h -5
+            arrowTop = cellPageY-12
+        }else{
+            topVal = cellPageY + this.lineHeight + 5
+            arrowTop = cellPageY + 48
+        }
+        if(leftVal+w>screenWidth){
+            leftVal = leftVal - (leftVal + w -screenWidth )
+        }
+        this._toolTipElement.style.top = topVal + "px"
+        this._toolTipElement.style.left = leftVal + "px"
+        this._toolTipArrow.style.top = arrowTop +  "px"
+        let tmpW = cellWidth*0.25>15?15:cellWidth*0.25
+        this._toolTipArrow.style.left = cellPageX + tmpW + "px"
     }
 };
 HyperLinkTextCell.prototype.processMouseLeave = function (hitinfo) {
 	let divDom = document.getElementById("__spread_customTipCellType__")
     let arrowDom = document.getElementById("__spread_customTip_arrow__")
     if (divDom) {
-        if (!document.getElementById(this.parentId)) {
+        if (!document.getElementById('root')) {
             return
         }
-		document.getElementById(this.parentId).removeChild(divDom);
-		document.getElementById(this.parentId).removeChild(arrowDom);
+		document.getElementById('root').removeChild(divDom);
+		document.getElementById('root').removeChild(arrowDom);
 		this._toolTipElement = null;
 		this._toolTipArrow = null;
 	}
@@ -1146,16 +1212,18 @@ let ismouseInArea = (mouseX,mouseY,row,areaArr,cellX,textWidthArr) => {
  * @param {boolean} needTip 是否需要toolTip  默认值为true
  * @param {function} clickFun 点击方法
  */
-export function SingleHyperLinkCell(parentId, textAlign, color = '#000', textSize = 14, needTip = true, clickFun ) {
-    this.parentId = parentId
-    this.textY = 21
-    this.textSize = textSize
-    this.textHeight = this.textSize
-    this.needTip = needTip
-    this.color = color
-    this.textAlign = textAlign || 'center'
-    this.linkAreaArr = []
-    this.clickFun = clickFun
+export function SingleHyperLinkCell(parentId, textAlign, color = '#000', textSize = 14, needTip = true, clickFun, lineHeight, arrowPosition) {
+  this.parentId = parentId
+  this.textY = 21
+  this.textSize = textSize
+  this.textHeight = this.textSize
+  this.needTip = needTip
+  this.color = color
+  this.textAlign = textAlign || 'center'
+  this.linkAreaArr = []
+  this.clickFun = clickFun
+  this.arrowPosition = arrowPosition || 'center'
+  this.lineHeight = lineHeight || 48
 }
 SingleHyperLinkCell.prototype = new spreadNS.CellTypes.Base();
 
@@ -1214,13 +1282,12 @@ SingleHyperLinkCell.prototype.processMouseDown = function (hitinfo) {
     setTimeout(() => {
         let divDom = document.getElementById("__spread_customTipCellType__")
         let arrowDom = document.getElementById("__spread_customTip_arrow__")
-
         if (divDom) {
-            if (!document.getElementById(this.parentId)) {
+            if (!document.getElementById('root')) {
                 return
             }
-            document.getElementById(this.parentId).removeChild(divDom);
-            document.getElementById(this.parentId).removeChild(arrowDom);
+            document.getElementById('root').removeChild(divDom);
+            document.getElementById('root').removeChild(arrowDom);
             this._toolTipElement = null;
             this._toolTipArrow = null;
         }
@@ -1229,10 +1296,10 @@ SingleHyperLinkCell.prototype.processMouseDown = function (hitinfo) {
     if(!cellRect){
         let divDom = document.getElementById("__spread_customTipCellType__")
         if (divDom) {
-            if (!document.getElementById(this.parentId)) {
+            if (!document.getElementById('root')) {
                 return
             }
-            document.getElementById(this.parentId).removeChild(divDom);
+            document.getElementById('root').removeChild(divDom);
             this._toolTipElement = null;
             this._toolTipArrow = null;
         }
@@ -1251,22 +1318,30 @@ SingleHyperLinkCell.prototype.processMouseDown = function (hitinfo) {
 };
 SingleHyperLinkCell.prototype.processMouseMove = function (hitinfo) {
     //清除提示
+    let event = event || window.event;
+    let mousePageX  = event.pageX;
+    let mousePageY  = event.pageY;
+    let screenWidth = document.body.clientWidth
     let divDom = document.getElementById("__spread_customTipCellType__")
     let arrowDom = document.getElementById("__spread_customTip_arrow__")
     if (divDom) {
-        if (!document.getElementById(this.parentId)) {
+        if (!document.getElementById('root')) {
             return
         }
-        document.getElementById(this.parentId).removeChild(divDom);
-        document.getElementById(this.parentId).removeChild(arrowDom);
+        document.getElementById('root').removeChild(divDom);
+        document.getElementById('root').removeChild(arrowDom);
         this._toolTipElement = null;
         this._toolTipArrow = null;
     }
     let { sheet, cellRect, row:cellRow, col:cellCol,x:mouseX,y:mouseY } = hitinfo
+    let xDiff = mousePageX - mouseX
+    let yDiff = mousePageY - mouseY
     if(!cellRect){
         return
     }
     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
+    let cellPageX = cellX + xDiff
+    let cellPageY = cellY + yDiff
     let cellVAlue = sheet.getValue(cellRow,cellCol)
     if(!cellVAlue){
         return
@@ -1281,6 +1356,7 @@ SingleHyperLinkCell.prototype.processMouseMove = function (hitinfo) {
         if(!this.needTip){
             return
         }
+        let maxWidth = cellWidth>350?cellWidth:350
         if (!document.getElementById("__spread_customTipCellType__")) {
             let div = document.createElement("div");
                 div.setAttribute("id",'__spread_customTipCellType__')
@@ -1293,7 +1369,9 @@ SingleHyperLinkCell.prototype.processMouseMove = function (hitinfo) {
                 div.style.color = "#fff"
                 div.style.padding = "6px 8px"
                 div.style.zIndex = 1000
-                div.style.width = cellWidth + "px"
+                div.style.maxWidth = maxWidth + "px"
+                div.style.minWidth = cellWidth + "px"
+
 
             this._toolTipElement = div;
 
@@ -1311,34 +1389,42 @@ SingleHyperLinkCell.prototype.processMouseMove = function (hitinfo) {
 
             this._toolTipArrow = arrow
         }
-        // this._toolTipElement.innerHTML = cellVAlue
         let strEncode = HTMLEncode(cellVAlue)
         this._toolTipElement.innerHTML = strEncode
-        this._toolTipElement.style.top = cellY + "px"
-        this._toolTipElement.style.left = cellX + "px"
-        this._toolTipArrow.style.top = cellY - 5 +  "px"
-        this._toolTipArrow.style.left = cellX + "px"
-        if(!document.getElementById(this.parentId)){
+        if(!document.getElementById('root')){
             return
         }
-        document.getElementById(this.parentId).append(this._toolTipElement)
-        document.getElementById(this.parentId).append(this._toolTipArrow)
+        document.getElementById('root').append(this._toolTipElement)
+        document.getElementById('root').append(this._toolTipArrow)
 
         let h = document.getElementById("__spread_customTipCellType__").offsetHeight
         let w = document.getElementById("__spread_customTipCellType__").offsetWidth
-        this._toolTipElement.style.top = cellY - h -5 + "px"
-        this._toolTipElement.style.left = cellX + "px"
-        // if(this.arrowPosition == "center"){
-            this._toolTipArrow.style.top = cellY - 10 +  "px"
-            this._toolTipArrow.style.left = cellX + w/2 - 7 + "px"
-        // }else if(this.arrowPosition == "left"){
-        //     this._toolTipArrow.style.top = cellY - 10 +  "px"
-        //     let tmpW = w*0.25>15?15:w*0.25
-        //     this._toolTipArrow.style.left = cellX + tmpW + "px"
-        // }else if(this.arrowPosition == "right"){
-        //     this._toolTipArrow.style.top = cellY - 11 +  "px"
-        //     this._toolTipArrow.style.left = cellX + w - w*0.25 - 7 + "px"
-        // }
+        let topVal = 0
+        let leftVal = cellPageX
+        let arrowTop = cellPageY
+        if(h<cellPageY){
+            topVal = cellPageY - h -5
+            arrowTop = cellPageY-12
+        }else{
+            topVal = cellPageY + this.lineHeight + 5
+            arrowTop = cellPageY + this.lineHeight
+        }
+        if(leftVal+w>screenWidth){
+            leftVal = leftVal - (leftVal + w - screenWidth )
+        }
+        this._toolTipElement.style.top = topVal + "px"
+        this._toolTipElement.style.left = leftVal + "px"
+        if(this.arrowPosition == "center"){
+            this._toolTipArrow.style.top = arrowTop+  "px"
+            this._toolTipArrow.style.left = cellPageX + cellWidth/2 - 7 + "px"
+        }else if(this.arrowPosition == "left"){
+            this._toolTipArrow.style.top = arrowTop +  "px"
+            let tmpW = cellWidth*0.25>15?15:cellWidth*0.25
+            this._toolTipArrow.style.left = cellPageX + tmpW + "px"
+        }else if(this.arrowPosition == "right"){
+            this._toolTipArrow.style.top = arrowTop +  "px"
+            this._toolTipArrow.style.left = cellPageX + cellWidth - cellWidth*0.15+ "px"
+        }
     }
 
 };
@@ -1346,11 +1432,11 @@ SingleHyperLinkCell.prototype.processMouseLeave = function (hitinfo) {
     let divDom = document.getElementById("__spread_customTipCellType__")
     let arrowDom = document.getElementById("__spread_customTip_arrow__")
     if (divDom) {
-        if (!document.getElementById(this.parentId)) {
+        if (!document.getElementById('root')) {
             return
         }
-        document.getElementById(this.parentId).removeChild(divDom);
-        document.getElementById(this.parentId).removeChild(arrowDom);
+        document.getElementById('root').removeChild(divDom);
+        document.getElementById('root').removeChild(arrowDom);
         this._toolTipElement = null;
         this._toolTipArrow = null;
     }
@@ -1438,14 +1524,15 @@ let fittingStringByLine = (c, str, maxWidth,lineNum) => {
  * @param {number} textSize 文字大小  默认14
  * @param {number} lineNum 最大显示行数  默认1
  */
-export function EllipsisOrderLine(parentId,lineNum, textAlign ,textSize = 14 , arrowPosition, ){
+export function EllipsisOrderLine(parentId,lineNum, textAlign ,textSize , arrowPosition, lineHeight){
     this.lineNum = lineNum || 1
     this.parentId = parentId
     this.textAlign = textAlign || "left"
     this.arrowPosition = arrowPosition || this.textAlign
     this.textY =  21
-    this.textSize = textSize
+    this.textSize = textSize || 14
     this.textHeight = this.textSize
+    this.lineHeight = lineHeight || 48
 }
 EllipsisOrderLine.prototype = new spreadNS.CellTypes.Text();
 EllipsisOrderLine.prototype.paintContent = function (ctx, value, x, y, w, h, style, context) {
@@ -1512,27 +1599,37 @@ EllipsisOrderLine.prototype.getHitInfo = function (x, y, cellStyle, cellRect, co
 	};
 }
 EllipsisOrderLine.prototype.processMouseEnter = function (hitinfo) {
+    let event = event || window.event;
+    let mousePageX  = event.pageX;
+    let mousePageY  = event.pageY;
+    let screenWidth = document.body.clientWidth
     //清除已有的提示
     let divDom = document.getElementById("__spread_customTipCellType__")
     let arrowDom = document.getElementById("__spread_customTip_arrow__")
     if (divDom) {
-        if (!document.getElementById(this.parentId)) {
+        if (!document.getElementById('root')) {
             return
         }
-		document.getElementById(this.parentId).removeChild(divDom);
-		document.getElementById(this.parentId).removeChild(arrowDom);
+		document.getElementById('root').removeChild(divDom);
+		document.getElementById('root').removeChild(arrowDom);
 		this._toolTipElement = null;
 		this._toolTipArrow = null;
 	}
-    let { sheet, cellRect, row:cellRow, col:cellCol } = hitinfo
+    let { sheet, cellRect, row:cellRow, col:cellCol,x:mouseX,y:mouseY } = hitinfo
+    let xDiff = mousePageX - mouseX
+    let yDiff = mousePageY - mouseY
     if(!cellRect){
         return
     }
+
     let {width:cellWidth,height:cellHeight,x:cellX,y:cellY} = cellRect
+    let cellPageX = cellX + xDiff
+    let cellPageY = cellY + yDiff
     let cellVAlue = sheet.getValue(cellRow,cellCol)
     if(!cellVAlue){
         return
     }
+    let maxWidth = cellWidth>350?cellWidth:350
 	if (!document.getElementById("__spread_customTipCellType__")) {
         let div = document.createElement("div");
             div.setAttribute("id",'__spread_customTipCellType__')
@@ -1545,7 +1642,8 @@ EllipsisOrderLine.prototype.processMouseEnter = function (hitinfo) {
             div.style.color = "#fff"
             div.style.padding = "6px 8px"
             div.style.zIndex = 1000
-            div.style.width = cellWidth + "px"
+            div.style.maxWidth = maxWidth + 'px'
+            div.style.minWidth = cellWidth + "px"
 
         this._toolTipElement = div;
 
@@ -1565,38 +1663,47 @@ EllipsisOrderLine.prototype.processMouseEnter = function (hitinfo) {
     }
     let strEncode = HTMLEncode(cellVAlue)
     this._toolTipElement.innerHTML = strEncode
-    this._toolTipElement.style.top = cellY + "px"
-    this._toolTipElement.style.left = cellX + "px"
-    this._toolTipArrow.style.top = cellY - 5 +  "px"
-    this._toolTipArrow.style.left = cellX + "px"
-    document.getElementById(this.parentId).append(this._toolTipElement)
-    document.getElementById(this.parentId).append(this._toolTipArrow)
+    document.getElementById('root').append(this._toolTipElement)
+    document.getElementById('root').append(this._toolTipArrow)
 
     let h = document.getElementById("__spread_customTipCellType__").offsetHeight
     let w = document.getElementById("__spread_customTipCellType__").offsetWidth
-    this._toolTipElement.style.top = cellY - h -5 + "px"
-    this._toolTipElement.style.left = cellX + "px"
+    let topVal = 0
+    let leftVal = cellPageX
+    let arrowTop = cellPageY
+    if(h<cellPageY){
+        topVal = cellPageY - h -5
+        arrowTop = cellPageY-12
+    }else{
+        topVal = cellPageY + this.lineHeight + 5
+        arrowTop = cellPageY + this.lineHeight
+    }
+    if(leftVal+w>screenWidth){
+        leftVal = leftVal - (leftVal + w -screenWidth )
+    }
+    this._toolTipElement.style.top = topVal+ "px"
+    this._toolTipElement.style.left = leftVal + "px"
     if(this.arrowPosition == "center"){
-        this._toolTipArrow.style.top = cellY - 10 +  "px"
-        this._toolTipArrow.style.left = cellX + w/2 - 7 + "px"
+        this._toolTipArrow.style.top = arrowTop+  "px"
+        this._toolTipArrow.style.left = cellPageX + w/2 - 7 + "px"
     }else if(this.arrowPosition == "left"){
-        this._toolTipArrow.style.top = cellY - 10 +  "px"
-        let tmpW = w*0.25>15?15:w*0.25
-        this._toolTipArrow.style.left = cellX + tmpW + "px"
+        this._toolTipArrow.style.top = arrowTop +  "px"
+        let tmpW = cellWidth*0.25>15?15:cellWidth*0.25
+        this._toolTipArrow.style.left = cellPageX + tmpW + "px"
     }else if(this.arrowPosition == "right"){
-        this._toolTipArrow.style.top = cellY - 11 +  "px"
-        this._toolTipArrow.style.left = cellX + w - w*0.15+ "px"
+        this._toolTipArrow.style.top = arrowTop +  "px"
+        this._toolTipArrow.style.left = cellPageX + cellWidth - cellWidth*0.15+ "px"
     }
 };
 EllipsisOrderLine.prototype.processMouseLeave = function (hitinfo) {
 	let divDom = document.getElementById("__spread_customTipCellType__")
     let arrowDom = document.getElementById("__spread_customTip_arrow__")
     if (divDom) {
-        if (!document.getElementById(this.parentId)) {
+        if (!document.getElementById('root')) {
             return
         }
-		document.getElementById(this.parentId).removeChild(divDom);
-		document.getElementById(this.parentId).removeChild(arrowDom);
+		document.getElementById('root').removeChild(divDom);
+		document.getElementById('root').removeChild(arrowDom);
 		this._toolTipElement = null;
 		this._toolTipArrow = null;
 	}
