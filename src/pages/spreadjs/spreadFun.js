@@ -143,9 +143,11 @@ let fittingString = (c, str, maxWidth) => {
  * @param {String} linkChart  提示内容多个字段的连接符，默认“-”
  * @param {Number} partSize 工程划分文字大小 默认14
  * @param {Number} nameSize 工程划分后的文字大小 默认14
+ * @param {Number} zIndex toolTip显示层级，默认1700
+ * @param {Number} lineHeight 单元格高度，默认48
  *
  */
-export function customCellType(data,nameKey,colorRange,nodeTypeNameEmun,isAutoFitColumn,nodeTypeKey,isNeedTip,parentId,stringArr,linkChart,partSize,nameSize,lineHeight){
+export function customCellType(data,nameKey,colorRange,nodeTypeNameEmun,isAutoFitColumn,nodeTypeKey,isNeedTip,parentId,stringArr,linkChart,partSize,nameSize,zIndex,lineHeight,){
     const typeEmun = [
         { nodeType: 1, name: "单位工程" },
         { nodeType: 2, name: "子单位工程"},
@@ -180,6 +182,7 @@ export function customCellType(data,nameKey,colorRange,nodeTypeNameEmun,isAutoFi
     this.stringArr = stringArr || []
     this.linkChart = linkChart || '-'
     this.lineHeight = lineHeight || 48
+    this.zIndex = zIndex || 1700
 }
 
 customCellType.prototype = new spreadNS.CellTypes.Text();
@@ -332,7 +335,7 @@ customCellType.prototype.processMouseEnter = function (hitinfo) {
             div.style.wordBreak = "break-all"
             div.style.color = "#fff"
             div.style.padding = "6px 8px"
-            div.style.zIndex = 1000
+            div.style.zIndex = this.zIndex
             div.style.minWidth = cellWidth  + "px"
             div.style.maxWidth = maxWidth  + "px"
 
@@ -348,7 +351,7 @@ customCellType.prototype.processMouseEnter = function (hitinfo) {
             arrow.style.height = "10px"
             arrow.style.color = "#fff"
             arrow.style.transform= "rotate(45deg) "
-            div.style.zIndex = 999
+            arrow.style.zIndex = this.zIndex - 1
 
         this._toolTipArrow = arrow
     }
@@ -431,13 +434,16 @@ customCellType.prototype.processMouseLeave = function (hitinfo) {
  *
  * @param {*} parentId 表格最外层容器Id position属性应为relative
  * @param {string} arrowPosition 指示箭头位置取值范围["left","center","right"],默认值为center
+ * @param {Number} zIndex toolTip显示层级，默认1700
+ * @param {Number} lineHeight 单元格高度，默认48
  */
-export function TipCellType(parentId,arrowPosition,textSize,lineHeight) {
+export function TipCellType(parentId,arrowPosition,textSize,zIndex,lineHeight) {
     this.parentId = parentId
     this.arrowPosition = arrowPosition || 'center'
     this.textSize = textSize || 14
     this.textHeight = this.textSize
     this.lineHeight = lineHeight || 48
+    this.zIndex = zIndex || 1700
 }
 // TipCellType.prototype = new GC.Spread.Sheets.CellTypes.Text();
 TipCellType.prototype = new spreadNS.CellTypes.Text();
@@ -522,7 +528,7 @@ TipCellType.prototype.processMouseEnter = function (hitinfo) {
             div.style.wordBreak = "break-all"
             div.style.color = "#fff"
             div.style.padding = "6px 8px"
-            div.style.zIndex = 1000
+            div.style.zIndex =  this.zIndex
             div.style.minWidth = cellWidth  + "px"
             div.style.maxWidth = maxWidth  + "px"
 
@@ -538,7 +544,7 @@ TipCellType.prototype.processMouseEnter = function (hitinfo) {
             arrow.style.height = "10px"
             arrow.style.color = "#fff"
             arrow.style.transform= "rotate(45deg) "
-            div.style.zIndex = 999
+            arrow.style.zIndex =  this.zIndex - 1
 
         this._toolTipArrow = arrow
     }
@@ -639,8 +645,10 @@ EllipsisTextCellType.prototype.paintContent = function (ctx, value, x, y, w, h, 
  * @param {string} arrowPosition 指示箭头位置取值范围["left","center","right"],默认值与文字位置保持一致"left"，居左
  * @param {string} textAlign 文字位置["left","center","right"],默认值为left，居左
  * @param {number} textSize 文字大小  默认14
+ * @param {Number} zIndex toolTip显示层级，默认1700
+ * @param {Number} lineHeight 单元格高度，默认48
  */
-export function EllipsisAndToolTip(parentId, textAlign ,textSize, arrowPosition, lineHeight){
+export function EllipsisAndToolTip(parentId, textAlign ,textSize, arrowPosition,zIndex, lineHeight){
     this.parentId = parentId
     this.textAlign = textAlign || "center"
     this.arrowPosition = arrowPosition || 'right'
@@ -649,6 +657,7 @@ export function EllipsisAndToolTip(parentId, textAlign ,textSize, arrowPosition,
     this.textSize = textSize || 14
     this.textHeight = this.textSize
     this.lineHeight = lineHeight || 48
+    this.zIndex = zIndex || 1700
 }
 EllipsisAndToolTip.prototype = new spreadNS.CellTypes.Text();
 EllipsisAndToolTip.prototype.paintContent = function (ctx, value, x, y, w, h, style, context) {
@@ -733,7 +742,7 @@ EllipsisAndToolTip.prototype.processMouseEnter = function (hitinfo) {
             div.style.wordBreak = "break-all"
             div.style.color = "#fff"
             div.style.padding = "6px 8px"
-            div.style.zIndex = 1000
+            div.style.zIndex = this.zIndex
             div.style.minWidth = cellWidth  + "px"
             div.style.maxWidth = maxWidth  + "px"
 
@@ -749,7 +758,7 @@ EllipsisAndToolTip.prototype.processMouseEnter = function (hitinfo) {
             arrow.style.height = "10px"
             arrow.style.color = "#fff"
             arrow.style.transform= "rotate(45deg) "
-            div.style.zIndex = 999
+            arrow.style.zIndex = this.zIndex - 1
 
         this._toolTipArrow = arrow
     }
@@ -811,9 +820,11 @@ EllipsisAndToolTip.prototype.processMouseLeave = function (hitinfo) {
  * @param {number} linkSize 超链接文本大小 默认14
  * @param {boolean} needTip 是否需要toolTip 默认true
  * @param {string} linkAlign 无文本时 超链接的水平对齐方式 默认为'right'
+ * @param {Number} zIndex toolTip显示层级，默认1700
+ * @param {Number} lineHeight 单元格高度，默认48
  *
  */
-export function HyperLinkTextCell(linkArr, parentId,linkAlign, textSize, linkSize, textMaxWidth, needTip = true,lineHeight ) {
+export function HyperLinkTextCell(linkArr, parentId,linkAlign, textSize, linkSize, textMaxWidth, needTip = true,zIndex,lineHeight ) {
     this.linkArr = linkArr || []
     this.linkTextStr = ""
     this.textY = 21
@@ -832,6 +843,7 @@ export function HyperLinkTextCell(linkArr, parentId,linkAlign, textSize, linkSiz
     this.parentId = parentId
     this.linkAlign = linkAlign || 'right'
     this.lineHeight = lineHeight || 48
+    this.zIndex = zIndex || 1700
     if(linkArr){
         this.linkNum = linkArr.length
         for (let i = 0; i < linkArr.length; i++) {
@@ -969,11 +981,11 @@ HyperLinkTextCell.prototype.processMouseDown = function (hitinfo) {
     let divDom = document.getElementById("__spread_customTipCellType__")
     let arrowDom = document.getElementById("__spread_customTip_arrow__")
     if (divDom) {
-        if (!document.getElementById(this.parentId)) {
+        if (!document.getElementById('root')) {
             return
         }
-        document.getElementById(this.parentId).removeChild(divDom);
-        document.getElementById(this.parentId).removeChild(arrowDom);
+        document.getElementById('root').removeChild(divDom);
+        document.getElementById('root').removeChild(arrowDom);
         this._toolTipElement = null;
         this._toolTipArrow = null;
     }
@@ -988,11 +1000,11 @@ HyperLinkTextCell.prototype.processMouseDown = function (hitinfo) {
         let divDom = document.getElementById("__spread_customTipCellType__")
         let arrowDom = document.getElementById("__spread_customTip_arrow__")
         if (divDom) {
-            if (!document.getElementById(this.parentId)) {
+            if (!document.getElementById('root')) {
                 return
             }
-            document.getElementById(this.parentId).removeChild(divDom);
-            document.getElementById(this.parentId).removeChild(arrowDom);
+            document.getElementById('root').removeChild(divDom);
+            document.getElementById('root').removeChild(arrowDom);
             this._toolTipElement = null;
             this._toolTipArrow = null;
         }
@@ -1051,7 +1063,7 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
                 div.style.wordBreak = "break-all"
                 div.style.color = "#fff"
                 div.style.padding = "6px 8px"
-                div.style.zIndex = 1000
+                div.style.zIndex = this.zIndex
                 div.style.minWidth = cellWidth  + "px"
                 div.style.maxWidth = maxWidth  + "px"
 
@@ -1067,7 +1079,7 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
                 arrow.style.height = "10px"
                 arrow.style.color = "#fff"
                 arrow.style.transform= "rotate(45deg) "
-                div.style.zIndex = 999
+                arrow.style.zIndex = this.zIndex - 1
 
             this._toolTipArrow = arrow
         }
@@ -1110,7 +1122,7 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
                 div.style.wordBreak = "break-all"
                 div.style.color = "#fff"
                 div.style.padding = "6px 8px"
-                div.style.zIndex = 1000
+                div.style.zIndex = this.zIndex
                 div.style.minWidth = cellWidth  + "px"
                 div.style.maxWidth = maxWidth  + "px"
 
@@ -1126,7 +1138,7 @@ HyperLinkTextCell.prototype.processMouseMove = function (hitinfo) {
                 arrow.style.height = "10px"
                 arrow.style.color = "#fff"
                 arrow.style.transform= "rotate(45deg) "
-                div.style.zIndex = 999
+                arrow.style.zIndex = this.zIndex - 1
 
             this._toolTipArrow = arrow
         }
@@ -1368,7 +1380,7 @@ SingleHyperLinkCell.prototype.processMouseMove = function (hitinfo) {
                 div.style.wordBreak = "break-all"
                 div.style.color = "#fff"
                 div.style.padding = "6px 8px"
-                div.style.zIndex = 1000
+                div.style.zIndex = this.zIndex
                 div.style.maxWidth = maxWidth + "px"
                 div.style.minWidth = cellWidth + "px"
 
@@ -1385,7 +1397,7 @@ SingleHyperLinkCell.prototype.processMouseMove = function (hitinfo) {
                 arrow.style.height = "10px"
                 arrow.style.color = "#fff"
                 arrow.style.transform= "rotate(45deg) "
-                div.style.zIndex = 999
+                arrow.style.zIndex = this.zIndex - 1
 
             this._toolTipArrow = arrow
         }
@@ -1453,6 +1465,8 @@ SingleHyperLinkCell.prototype.activeOnClick = function(){
  * @param {String} str 要显示的字符串
  * @param {Number} maxWidth 最大宽度
  * @param {Number} lineNum 显示的最大行数
+ * @param {Number} zIndex toolTip显示层级，默认1700
+ * @param {Number} lineHeight 单元格高度，默认48
  */
 let fittingStringByLine = (c, str, maxWidth,lineNum) => {
     maxWidth = maxWidth
@@ -1524,7 +1538,7 @@ let fittingStringByLine = (c, str, maxWidth,lineNum) => {
  * @param {number} textSize 文字大小  默认14
  * @param {number} lineNum 最大显示行数  默认1
  */
-export function EllipsisOrderLine(parentId,lineNum, textAlign ,textSize , arrowPosition, lineHeight){
+export function EllipsisOrderLine(parentId,lineNum, textAlign ,textSize , arrowPosition, zIndex, lineHeight){
     this.lineNum = lineNum || 1
     this.parentId = parentId
     this.textAlign = textAlign || "left"
@@ -1533,6 +1547,7 @@ export function EllipsisOrderLine(parentId,lineNum, textAlign ,textSize , arrowP
     this.textSize = textSize || 14
     this.textHeight = this.textSize
     this.lineHeight = lineHeight || 48
+    this.zIndex = zIndex || 1700
 }
 EllipsisOrderLine.prototype = new spreadNS.CellTypes.Text();
 EllipsisOrderLine.prototype.paintContent = function (ctx, value, x, y, w, h, style, context) {
@@ -1641,7 +1656,7 @@ EllipsisOrderLine.prototype.processMouseEnter = function (hitinfo) {
             div.style.wordBreak = "break-all"
             div.style.color = "#fff"
             div.style.padding = "6px 8px"
-            div.style.zIndex = 1000
+            div.style.zIndex = this.zIndex
             div.style.maxWidth = maxWidth + 'px'
             div.style.minWidth = cellWidth + "px"
 
@@ -1657,7 +1672,7 @@ EllipsisOrderLine.prototype.processMouseEnter = function (hitinfo) {
             arrow.style.height = "10px"
             arrow.style.color = "#fff"
             arrow.style.transform= "rotate(45deg) "
-            div.style.zIndex = 999
+            arrow.style.zIndex = this.zIndex - 1
 
         this._toolTipArrow = arrow
     }
