@@ -8,6 +8,9 @@ const spread_io_routes = require("./pages/spreadIo/routes")
 const base_test_routes = require("./pages/base/routes")
 const spread_Designer_routes = require("./pages/spreadDesigner/routes")
 
+// TodoList增删改查 ----> zhazihong Add
+const todoList_routes = require("./pages/todoList/routes")
+
 let routes = [
   ...page1_routes,
   ...page3_routes,
@@ -17,7 +20,8 @@ let routes = [
   ...spread_io_routes,
   ...base_test_routes,
   ...spread_Designer_routes,
-  ...demo_routes
+  ...demo_routes,
+  ...todoList_routes,
 ]
 
 module.exports = [
