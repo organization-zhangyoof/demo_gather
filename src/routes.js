@@ -6,8 +6,9 @@
     const spread_io_routes = require("./pages/spreadIo/routes")
     const base_test_routes = require("./pages/base/routes")
     const spread_Designer_routes = require("./pages/spreadDesigner/routes")
+    const iframe_page_routes = require("./pages/iframePage/routes")
 
-    
+
     let routes = [
       ...page1_routes,
       ...page3_routes,
@@ -17,6 +18,7 @@
       ...spread_io_routes,
       ...base_test_routes,
       ...spread_Designer_routes,
+      ...iframe_page_routes
     ]
 
     module.exports = [

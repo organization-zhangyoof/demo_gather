@@ -10,6 +10,12 @@ class HomePage extends Component {
 
         }
     }
+    componentDidMount(){
+        window.__TEST_STRING__ = 'this is init string'
+        window.__CHANGE_FUN__ = ()=>{
+            alert(123)
+        }
+    }
     render(){
         return (
             <div className={styles.main}>
@@ -25,6 +31,7 @@ class HomePage extends Component {
                     <Button onClick={()=>router.push('/spreadIo')} className = {styles.btn}>跳转至spread导入导出</Button>
                     <Button onClick={()=>router.push('/basetest')} className = {styles.btn}>跳转至BaseTest</Button>
                     <Button onClick={()=>router.push('/spreadDesign')} className = {styles.btn}>跳转至spread设计器</Button>
+                    <Button onClick={()=>router.push('/iframe')} className = {styles.btn}>跳转至iframe嵌套页面</Button>
                     {/* <Link to="/page1">Go to list page1</Link> */}
                 </div>
                 <div className = {styles.container}>

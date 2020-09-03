@@ -1723,3 +1723,15 @@ EllipsisOrderLine.prototype.processMouseLeave = function (hitinfo) {
 		this._toolTipArrow = null;
 	}
 };
+
+export function ManuallyClearTips(){
+    let divDom = document.getElementById("__spread_customTipCellType__")
+    let arrowDom = document.getElementById("__spread_customTip_arrow__")
+    if (divDom) {
+        if (!document.getElementById('root')) {
+            return
+        }
+		document.getElementById('root').removeChild(divDom);
+		document.getElementById('root').removeChild(arrowDom);
+    }
+}
