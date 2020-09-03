@@ -20,6 +20,7 @@ class HomePage extends Component {
                     <Button onClick={() => router.push('/page1')} className={styles.btn}>跳转至Page1</Button>
                     <Button onClick={() => router.push('/demo')} className={styles.btn}>寇晓丽</Button>
                     <Button onClick={()=>router.push('/todoList')} className = {styles.btn}>查子红-跳转至todoList页面</Button>
+                    <Button onClick={()=>router.push('/page5')} className = {styles.btn}>荆国瑞</Button>
                {/*     <Button onClick={() => router.push('/page2')} className={styles.btn}>跳转至Page2</Button>
                     <Button onClick={() => router.push('/page3')} className={styles.btn}>跳转至Page3</Button>
                     <Button onClick={() => router.push('/page4')} className={styles.btn}>跳转至Page4</Button>
