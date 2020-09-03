@@ -36,10 +36,10 @@ class FormDemo extends React.Component {
                     )}
                 </Form.Item>
                 <Form.Item label="Gender">
-                    {getFieldDecorator('gender', {
+                    {getFieldDecorator('gender',{initialValue:'女'}, {
                         rules: [{ required: true, message: '请选择性别!' }],
                     })(
-                        <Select defaultValue="男">
+                        <Select>
                             <Option value="男">男</Option>
                             <Option value="女">女</Option>
                         </Select>,
