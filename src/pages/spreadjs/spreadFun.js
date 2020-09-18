@@ -604,10 +604,10 @@ TipCellType.prototype.processMouseLeave = function (hitinfo) {
  * @param {string} textAlign 文字位置["left","center","right"],默认值为left，居左
  * @param {number} textSize 文字大小 默认14
  */
-export function EllipsisTextCellType(textAlign,textSize = 14) {
+export function EllipsisTextCellType(textAlign,textSize) {
     this.textAlign = textAlign || 'left'
     this.textY = 21
-    this.textSize = textSize
+    this.textSize = textSize || 14
     this.textHeight = this.textSize
 }
 
@@ -813,7 +813,7 @@ EllipsisAndToolTip.prototype.processMouseLeave = function (hitinfo) {
 
 /**
  * HyperLinkTextCell  超链接+文本测试
- * @param {array} linkArr 超链接属性 形如：[{name:'引用',color:'red',clickFun:function,tipText}]  name:超链接文本，color:超链接文本颜色，clickFun:超链接点击执行方法,tipText:超链接悬浮显示文字，若不传则显示name
+ * @param {array} linkArr 超链接属性 形如：[{name:'引用',color:'red',clickFun:function,tipText,isDot:false,dotColor:'red'}]  name:超链接文本，color:超链接文本颜色，clickFun:超链接点击执行方法,tipText:超链接悬浮显示文字，若不传则显示name,isDot:是否需要标点。dotColor:标点颜色，默认红色
  * @param {string} parentId 表格最外层容器Id position属性应为relative
  * @param {number} textMaxWidth 普通文本宽度 不传则自动计算除超链接的宽度赋予文本宽度，超出隐藏
  * @param {number} textSize 普通文本大小 默认14
@@ -844,11 +844,15 @@ export function HyperLinkTextCell(linkArr, parentId,linkAlign, textSize, linkSiz
     this.linkAlign = linkAlign || 'right'
     this.lineHeight = lineHeight || 48
     this.zIndex = zIndex || 1700
+    this.dotNum = 0
     if(linkArr){
         this.linkNum = linkArr.length
         for (let i = 0; i < linkArr.length; i++) {
             const item = linkArr[i];
             this.linkTextStr+=item.name
+            if(item.isDot){
+                this.dotNum ++
+            }
         }
     }
 
@@ -860,9 +864,13 @@ export function HyperLinkTextCell(linkArr, parentId,linkAlign, textSize, linkSiz
  *
  * @param {*} c canvas画笔
  * @param {*} str 要显示的字符串
+ * @param {*} cellWidth 单元格宽度
+ * @param {*} linkTextStr 超链接所有文本内容
+ * @param {*} linkNum 超链接个数
+ * @param {*} dotNum 超链接标点个数（超链接标点的圆半径为4，向后间隔为15）
  * @param {*} maxWidth 最大宽度
  */
-let fittingStringForHyperLink = (c, str, cellWidth,linkTextStr,linkNum,maxWidth) => {
+let fittingStringForHyperLink = (c, str, cellWidth,linkTextStr,linkNum,dotNum,maxWidth) => {
     let result = ''
     let width = 0
     let start = 0
@@ -873,7 +881,7 @@ let fittingStringForHyperLink = (c, str, cellWidth,linkTextStr,linkNum,maxWidth)
     }
     let ellipsis = '…';
     let ellipsisWidth = c.measureText(ellipsis).width;
-    let hyperLinkTextWidth = c.measureText(linkTextStr).width;
+    let hyperLinkTextWidth = c.measureText(linkTextStr).width + dotNum*23 ;
     let textMaxWidth = maxWidth || cellWidth- 20 - hyperLinkTextWidth - 10*(linkNum-1)
     if (width <= textMaxWidth || width <= ellipsisWidth) {
         return result = {
@@ -903,9 +911,10 @@ HyperLinkTextCell.prototype.paintContent = function (ctx, value, x, y, w, h, sty
     ctx.font = style.font;
     let newValue = ''
     let textWidth = 0
+    let dotWidthSum = 0
     if(value){
         ctx.font = this.textSize + 'px Arial';
-        let fittingres = fittingStringForHyperLink(ctx, value,  w - 2, this.linkTextStr,this.linkNum ,this.textMaxWidth);
+        let fittingres = fittingStringForHyperLink(ctx, value,  w - 2, this.linkTextStr,this.linkNum ,this.dotNum, this.textMaxWidth);
         newValue = fittingres.newStr
         this.textWidth = fittingres.textWidth == this.textMaxWidth?this.textMaxWidth:fittingres.textWidth
         this.textMaxWidth = this.textMaxWidth || fittingres.textMaxWidth
@@ -941,20 +950,30 @@ HyperLinkTextCell.prototype.paintContent = function (ctx, value, x, y, w, h, sty
         for (let k = 0; k < this.linkArr.length; k++) {
             ctx.beginPath();
             const ele = this.linkArr[k];
+            if(ele.isDot){ //超链接如果要前面画点
+                ctx.beginPath();
+                ctx.arc(x+5+5+textWidth,y+(h-this.textHeight)/2+5,4,0,360,false);
+                ctx.fillStyle=ele.dotColor?ele.dotColor:"red";//填充颜色,默认是黑色
+                ctx.fill();//画实心圆
+                ctx.closePath();
+                dotWidthSum =  15
+            }else{
+                dotWidthSum = 0
+            }
             ctx.textAlign="start";
             ctx.textBaseline = 'top';
             ctx.fillStyle = ele.color || "#000";
             ctx.font = this.linkSize +'px Arial'
-            ctx.fillText(ele.name,x+5+textWidth,y+(h-this.textHeight)/2);
+            ctx.fillText(ele.name,x+5+textWidth + dotWidthSum ,y+(h-this.textHeight)/2);
             let currentLinkTextWidth = Math.ceil(ctx.measureText(ele.name).width);
             //存储绘制的相对于单元格的始末相对坐标，以避免出现横向滚动条时，滚动后坐标相对位置发生改变，导致需要用坐标进行定位的Tips以及点击事件出现异常
             if(!this.linArea[context.row]){
-                this.linArea[context.row]= [{startX:5+textWidth,endX:5+textWidth + currentLinkTextWidth,name:ele.name,row:context.row,tipText:ele.tipText||ele.name}]
+                this.linArea[context.row]= [{startX:5+textWidth ,endX:5+textWidth + currentLinkTextWidth + dotWidthSum,name:ele.name,row:context.row,tipText:ele.tipText||ele.name}]
             }else{
-                (this.linArea[context.row])[k]= {startX:5+textWidth,endX:5+textWidth + currentLinkTextWidth,name:ele.name,row:context.row,tipText:ele.tipText||ele.name}
+                (this.linArea[context.row])[k]= {startX:5+textWidth,endX:5+textWidth + currentLinkTextWidth + dotWidthSum,name:ele.name,row:context.row,tipText:ele.tipText||ele.name}
             }
 
-            textWidth += Math.ceil(ctx.measureText(ele.name).width)+10
+            textWidth += Math.ceil(ctx.measureText(ele.name).width)+10 + dotWidthSum
         }
 };
 HyperLinkTextCell.prototype.getHitInfo = function (x, y, cellStyle, cellRect, context) {
@@ -1223,8 +1242,13 @@ let ismouseInArea = (mouseX,mouseY,row,areaArr,cellX,textWidthArr) => {
  * @param {number} textSize 文字大小 默认值14
  * @param {boolean} needTip 是否需要toolTip  默认值为true
  * @param {function} clickFun 点击方法
+ * @param {function} isDot 是否需要标点，默认不需要
+ * @param {function} dotColor 标点颜色，默认红色
+ * @param {function} lineHeight 单元格高度，默认48
+ * @param {function} arrowPosition 指示箭头位置。默认居中
+ * @param {Number} zIndex toolTip显示层级，默认1700
  */
-export function SingleHyperLinkCell(parentId, textAlign, color = '#000', textSize = 14, needTip = true, clickFun, lineHeight, arrowPosition) {
+export function SingleHyperLinkCell(parentId, textAlign, color = '#000', textSize = 14, needTip = true, clickFun,isDot, dotColor, lineHeight, arrowPosition,zIndex) {
   this.parentId = parentId
   this.textY = 21
   this.textSize = textSize
@@ -1236,6 +1260,9 @@ export function SingleHyperLinkCell(parentId, textAlign, color = '#000', textSiz
   this.clickFun = clickFun
   this.arrowPosition = arrowPosition || 'center'
   this.lineHeight = lineHeight || 48
+  this.zIndex = zIndex || 1700
+  this.isDot = isDot
+  this.dotColor = dotColor || 'red'
 }
 SingleHyperLinkCell.prototype = new spreadNS.CellTypes.Base();
 
@@ -1244,32 +1271,48 @@ SingleHyperLinkCell.prototype.paintContent = function (ctx, value, x, y, w, h, s
         return
     }
     let row = context.row
+    let res = ''
     if(!value){
         this.linkAreaArr[row] = []
         return
     }
     ctx.font = this.textSize + 'px Arial'
-    let res = fittingString(ctx, value, w - 5);
+    if(this.isDot){
+        res = fittingString(ctx, value, w - 20);
+    }else{
+        res = fittingString(ctx, value, w - 5);
+    }
     value = res.newStr
     let isEllipsis = res.isEllipsis
+    let dotWidthSum = 0
+    if(this.isDot){ //超链接如果要前面画点
+        ctx.beginPath();
+        ctx.arc(x+8,y+(h-this.textHeight)/2+5,4,0,360,false);
+        ctx.fillStyle=this.dotColor?this.dotColor:"red";//填充颜色,默认是黑色
+        ctx.fill();//画实心圆
+        ctx.closePath();
+        dotWidthSum = 15
+    }else{
+        dotWidthSum = 0
+    }
     ctx.beginPath();
     ctx.textAlign="start";
     ctx.textBaseline = 'top';
     ctx.fillStyle = this.color;
     let textWidth = Math.ceil(ctx.measureText(value).width)
     if(isEllipsis){
-        ctx.fillText(value,x+5,y+(h-this.textHeight)/2);
-        this.linkAreaArr[row] = [{startX:5,endX:5+textWidth,name:value}]
+        ctx.fillText(value,x+5 +dotWidthSum,y+(h-this.textHeight)/2);
+        this.linkAreaArr[row] = [{startX:5 +dotWidthSum ,endX:5+textWidth +dotWidthSum ,name:value}]
     }else{
         if(this.textAlign == 'left'){
-            ctx.fillText(value,x+5,y+(h-this.textHeight)/2);
+            ctx.fillText(value,x+5+dotWidthSum,y+(h-this.textHeight)/2);
             this.linkAreaArr[row] = [{startX:5,endX:5+textWidth,name:value}]
         }else if(this.textAlign == 'center'){
-            ctx.fillText(value,x+(w/2-textWidth/2),y+(h-this.textHeight)/2);
-            this.linkAreaArr[row] = [{startX:(w/2-textWidth/2),endX:(w/2-textWidth/2)+textWidth,name:value}]
+            ctx.fillText(value,x+(w/2-textWidth/2)+ dotWidthSum,y+(h-this.textHeight)/2);
+            this.linkAreaArr[row] = [{startX:(w/2-textWidth/2) + dotWidthSum,endX:(w/2-textWidth/2)+textWidth + dotWidthSum,name:value}]
         }else if(this.textAlign == 'right'){
-            ctx.fillText(value,x+(w-textWidth-5),y+(h-this.textHeight)/2);
-            this.linkAreaArr[row] = [{startX:(w-textWidth-5),endX:(w-textWidth-5)+textWidth,name:value}]
+            ctx.fillText(value,x+(w-textWidth-5 - dotWidthSum),y+(h-this.textHeight)/2);
+            this.linkAreaArr[row] = [{startX:(w-textWidth-5 -dotWidthSum),endX:(w-textWidth-5 -dotWidthSum)+textWidth,name:value}]
         }
     }
 };
@@ -1537,6 +1580,8 @@ let fittingStringByLine = (c, str, maxWidth,lineNum) => {
  * @param {string} textAlign 文字位置["left","center","right"],默认值为left，居左
  * @param {number} textSize 文字大小  默认14
  * @param {number} lineNum 最大显示行数  默认1
+ * @param {Number} zIndex toolTip显示层级，默认1700
+ * @param {Number} lineHeight 单元格高度，默认48
  */
 export function EllipsisOrderLine(parentId,lineNum, textAlign ,textSize , arrowPosition, zIndex, lineHeight){
     this.lineNum = lineNum || 1
@@ -1700,7 +1745,7 @@ EllipsisOrderLine.prototype.processMouseEnter = function (hitinfo) {
     this._toolTipElement.style.left = leftVal + "px"
     if(this.arrowPosition == "center"){
         this._toolTipArrow.style.top = arrowTop+  "px"
-        this._toolTipArrow.style.left = cellPageX + w/2 - 7 + "px"
+        this._toolTipArrow.style.left = cellPageX + cellWidth/2 - 7 + "px"
     }else if(this.arrowPosition == "left"){
         this._toolTipArrow.style.top = arrowTop +  "px"
         let tmpW = cellWidth*0.25>15?15:cellWidth*0.25

@@ -101,8 +101,9 @@ class SpreadHome extends Component {
         //rangGroupStateChanged
         sheet.options.isProtected = false
         let linkArr = [
-            {name:'超链接',color:'red',clickFun:(res)=>this.linkClickFun1(res),tipText:''},
-            {name:'引用',color:'blue',clickFun:this.linkClickFun2}
+            {name:'超链接',color:'red',clickFun:(res)=>this.linkClickFun1(res),tipText:'',isDot:true,dotColor:'yellow'},
+            {name:'引用',color:'blue',clickFun:this.linkClickFun2,isDot:true,dotColor:'blue'},
+            {name:'引用',color:'blue',clickFun:this.linkClickFun2,isDot:true,dotColor:''}
         ]
         let columns = [
             // { visible: true, name: "xuhao", displayName: '序号',width:200},
@@ -110,13 +111,13 @@ class SpreadHome extends Component {
             // { visible: true, name: "age", displayName: '工程划分',width:500, cellType: new customCellType(this.state.data,'partName','','',true,"",true,"__spread_js_box__",['partName','remark'])},
             // { visible: true, name: "partName", displayName: '工程划分',width:500, cellType: new TipCellType("__spread_js_box__")},
             // { visible: false, name: "HyperLink", displayName: '超链接测试',width:400,},
-            { visible: true, name: "name", displayName: '姓名' ,cellType: new HyperLinkTextCell(linkArr,"__spread_js_box__",'','',12,'',false),width:300},
+            { visible: true, name: "name", displayName: '姓名' ,cellType: new HyperLinkTextCell(linkArr,"__spread_js_box__",'','','','',true),width:300},
             // { visible: true, name: "name", displayName: '姓名' ,width:300},
             { visible: true, name: "age", displayName: '年龄', width: 400 },
             { visible: true, name: "gender", displayName: '性别', width: 100 },
             { visible: true, name: "remark", displayName: '备注',width:200,cellType: new EllipsisOrderLine("__spread_js_box__",3,)},
             { visible: true, name: "department", displayName: '部门',width:200,cellType: new EllipsisAndToolTip("__spread_js_box__",'center')},
-            { visible: true, name: "remark", displayName: 'partName',width:200,cellType: new SingleHyperLinkCell("__spread_js_box__",'center','red')},
+            { visible: true, name: "remark", displayName: 'partName',width:200},
             // { visible: true, name: "remark", displayName: 'remark',width:200,},
             // { visible: true, name: "remark", displayName: 'remark',width:200, cellType: new EllipsisOrderLine("__spread_js_box__",2)},
             { visible: true, name: "xuanze", displayName: '选择',width:200,},
@@ -133,8 +134,9 @@ class SpreadHome extends Component {
 
         let  single = new SingleHyperLinkCell();
                 single.parentId = '__spread_js_box__'
-                single.textAlign = 'center'
+                single.textAlign = 'right'
                 single.color = 'green'
+                single.isDot = true
                 single.clickFun = ()=>{
                     this.setState({visible:true})
                 }
@@ -151,7 +153,7 @@ class SpreadHome extends Component {
             
             sheet.setCellType(r, 8, checkBox, GC.Spread.Sheets.SheetArea.viewport);
             sheet.getCell(r,8).locked(false)
-            // sheet.setCellType(r, 7, single, GC.Spread.Sheets.SheetArea.viewport);
+            sheet.setCellType(r, 5, single, GC.Spread.Sheets.SheetArea.viewport);
             // if(r%2 == 0){
                 sheet.setCellType(r, 2, hyperLink, GC.Spread.Sheets.SheetArea.viewport);
             // }

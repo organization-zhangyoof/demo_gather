@@ -32,6 +32,7 @@ class HomePage extends Component {
                     <Button onClick={()=>router.push('/basetest')} className = {styles.btn}>跳转至BaseTest</Button>
                     <Button onClick={()=>router.push('/spreadDesign')} className = {styles.btn}>跳转至spread设计器</Button>
                     <Button onClick={()=>router.push('/iframe')} className = {styles.btn}>跳转至iframe嵌套页面</Button>
+                    <Button onClick={()=>router.push('/bim')} className = {styles.btn}>跳转至BIM</Button>
                     {/* <Link to="/page1">Go to list page1</Link> */}
                 </div>
                 <div className = {styles.container}>
