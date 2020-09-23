@@ -7,13 +7,13 @@
         padding: 0px 10px 10px;
         left:30px;
         bottom:30px;
-        border:1px solid red;
+        // border:1px solid red;
         z-index:1;
         text-align: center;
     }
     .btn_switch_off{
-        width:40px;
-        height:40px;
+        width:50px;
+        height:50px;
         border-radius: 50%;
         background:#4b85fc;
         display: flex;
@@ -23,8 +23,8 @@
         transition: all .5s;
     }
     .btn_switch_on{
-        width:40px;
-        height:40px;
+        width:50px;
+        height:50px;
         border-radius: 50%;
         background:red;
         display: flex;
@@ -35,26 +35,119 @@
         transition: all .5s;
     }
     .btn_other_on{
-        height:140px;
+        height:300px;
         margin-bottom: 20px;
         transition: all .5s;
+        overflow-y: hidden;
     }
     .btn_other_off{
         margin-bottom: 20px;
-        height:1px;
-        overflow: hidden;
+        height:0px;
+        overflow-y: hidden;
         transition: all .5s;
     }
     .btn_item{           
-        width:40px;
-        height:40px;
+        width:50px;
+        height:50px;
         margin-top: 10px;
         border-radius: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor:pointer;
-        background: #ccc;
+        background: #383838;
+        color:#fff;
+        font-size: 12px;
+        .expand_item{
+            display: flex;
+            height:22px;
+            padding:0 10px;
+            border-radius: 10px;
+            background: #4b85fc;
+            color:#fff;
+            margin-right: 10px;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+        }
+        .expand_change_bim_on{
+            position: absolute;
+            width:274px;
+            padding:10px 0 10px 10px;
+            background: #383838;
+            top: 193px;
+            left: 70px;
+            border:1px solid #fff;
+            box-sizing: border-box;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .expand_change_bim_off{
+            display: none;
+
+        }
+        .expand_layer_control_on{
+            position: absolute;
+            width:180px;
+            padding:10px 0 10px 10px;
+            background: #383838;
+            top: 133px;
+            left: 70px;
+            border:1px solid #fff;
+            box-sizing: border-box;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            
+        }
+        .expand_layer_control_off{
+            display: none;
+        }
+        .expand_operate_on{
+            position: absolute;
+            width:362px;
+            padding:10px 0 10px 10px;
+            background: #383838;
+            top: 73px;
+            left: 70px;
+            border:1px solid #fff;
+            box-sizing: border-box;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .expand_operate_off{
+            display: none;
+        }
+        .expand_measuer_on{
+            position: absolute;
+            width:244px;
+            padding:10px 0 10px 10px;
+            background: #383838;
+            top: 13px;
+            left: 70px;
+            border:1px solid #fff;
+            box-sizing: border-box;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .expand_measuer_off{
+            display: none;
+        }
+        .sub_switch_on{
+            background:#4b85fc;
+            margin-right: 10px; 
+        }
+        .sub_switch_off{
+            background:#A7A7A7;  
+            margin-right: 10px; 
+        }
     }
 
     #bimContainer{
