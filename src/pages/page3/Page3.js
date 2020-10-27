@@ -7,6 +7,7 @@ class Page3 extends Component {
             inputVal : ''
         }
     }
+    
     render(){
         const handleClick = () => {
             let { inputVal } = this.state

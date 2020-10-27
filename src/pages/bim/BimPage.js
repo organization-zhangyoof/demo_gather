@@ -130,6 +130,26 @@ class BimPage extends Component {
             let tmp = this.state.openMeasure
             this.setState({openMeasure:!tmp})
         }
+        //测距
+        const measuerDistance = (viewer) => {
+            let tmp = this.state.openMeasure
+            this.setState({openMeasure:!tmp})
+        }
+        //测面
+        const measuerArea = (viewer) => {
+            let tmp = this.state.openMeasure
+            this.setState({openMeasure:!tmp})
+        }
+        //测高
+        const measuerHeight = (viewer) => {
+            let tmp = this.state.openMeasure
+            this.setState({openMeasure:!tmp})
+        }
+        //清除测量
+        const clearMeasure = (viewer) => {
+            let tmp = this.state.openMeasure
+            this.setState({openMeasure:!tmp})
+        }
 
          /**************************************地图操作******************************************************/
         //打开或收缩操作扩展按钮取
@@ -138,7 +158,19 @@ class BimPage extends Component {
             this.setState({openOperate:!tmp})
         }
         //拾取坐标
-        const pickPosition = () => {
+        const pickPosition = (viewer) => {
+
+        }
+        //绘制标示
+        const drawMark = (viewer) => {
+
+        }
+        //剖切
+        const cutOperate = (viewer) => {
+
+        }
+        //压平
+        const toFlatten = (viewer) => {
 
         }
 
@@ -186,10 +218,10 @@ class BimPage extends Component {
                         <div className={styles.btn_item} onClick = {switchMeasure}>
                             量算
                             <div className = {openMeasure?styles.expand_measuer_on:styles.expand_measuer_off}>
-                                <span className = {styles.expand_item} onClick = {(e)=>{e.stopPropagation();changeSelfBim(viewer)}}>测距</span>
-                                <span className = {styles.expand_item} onClick = {(e)=>{e.stopPropagation();changeSuperBim(viewer)}}>测面</span>
-                                <span className = {styles.expand_item} onClick = {(e)=>{e.stopPropagation();changeSuperBim(viewer)}}>测高</span>
-                                <span className = {styles.expand_item} onClick = {(e)=>{e.stopPropagation();changeSuperBim(viewer)}}>清除</span>
+                                <span className = {styles.expand_item} onClick = {(e)=>{e.stopPropagation();measuerDistance(viewer)}}>测距</span>
+                                <span className = {styles.expand_item} onClick = {(e)=>{e.stopPropagation();measuerArea(viewer)}}>测面</span>
+                                <span className = {styles.expand_item} onClick = {(e)=>{e.stopPropagation();measuerHeight(viewer)}}>测高</span>
+                                <span className = {styles.expand_item} onClick = {(e)=>{e.stopPropagation();clearMeasure(viewer)}}>清除</span>
                             </div>
                         </div>
 
@@ -197,10 +229,9 @@ class BimPage extends Component {
                             地图<br/>操作
                              <div className = {openOperate?styles.expand_operate_on:styles.expand_operate_off}>
                                 <span className = {styles.expand_item} onClick = {(e)=>{e.stopPropagation();pickPosition(viewer)}}>拾取坐标</span>
-                                <span className = {styles.expand_item} onClick = {(e)=>{e.stopPropagation();}}>绘制标示</span>
-                                <span className = {styles.expand_item} onClick = {(e)=>{e.stopPropagation();}}>测量</span>
-                                <span className = {styles.expand_item} onClick = {(e)=>{e.stopPropagation();}}>剖切</span>
-                                <span className = {styles.expand_item} onClick = {(e)=>{e.stopPropagation();}}>压平</span>
+                                <span className = {styles.expand_item} onClick = {(e)=>{e.stopPropagation();drawMark(viewer)}}>绘制标示</span>
+                                <span className = {styles.expand_item} onClick = {(e)=>{e.stopPropagation();cutOperate(viewer)}}>剖切</span>
+                                <span className = {styles.expand_item} onClick = {(e)=>{e.stopPropagation();toFlatten(viewer)}}>压平</span>
                             </div>
                         </div>
 
