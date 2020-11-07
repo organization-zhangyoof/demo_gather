@@ -18,7 +18,9 @@ class HomePage extends Component {
     }
     render(){
         const openNewTag = () => {
-            window.open("http://www.baidu.com")
+            // window.open("http://www.baidu.com")
+            window.location.href = "http://www.baidu.com"
+            window.location.href = "http://www.baidu.com"
         }
         return (
             <div className={styles.main}>
