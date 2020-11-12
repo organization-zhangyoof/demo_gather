@@ -200,7 +200,8 @@ class BimPage extends Component {
         }
         //显示自有模型
         const changeSelfBim = (viewer) => {
-            this.setState({ bimAddress: 'http://39.108.163.220/iserver/services/3D-SZS-XY-201811302/rest/realspace' }, () => { showSences(viewer)})
+            // this.setState({ bimAddress: 'http://39.108.163.220/iserver2/services/3D-SZS-XY-201811302/rest/realspace' }, () => { showSences(viewer)})
+            this.setState({ bimAddress: 'http://iserver2.gcnao.cn/iserver/services/3D-shajiangxilu/rest/realspace' }, () => { showSences(viewer)})
         }
         //显示超图模型
         const changeSuperBim = () => {
