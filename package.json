@@ -11,14 +11,21 @@
     "@grapecity/spread-sheets": "^13.0.2",
     "@grapecity/spread-sheets-react": "^13.0.2",
     "@grapecity/spread-sheets-resources-zh": "^13.0.2",
+    "ahooks": "^2.9.1",
     "antd": "3.26.13",
+    "axios": "^0.21.0",
     "cesium": "^1.67.0",
     "dva": "^2.6.0-beta.6",
     "file-saver": "^2.0.2",
     "jquery": "^3.5.1",
+    "lodash": "^4.17.20",
+    "moment": "^2.29.1",
+    "prop-types": "^15.7.2",
+    "qs": "^6.9.4",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "umi": "2.13.7"
+    "umi": "2.13.7",
+    "underscore": "^1.11.0"
   },
   "devDependencies": {
     "react-test-renderer": "^16.7.0",
