@@ -1,7 +1,7 @@
 const routes = [
     {
-        path: '/bim',
-        component: './bim/BimPage',
+        path: '/bimDemo',
+        component: './bimDemo/BimPage',
     }
 ]
 module.exports = routes

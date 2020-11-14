@@ -9,6 +9,7 @@
     const iframe_page_routes = require("./pages/iframePage/routes")
     const bim_routes = require("./pages/bim/routes")
     const bMap_routes = require("./pages/bMap/routes")
+    const bimDemo_routes= require("./pages/bimDemo/routes")
 
 
     let routes = [
@@ -23,6 +24,7 @@
       ...iframe_page_routes,
       ...bim_routes,
       ...bMap_routes,
+      ...bimDemo_routes
     ]
 
     module.exports = [
