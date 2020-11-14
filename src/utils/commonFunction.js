@@ -1,6 +1,7 @@
 import { Select, Radio, notification, Icon } from 'antd';
 import request from './request'
 import _ from 'underscore';
+import OSS from 'ali-oss';
 const { Option } = Select;
 
 const loadScript = (()=>{

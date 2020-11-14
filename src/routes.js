@@ -8,6 +8,7 @@
     const spread_Designer_routes = require("./pages/spreadDesigner/routes")
     const iframe_page_routes = require("./pages/iframePage/routes")
     const bim_routes = require("./pages/bim/routes")
+    const bMap_routes = require("./pages/bMap/routes")
 
 
     let routes = [
@@ -21,6 +22,7 @@
       ...spread_Designer_routes,
       ...iframe_page_routes,
       ...bim_routes,
+      ...bMap_routes,
     ]
 
     module.exports = [

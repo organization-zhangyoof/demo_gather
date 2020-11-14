@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React,{Component} from'react'
 import '@grapecity/spread-sheets/styles/gc.spread.sheets.excel2016colorful.css';
 import GC from '@grapecity/spread-sheets';
@@ -66,14 +67,6 @@ class SpreadHome extends Component {
                 // {name2:'易',age2:20,gender2:0,department2:'销售部',partName2:'单位工程',level:'3',nodeType2:1},
                 // {name2:'内瑟斯',age2:20,gender2:0,department2:'销售1部',partName2:'子单位工程',level:'3-1',nodeType2:2},
                 // {name2:'拉莫斯',age2:20,gender2:0,department2:'销售2部的干撒罕见的国际化搜嘎大家好规划局爱上过的痕迹啊工商局',partName2:'子单位工程',level:'3-2',nodeType2:2},
-            ],
-            columnChangeTest : [
-                // { visible: true, name: "xuhao", displayName: '序号',width:200},
-                { visible: true, name: "partName", displayName: '工程划分', width:300},
-                { visible: true, name: "name", displayName: '姓名' ,},
-                // { visible: true, name: "age", displayName: '年龄', width: 400 },
-                // { visible: true, name: "gender", displayName: '性别', width: 100 },
-                { visible: true, name: "department", displayName: '部门',width:200,},
             ],
             colorRange : [
                 {nodeType:1,partBg:'#E8F4FF',partTextClolr:'#1890FF'},

@@ -12,6 +12,7 @@
     "@grapecity/spread-sheets-react": "^13.0.2",
     "@grapecity/spread-sheets-resources-zh": "^13.0.2",
     "ahooks": "^2.9.1",
+    "ali-oss": "^6.11.2",
     "antd": "3.26.13",
     "axios": "^0.21.0",
     "cesium": "^1.67.0",

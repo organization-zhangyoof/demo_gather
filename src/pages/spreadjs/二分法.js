@@ -1,3 +1,4 @@
+/* eslint-disable */
 var str = '12345678901'
 var aNum = 0
 var maxLen = 10

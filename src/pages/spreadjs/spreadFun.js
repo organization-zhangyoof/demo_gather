@@ -1,3 +1,4 @@
+/* eslint-disable */
 import GC from '@grapecity/spread-sheets';
 let spreadNS = GC.Spread.Sheets
 

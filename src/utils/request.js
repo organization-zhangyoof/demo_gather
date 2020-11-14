@@ -1,6 +1,6 @@
 import Axios from 'axios';
 import qs from 'qs';
-import {customNotice} from "utils/commonFunction";
+import {customNotice} from "./commonFunction";
 
 Axios.defaults.timeout = 600000; // 模型解析及pw文件传输耗时较长
 Axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';

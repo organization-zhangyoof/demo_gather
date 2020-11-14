@@ -1,11 +1,12 @@
+/* eslint-disable */
 import React,{Component} from'react'
 // import '@grapecity/spread-sheets/styles/gc.spread.sheets.excel2016colorful.css';
 import GC from '@grapecity/spread-sheets';
-import {SpreadSheets, Worksheet, Column} from '@grapecity/spread-sheets-react';
+import {SpreadSheets} from '@grapecity/spread-sheets-react';
 import openImg from '../../assets/square-open.png'
 import closeImg from '../../assets/square-close.png'
 import { Button, Modal } from "antd"
-import {customCellType, TipCellType, EllipsisTextCellType, EllipsisAndToolTip, HyperLinkTextCell,SingleHyperLinkCell,EllipsisOrderLine} from './spreadFun'
+import {customCellType,  EllipsisAndToolTip, HyperLinkTextCell,SingleHyperLinkCell,EllipsisOrderLine} from './spreadFun'
 
 GC.Spread.Common.CultureManager.culture("zh-cn");
 class SpreadHome extends Component {

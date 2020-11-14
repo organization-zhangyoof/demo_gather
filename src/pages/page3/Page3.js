@@ -18,11 +18,15 @@ class Page3 extends Component {
             this.setState({inputVal:e.target.value})
             // console.log('e=====',e.target.value)
         }
+        const openNewTag = () => {
+            window.open("http://www.baidu.com")
+        }
         return (
             <div style={{width:'100%',height:'100%',background:'#D8D8F7'}}>
                 <h1>this is page3</h1>
                 <Input onChange = { handleChange }/>
                 <Button onClick = { handleClick }>changeVal</Button>
+                <Button onClick = { openNewTag }>openNewTag</Button>
             </div>
         )
     }

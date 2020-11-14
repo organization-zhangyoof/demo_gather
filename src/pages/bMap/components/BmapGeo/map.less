@@ -1,0 +1,103 @@
+.normal{
+    width:100%;
+    height:100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background:#2d2d2d
+}
+.title{
+    color:#fff;
+    text-shadow: 5px 5px 5px #9d9d9d;
+}
+.container{
+    // height:80%;
+    // width:60%;
+    height:100%;
+    width:100%;
+    border:1px solid #fff;
+    position: relative;
+}
+[class^=BMapLabel]{
+    border:none !important;
+    border-radius: 15px;
+    background:#414141 !important;
+    
+
+}
+[class^=hide_text]{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+[class^=info-window]{
+    border-radius: 15px;
+    padding:5px 10px 0;
+    color:#fff;
+    background:rgba(0,0,0,0.65)
+}
+
+[class*= p-t-b-5]{
+    padding:5px 0;
+}
+[class*=border-b]{
+    border-bottom:1px solid #C1C1C1;
+}
+[class*=line_height]{
+    line-height: 18px
+}
+[class*=anchorBL]{
+    display:none
+}
+[class*=scrollBox]::-webkit-scrollbar {
+    display: none;
+}
+.lenged{
+    width:300px;
+    height:85px;
+    position: absolute;
+    bottom:0 ;
+    left:0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    p.title{
+        height:30%;
+        width:100%;
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        background:#4e85fc;
+        text-align: center;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        font-size: 16px;
+    }
+    .lenged_pic{
+        height:70%;
+        width:100%;
+        padding:0 5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #fff;
+        .lenged_contant{
+            text-align: center;
+            width:55px;
+            img{
+                width:30px;
+                height:30px
+            }
+            p{
+                text-align: center;
+                font-size: 14px;
+                font-weight: 700;
+                // color:#000
+            }
+        }
+    }
+}
