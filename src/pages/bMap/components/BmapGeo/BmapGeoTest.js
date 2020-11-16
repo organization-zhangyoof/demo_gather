@@ -100,7 +100,7 @@ class Map extends React.Component{
     }
     this.state.zoomNum = map.getZoom()
     map.clearOverlays();//清空所有地图覆盖物
-    this.judgeToDraw()
+    this.judgeToDraw();
     map.setMapStyle({ styleJson: mapStylesJson });//设置自定义地图属性
     const getZoomNum =()=>{/**获取当前地图等级 */
       this.state.zoomNum = map.getZoom()// 记录更改后地图等级
