@@ -27,8 +27,7 @@ import { customInfoWindow } from './CustomInfoWindow';
 import RightSideInfoDrawer from './RightSideInfoDrawer';
 import * as CONFIG from '@/config/common/commonConfig';
 import * as commonFun from '@/utils/commonFunction';
-import { createPortal } from 'react-dom';
-import { Icon } from 'antd';
+import _ from 'lodash';
 class BmapGeo extends React.Component {
   constructor() {
     super();
@@ -40,9 +39,11 @@ class BmapGeo extends React.Component {
       },
       monitorPoint: [],
       showRoadInfo: true,
+      showTspInfo:true,
       mapCenter: [],
       checkIndex: [],
-      currentMapType:'卫星'
+      currentMapType: '卫星',
+      anchorId: '',
     };
   }
   /**
@@ -96,7 +97,7 @@ class BmapGeo extends React.Component {
     map.setViewport(viewPoints);
     zoomNum = map.getZoom();
     mapType = map.getMapType();
-    map.getMapType().getName()=='地图'&&map.setMapStyle({ styleJson: CONFIG.styleJson });
+    map.getMapType().getName() == '地图' && map.setMapStyle({ styleJson: CONFIG.styleJson });
     const getZoomNum = () => {
       /**获取当前地图等级 */
       zoomNum = map.getZoom();
@@ -113,13 +114,14 @@ class BmapGeo extends React.Component {
       }
     };
     map.addEventListener('zoomend', getZoomNum); /**地图缩放结束事件 */
-    map.addEventListener("maptypechange",()=>{/** 地图类型改事件，即切换地图、卫星地图 */
-      let mapType=map.getMapType().getName();
+    map.addEventListener('maptypechange', () => {
+      /** 地图类型改事件，即切换地图、卫星地图 */
+      let mapType = map.getMapType().getName();
       this.setState({
-        currentMapType:mapType
-    })
-  })
-}
+        currentMapType: mapType,
+      });
+    });
+  }
 
   drawTspPoint() {
     const { BMap } = window;
@@ -161,8 +163,16 @@ class BmapGeo extends React.Component {
       marker.projectNumber = item.projectNumber; //联系电话
       marker.address = item.address; //详细地址
       marker.equipDetailList = item.equipDetailList; //工地设备信息[{}]
-      marker.addEventListener('click', function(e) {
-        console.log('tsp点击事件====>>>>', e.target);
+      marker.addEventListener('click', () => {
+        if(this.RightSideInfoDrawer.state.visible){
+          this.RightSideInfoDrawer.scrollToCard(item.siteId)
+        }else{
+          this.RightSideInfoDrawer.setState({
+            visible: true,
+          },()=>{
+            this.RightSideInfoDrawer.scrollToCard(item.siteId)
+          });
+        }
       });
 
       let infoHTML = `
@@ -205,33 +215,32 @@ class BmapGeo extends React.Component {
           </div>
         </div>
         `;
-
-      let myCompOverlay = customInfoWindow(pt, infoHTML, 420, 20);
-      let timer = null;
-      marker.addEventListener('mouseover', function(e) {
-        map.addOverlay(myCompOverlay);
-        let infoH = document.getElementById('customInfoWindow').offsetHeight + 30;
-        let x = e.pixel.x;
-        let y = e.pixel.y;
-        _this.moveMap(x, y, 420);
-        _this.state.showRoadInfo = false;
-        /**设置信息弹窗下方的信息自动滚动 */
-        let obj = document.getElementById('scrollBox');
-        let H = obj.scrollHeight; /*总高度（包括可见区域及不可见区域高度）*/
-        let h = obj.clientHeight; /*可见区域高度*/
-        let move = 2;
-        let scrollDirection = 1;
-        if (H - h) {
-          timer = setInterval(function() {
-            if (obj.scrollTop == 0) {
-              scrollDirection = 1;
-            } else if (H - h == obj.scrollTop) {
-              scrollDirection = -1;
-            }
-            obj.scrollBy(0, move * scrollDirection);
-          }, 200);
-        }
-      });
+        let myCompOverlay = customInfoWindow(pt, infoHTML, 420, 20);
+        let timer = null;
+      marker.addEventListener('mouseover', _.debounce(function(e) {
+          myCompOverlay&&map.addOverlay(myCompOverlay);
+          let infoH = document.getElementById('customInfoWindow').offsetHeight + 30;
+          let x = e.pixel.x;
+          let y = e.pixel.y;
+          _this.moveMap(x, y, 420);
+          _this.state.showRoadInfo = false;
+          /**设置信息弹窗下方的信息自动滚动 */
+          let obj = document.getElementById('scrollBox');
+          let H = obj.scrollHeight; /*总高度（包括可见区域及不可见区域高度）*/
+          let h = obj.clientHeight; /*可见区域高度*/
+          let move = 2;
+          let scrollDirection = 1;
+          if (H - h) {
+            timer = setInterval(function() {
+              if (obj.scrollTop == 0) {
+                scrollDirection = 1;
+              } else if (H - h == obj.scrollTop) {
+                scrollDirection = -1;
+              }
+              obj.scrollBy(0, move * scrollDirection);
+            }, 200);
+          }
+      }),500);
       marker.addEventListener('mouseout', function(e) {
         _this.state.showRoadInfo = true;
         map.removeOverlay(myCompOverlay);
@@ -395,6 +404,10 @@ class BmapGeo extends React.Component {
         checkIndex,
       });
     };
+    const drawerProps = {
+      tspSiteList: this.props.tspSiteList,
+      anchorId: this.state.anchorId,
+    };
     return (
       <div className={styles.normal}>
         {/* <h1 className={styles.title}>百度地图测试demo</h1> */}
@@ -410,12 +423,14 @@ class BmapGeo extends React.Component {
                         className={checkIndex.indexOf(item.id) !== -1 ? styles.check : null}
                       ></div>
                     </div>
-                    <span style={{ color: currentMapType=='地图'?'black':'white' }}>{item.name}</span>
+                    <span style={{ color: currentMapType == '地图' ? 'black' : 'white' }}>
+                      {item.name}
+                    </span>
                   </div>
                 );
               })}
           </div>
-          <RightSideInfoDrawer />
+          <RightSideInfoDrawer {...drawerProps} ref={ref => (this.RightSideInfoDrawer = ref)} />
           <div className={styles.lenged}>
             <p className={styles.title}>图 &nbsp;&nbsp;&nbsp; 例</p>
             <div className={styles.lenged_pic}>

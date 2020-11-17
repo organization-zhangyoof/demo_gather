@@ -51,18 +51,296 @@
 [class*='scrollBox']::-webkit-scrollbar {
   display: none;
 }
-:global{
-    #bMapContainer .ant-drawer-content-wrapper{
-        height:90%;
-        top: 5%;
-        right:5px;
-        border-radius: 10px;
-        .ant-drawer-content{
-            border-radius: 10px;
-        }
+.rightSideIcon {
+  width: 19px;
+  background: #6fccf3;
+  height: 45px;
+  position: absolute;
+  top: 50%;
+  cursor: pointer;
+  border-radius: 10px;
+  right: 0px;
+}
+
+.rightSideSlider {
+  position: absolute;
+  width: 380px;
+  height: 90%;
+  top: 5%;
+  right: 5px;
+  border-radius: 10px;
+  padding: 5px 10px 5px 5px;
+  transition: width 0.3s;
+  background-image: url(../../img/rightSlider.png);
+  background-size: cover;
+}
+.rightSideSliderOff {
+  position: absolute;
+  width: 0px;
+  height: 90%;
+  top: 5%;
+  right: 5px;
+  border-radius: 10px;
+  background: #fff;
+  transition: width 0.3s;
+  background-image: url(../../img/rightSlider.png);
+  background-size: cover;
+}
+.tabLine {
+  display: inline-flex;
+  position: absolute;
+  top: 36px;
+  left: 0px;
+  .line {
+    background: rgb(3, 124, 214);
+    width: 300px;
+    height: 1px;
+    margin: 2px 0px;
+  }
+  .square {
+    width: 5px;
+    height: 5px;
+    background: rgb(3, 124, 214);
+  }
+}
+.ellipsisSpan {
+  display: inline-block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+  line-height: 2;
+  font-size: 14px;
+  font-family: 'Arial Normal', 'Arial';
+  font-weight: 400;
+  font-style: normal;
+  color: #eeeeee;
+  span {
+    font-size: 16px;
+    color: #ffffff;
+  }
+}
+.ellipsisSpan50 {
+  display: inline-block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 50%;
+  line-height: 2;
+  font-size: 14px;
+  font-family: 'Arial Normal', 'Arial';
+  font-weight: 400;
+  font-style: normal;
+  color: #eeeeee;
+  span {
+    font-size: 16px;
+    color: #ffffff;
+  }
+}
+.card {
+  background-image: url(../../img/card.png);
+  background-size: cover;
+  padding: 20px;
+  margin-right: 5px;
+}
+.persentageDiv {
+  display: flex;
+  font-size: 14px;
+  font-family: 'Arial Normal', 'Arial';
+  font-weight: 400;
+  font-style: normal;
+  color: #eeeeee;
+  width: 100%;
+  line-height: 2.2;
+  .persentageOutSide {
+    background: #0b1a2f;
+    border-radius: 10px;
+    position: relative;
+    display: inline-block;
+    flex: 1;
+    height: 12px;
+    margin: 9px 10px;
+    .persentageInside1 {
+      border-radius: 10px;
+      background: linear-gradient(
+        90deg,
+        rgba(240, 104, 162, 1) 0%,
+        rgba(240, 104, 162, 1) 0%,
+        rgba(223, 24, 109, 1) 100%,
+        rgba(223, 24, 109, 1) 100%
+      );
+      height: 10px;
     }
+    .persentageInside2 {
+      border-radius: 10px;
+      background: linear-gradient(
+        90deg,
+        rgba(219, 144, 140, 1) 0%,
+        rgba(219, 144, 140, 1) 0%,
+        rgba(220, 75, 95, 1) 100%,
+        rgba(220, 75, 95, 1) 100%
+      );
+      height: 10px;
+    }
+    .persentageInside3 {
+      border-radius: 10px;
+      background: linear-gradient(
+        180deg,
+        rgba(255, 220, 115, 1) 0%,
+        rgba(255, 220, 115, 1) 0%,
+        rgba(255, 196, 16, 1) 100%,
+        rgba(255, 196, 16, 1) 100%
+      );
+      height: 10px;
+    }
+    .persentageInside4 {
+      border-radius: 10px;
+      background: linear-gradient(
+        90deg,
+        rgba(219, 219, 147, 1) 0%,
+        rgba(219, 219, 147, 1) 0%,
+        rgba(204, 204, 102, 1) 100%,
+        rgba(204, 204, 102, 1) 100%
+      );
+      height: 10px;
+    }
+    .persentageInside5 {
+      border-radius: 10px;
+      background: linear-gradient(
+        90deg,
+        rgba(255, 55, 255, 1) 0%,
+        rgba(255, 55, 255, 1) 0%,
+        rgba(128, 0, 128, 1) 100%,
+        rgba(128, 0, 128, 1) 100%
+      );
+      height: 10px;
+    }
+    .persentageInside6 {
+      border-radius: 10px;
+      background: linear-gradient(
+        90deg,
+        rgba(255, 96, 255, 1) 0%,
+        rgba(255, 96, 255, 1) 0%,
+        rgba(249, 0, 249, 1) 100%,
+        rgba(249, 0, 249, 1) 100%
+      );
+      height: 10px;
+    }
+    .persentageInside7 {
+      border-radius: 10px;
+      background: linear-gradient(
+        90deg,
+        rgba(255, 168, 255, 1) 0%,
+        rgba(255, 168, 255, 1) 0%,
+        rgba(255, 119, 255, 1) 100%,
+        rgba(255, 119, 255, 1) 100%
+      );
+      height: 10px;
+    }
+    .persentageInside8 {
+      border-radius: 10px;
+      background: linear-gradient(
+        90deg,
+        rgba(255, 215, 255, 1) 0%,
+        rgba(255, 215, 255, 1) 0%,
+        rgba(255, 198, 255, 1) 100%,
+        rgba(255, 198, 255, 1) 100%
+      );
+      height: 10px;
+    }
+    .persentageInside9 {
+      border-radius: 10px;
+      background: linear-gradient(
+        90deg,
+        rgba(134, 154, 236, 1) 0%,
+        rgba(134, 154, 236, 1) 0%,
+        rgba(45, 83, 223, 1) 100%,
+        rgba(45, 83, 223, 1) 100%
+      );
+      height: 10px;
+    }
+    .persentageInside10 {
+      border-radius: 10px;
+      background: linear-gradient(
+        90deg,
+        rgba(81, 223, 253, 1) 0%,
+        rgba(81, 223, 253, 1) 0%,
+        rgba(14, 178, 211, 1) 100%,
+        rgba(14, 178, 211, 1) 100%
+      );
+      height: 10px;
+    }
+    .persentageInside11 {
+      border-radius: 10px;
+      background: linear-gradient(
+        90deg,
+        rgba(254, 171, 177, 1) 0%,
+        rgba(254, 171, 177, 1) 0%,
+        rgba(255, 0, 0, 1) 100%,
+        rgba(255, 0, 0, 1) 100%
+      );
+      height: 10px;
+    }
+    .persentageInside12 {
+      border-radius: 10px;
+      background: linear-gradient(
+        180deg,
+        rgba(13, 255, 255, 1) 0%,
+        rgba(13, 255, 255, 1) 0%,
+        rgba(0, 153, 153, 1) 100%,
+        rgba(0, 153, 153, 1) 100%
+      );
+      height: 10px;
+    }
+    span {
+      position: absolute;
+      top: 0px;
+      left: 30%;
+      line-height: 0.8;
+    }
+  }
+}
+.title {
+  color: #eeeeee;
+}
 
-
+:global {
+  #bMapContainer .ant-tabs {
+    height: 100%;
+    .ant-tabs-tab {
+      padding: 7px 8px;
+      color: #fff;
+    }
+    .ant-tabs-content {
+      height: calc(100% - 60px);
+    }
+    .ant-tabs-ink-bar {
+      background: #4fd8e6;
+    }
+  }
+  #bMapContainer {
+    ::-webkit-scrollbar {
+      //滚动条整体部分
+      width: 5px;
+      height: 10px;
+    }
+    ::-webkit-scrollbar-button:vertical {
+      display: none;
+    } //滚动条两端的按钮
+    ::-webkit-scrollbar-track ::-webkit-scrollbar-corner {
+      background: #4fd8e6;
+    } //外层轨道
+    ::-webkit-scrollbar-thumb {
+      border-radius: 5px;
+      background-color: #4fd8e6;
+    }
+    ::-webkit-scrollbar-thumb:vertical:hover {
+      background-color: #4fd8e6;
+    }
+    ::-webkit-scrollbar-thumb:vertical:hover {
+      background-color: #4fd8e6;
+    }
+  }
 }
 .checkBox_list {
   display: inline-flex;
@@ -77,8 +355,8 @@
       height: 17px;
       border: 2px solid rgba(44, 139, 231, 0.5);
       margin-right: 5px;
-      div{
-          cursor: pointer;
+      div {
+        cursor: pointer;
       }
       .check {
         border: 1px solid rgba(44, 139, 231, 0.5);
