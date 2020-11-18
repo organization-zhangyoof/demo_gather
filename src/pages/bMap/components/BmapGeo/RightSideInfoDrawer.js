@@ -7,13 +7,14 @@ class RightSideInfoDrawer extends Component {
     this.state = {
       visible: false,
       anchorId: '',
+      currentKey: '1',
     };
   }
 
   scrollToCard(anchorId) {
+    debugger
     let anchorElement = document.getElementById(anchorId);
     if (anchorElement) {
-      this.anchorId = anchorId;
       anchorElement.scrollIntoView({ block: 'start', behavior: 'smooth' });
       this.setState({ anchorId: anchorId });
     }
@@ -30,12 +31,13 @@ class RightSideInfoDrawer extends Component {
         visible: true,
       });
     };
-    const { tspSiteList } = this.props;
+    const { roadData } = this.props;
+    const { currentKey } = this.state;
     const mapToInfoCard =
-      tspSiteList &&
-      tspSiteList.length > 0 &&
-      tspSiteList.map(item => (
-        <div id={item.siteId} className={styles.card}>
+      roadData &&
+      roadData.length > 0 &&
+      roadData.map(item => (
+        <div id={currentKey == '1' ? item.projectId : ''} className={styles.card}>
           <div>
             <span className={styles.ellipsisSpan}>
               标段名称：<span title={item.projectName}>{item.projectName}</span>
@@ -43,7 +45,7 @@ class RightSideInfoDrawer extends Component {
           </div>
           <div>
             <span className={styles.ellipsisSpan}>
-              施工单位：<span title={item.workCompany}>{item.workCompany}</span>
+              施工单位：<span title={item.projectdes}>{item.projectdes}</span>
             </span>
           </div>
           <div>
@@ -74,10 +76,10 @@ class RightSideInfoDrawer extends Component {
       ));
 
     const mapToFeeCard =
-      tspSiteList &&
-      tspSiteList.length > 0 &&
-      tspSiteList.map(item => (
-        <div className={styles.card}>
+      roadData &&
+      roadData.length > 0 &&
+      roadData.map(item => (
+        <div id={currentKey == '2' ? item.projectId : ''} className={styles.card}>
           <div>
             <span className={styles.ellipsisSpan}>
               标段名称：<span title={item.projectName}>{item.projectName}</span>
@@ -146,11 +148,11 @@ class RightSideInfoDrawer extends Component {
         </div>
       ));
 
-      const mapToRateCard =
-      tspSiteList &&
-      tspSiteList.length > 0 &&
-      tspSiteList.map(item => (
-        <div className={styles.card}>
+    const mapToRateCard =
+      roadData &&
+      roadData.length > 0 &&
+      roadData.map(item => (
+        <div id={currentKey == '3' ? item.projectId : ''} className={styles.card}>
           <div>
             <span className={styles.ellipsisSpan}>
               标段名称：<span title={item.projectName}>{item.projectName}</span>
@@ -158,7 +160,7 @@ class RightSideInfoDrawer extends Component {
           </div>
           <div>
             <span className={styles.persentageDiv}>
-            开累产值
+              开累产值
               <div className={styles.persentageOutSide}>
                 <div
                   className={styles.persentageInside5}
@@ -173,7 +175,7 @@ class RightSideInfoDrawer extends Component {
           </div>
           <div>
             <span className={styles.persentageDiv}>
-            年度产值
+              年度产值
               <div className={styles.persentageOutSide}>
                 <div
                   className={styles.persentageInside6}
@@ -188,7 +190,7 @@ class RightSideInfoDrawer extends Component {
           </div>
           <div>
             <span className={styles.persentageDiv}>
-            季度产值
+              季度产值
               <div className={styles.persentageOutSide}>
                 <div
                   className={styles.persentageInside7}
@@ -203,7 +205,7 @@ class RightSideInfoDrawer extends Component {
           </div>
           <div>
             <span className={styles.persentageDiv}>
-            月度产值
+              月度产值
               <div className={styles.persentageOutSide}>
                 <div
                   className={styles.persentageInside8}
@@ -218,11 +220,11 @@ class RightSideInfoDrawer extends Component {
           </div>
         </div>
       ));
-      const mapToQualityCard=
-      tspSiteList &&
-      tspSiteList.length > 0 &&
-      tspSiteList.map(item => (
-        <div className={styles.card}>
+    const mapToQualityCard =
+      roadData &&
+      roadData.length > 0 &&
+      roadData.map(item => (
+        <div id={currentKey == '4' ? item.projectId : ''} className={styles.card}>
           <div>
             <span className={styles.ellipsisSpan}>
               标段名称：<span title={item.projectName}>{item.projectName}</span>
@@ -239,7 +241,7 @@ class RightSideInfoDrawer extends Component {
           <div>
             <span className={styles.title}>分项工程评定</span>
             <span className={styles.persentageDiv}>
-              <div className={styles.persentageOutSide} style={{ margin:'9px 10px 9px 0px'}}>
+              <div className={styles.persentageOutSide} style={{ margin: '9px 10px 9px 0px' }}>
                 <div
                   className={styles.persentageInside9}
                   style={{
@@ -254,7 +256,7 @@ class RightSideInfoDrawer extends Component {
           <div>
             <span className={styles.title}>质量隐患</span>
             <span className={styles.persentageDiv}>
-              <div className={styles.persentageOutSide} style={{ margin:'9px 10px 9px 0px'}}>
+              <div className={styles.persentageOutSide} style={{ margin: '9px 10px 9px 0px' }}>
                 <div
                   className={styles.persentageInside10}
                   style={{
@@ -269,11 +271,11 @@ class RightSideInfoDrawer extends Component {
         </div>
       ));
 
-      const mapToSafeCard=
-      tspSiteList &&
-      tspSiteList.length > 0 &&
-      tspSiteList.map(item => (
-        <div className={styles.card}>
+    const mapToSafeCard =
+      roadData &&
+      roadData.length > 0 &&
+      roadData.map(item => (
+        <div id={currentKey == '5' ? item.projectId : ''} className={styles.card}>
           <div>
             <span className={styles.ellipsisSpan}>
               标段名称：<span title={item.projectName}>{item.projectName}</span>
@@ -290,7 +292,7 @@ class RightSideInfoDrawer extends Component {
           <div>
             <span className={styles.title}>危险源状态</span>
             <span className={styles.persentageDiv}>
-              <div className={styles.persentageOutSide} style={{ margin:'9px 10px 9px 0px'}}>
+              <div className={styles.persentageOutSide} style={{ margin: '9px 10px 9px 0px' }}>
                 <div
                   className={styles.persentageInside11}
                   style={{
@@ -305,7 +307,7 @@ class RightSideInfoDrawer extends Component {
           <div>
             <span className={styles.title}>安全隐患</span>
             <span className={styles.persentageDiv}>
-              <div className={styles.persentageOutSide} style={{ margin:'9px 10px 9px 0px'}}>
+              <div className={styles.persentageOutSide} style={{ margin: '9px 10px 9px 0px' }}>
                 <div
                   className={styles.persentageInside12}
                   style={{
@@ -320,7 +322,7 @@ class RightSideInfoDrawer extends Component {
           <div>
             <span className={styles.title}>环水保隐患</span>
             <span className={styles.persentageDiv}>
-              <div className={styles.persentageOutSide} style={{ margin:'9px 10px 9px 0px'}}>
+              <div className={styles.persentageOutSide} style={{ margin: '9px 10px 9px 0px' }}>
                 <div
                   className={styles.persentageInside10}
                   style={{
@@ -354,6 +356,10 @@ class RightSideInfoDrawer extends Component {
             size="small"
             tabBarGutter={0}
             tabBarStyle={{ marginBottom: 0, color: '#fff', borderBottom: 'none' }}
+            onChange={activeKey => {
+              this.setState({ currentKey: activeKey });
+              setTimeout(()=>{this.scrollToCard(this.state.anchorId)},500)
+            }}
             tabBarExtraContent={
               <Icon
                 type="close"
@@ -371,13 +377,13 @@ class RightSideInfoDrawer extends Component {
               <div style={{ height: '100%', overflow: 'auto' }}>{mapToFeeCard}</div>
             </Tabs.TabPane>
             <Tabs.TabPane tab="进度" key="3">
-            <div style={{ height: '100%', overflow: 'auto' }}>{mapToRateCard}</div>
+              <div style={{ height: '100%', overflow: 'auto' }}>{mapToRateCard}</div>
             </Tabs.TabPane>
             <Tabs.TabPane tab="质量" key="4">
-            <div style={{ height: '100%', overflow: 'auto' }}>{mapToQualityCard}</div>
+              <div style={{ height: '100%', overflow: 'auto' }}>{mapToQualityCard}</div>
             </Tabs.TabPane>
             <Tabs.TabPane tab="安全" key="5">
-            <div style={{ height: '100%', overflow: 'auto' }}>{mapToSafeCard}</div>
+              <div style={{ height: '100%', overflow: 'auto' }}>{mapToSafeCard}</div>
             </Tabs.TabPane>
           </Tabs>
         </div>
