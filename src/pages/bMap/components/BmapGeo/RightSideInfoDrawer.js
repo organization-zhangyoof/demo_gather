@@ -5,7 +5,6 @@ class RightSideInfoDrawer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      visible: false,
       anchorId: '',
       currentKey: '1',
     };
@@ -20,17 +19,13 @@ class RightSideInfoDrawer extends Component {
     }
   }
   render() {
-    let { visible } = this.state;
-    const onClose = () => {
-      this.setState({
-        visible: false,
-      });
-    };
-    const showInfoBox = () => {
-      this.setState({
-        visible: true,
-      });
-    };
+    let { 
+      visible,
+      onClose,
+      showInfoBox,
+      directToMarker
+     } = this.props;
+
     const { roadData } = this.props;
     const { currentKey } = this.state;
     const mapToInfoCard =
@@ -45,7 +40,7 @@ class RightSideInfoDrawer extends Component {
             this.setState({
               anchorId:item.projectId
             })
-            this.props.directToMarker(item.projectId)
+            directToMarker(item.projectId)
           }}
         >
           <div>
@@ -92,8 +87,13 @@ class RightSideInfoDrawer extends Component {
         <div
           id={currentKey == '2' ? item.projectId : ''}
           className={styles.card}
-          style={{ border: this.state.anchorId == item.projectId ? '1px solid red' : 'none' }}
-          onClick={() => this.props.directToMarker(item.projectId)}
+          style={{ border: this.state.anchorId == item.projectId ? '1px solid rgba(83,161,228,0.85)' : 'none' }}
+          onClick={() => {
+            this.setState({
+              anchorId:item.projectId
+            })
+            directToMarker(item.projectId)
+          }}
         >
           <div>
             <span className={styles.ellipsisSpan}>
@@ -170,8 +170,13 @@ class RightSideInfoDrawer extends Component {
         <div
           id={currentKey == '3' ? item.projectId : ''}
           className={styles.card}
-          style={{ border: this.state.anchorId == item.projectId ? '1px solid red' : 'none' }}
-          onClick={() => this.props.directToMarker(item.projectId)}
+          style={{ border: this.state.anchorId == item.projectId ? '1px solid rgba(83,161,228,0.85)' : 'none' }}
+          onClick={() => {
+            this.setState({
+              anchorId:item.projectId
+            })
+            directToMarker(item.projectId)
+          }}
         >
           <div>
             <span className={styles.ellipsisSpan}>
@@ -247,8 +252,13 @@ class RightSideInfoDrawer extends Component {
         <div
           id={currentKey == '4' ? item.projectId : ''}
           className={styles.card}
-          style={{ border: this.state.anchorId == item.projectId ? '1px solid red' : 'none' }}
-          onClick={() => this.props.directToMarker(item.projectId)}
+          style={{ border: this.state.anchorId == item.projectId ? '1px solid rgba(83,161,228,0.85)' : 'none' }}
+          onClick={() => {
+            this.setState({
+              anchorId:item.projectId
+            })
+            directToMarker(item.projectId)
+          }}
         >
           <div>
             <span className={styles.ellipsisSpan}>
@@ -303,8 +313,13 @@ class RightSideInfoDrawer extends Component {
         <div
           id={currentKey == '5' ? item.projectId : ''}
           className={styles.card}
-          style={{ border: this.state.anchorId == item.projectId ? '1px solid red' : 'none' }}
-          onClick={() => this.props.directToMarker(item.projectId)}
+          style={{ border: this.state.anchorId == item.projectId ? '1px solid rgba(83,161,228,0.85)' : 'none' }}
+          onClick={() => {
+            this.setState({
+              anchorId:item.projectId
+            })
+            directToMarker(item.projectId)
+          }}
         >
           <div>
             <span className={styles.ellipsisSpan}>

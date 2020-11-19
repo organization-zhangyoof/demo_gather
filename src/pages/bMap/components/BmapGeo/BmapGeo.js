@@ -30,6 +30,7 @@ class BmapGeo extends React.Component {
       monitorPoint: [],
       showRoadInfo: false,
       showTspInfo: false,
+      rightSiderVisible:false,
       mapCenter: [],
       checkIndex: ['keyPro', 'tsp'],
       currentMapType: '卫星',
@@ -70,7 +71,9 @@ class BmapGeo extends React.Component {
         }
         if (polyline.projectId == anchorId) {
           polyline.setStrokeColor('red');
-          this.map.setViewport(polyline.pointArray);
+          setTimeout(()=>{
+            this.map.setViewport(polyline.pointArray);
+          },200)
           break;
         }
       }
@@ -258,7 +261,7 @@ class BmapGeo extends React.Component {
       });
       points.map(line => {
         let polyline = new BMap.Polyline(line, {
-          strokeColor: 'blue',
+          strokeColor: this.state.clickedProject==data.projectId?'red':'blue',
           strokeWeight: 5,
           strokeOpacity: 1,
         }); //创建折线
@@ -268,15 +271,26 @@ class BmapGeo extends React.Component {
         polyline.scheduleTime = data.scheduleTime;
         polyline.pointArray = tmpPoints; //把整条折线存起来
         polyline.addEventListener('click', () => {
+          debugger
+          let allOverlay = this.map.getOverlays();
+          for (let i = 0; i < allOverlay.length; i++) {
+            if (allOverlay[i].toString() == '[object Polyline]') {
+              let preline = allOverlay[i];
+              if(preline.projectId ==this.state.clickedProject){
+                preline.setStrokeColor('blue');
+                break;
+              }
+            }
+          }
           polyline.setStrokeColor('red');
           let state = {
             clickedProject: data.projectId,
           };
-          if (!this.RightSideInfoDrawer.state.visible) {
-            state['visible'] = true;
+          if (!this.state.rightSiderVisible) {
+            state['rightSiderVisible'] = true;
           }
           /**鼠标点击时移出信息弹窗 */
-          this.RightSideInfoDrawer.setState({ ...state }, () => {
+          this.setState({ ...state }, () => {
             this.RightSideInfoDrawer.scrollToCard(data.projectId);
           });
         });
@@ -349,7 +363,7 @@ class BmapGeo extends React.Component {
       { type: 'monitor', name: '监控视频' },
       { type: 'bim', name: 'BIM模型' },
     ];
-    let { checkIndex, currentMapType } = this.state;
+    let { checkIndex, currentMapType, rightSiderVisible } = this.state;
     const onCheckOneBox = item => {
       if (checkIndex.indexOf(item.type) == -1) {
         checkIndex.push(item.type);
@@ -373,6 +387,17 @@ class BmapGeo extends React.Component {
     const drawerProps = {
       roadData: this.props.roadData,
       directToMarker: this.directToMarker,
+      visible:rightSiderVisible,
+      onClose:()=>{
+        this.setState({
+          rightSiderVisible:false
+        })
+      },
+      showInfoBox:()=>{
+        this.setState({
+          rightSiderVisible:true
+        })
+      }
     };
     const calendarProps = {
       calendarVisible: this.state.calendarVisible,
