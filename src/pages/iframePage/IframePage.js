@@ -1,6 +1,6 @@
-import React,{Component} from'react'
-import { Button } from 'antd'
-import styles from '../index.less'
+import React, { Component } from 'react';
+import { Button } from 'antd';
+import styles from '../index.less';
 import { router } from 'umi';
 
 class IframePage extends Component {
