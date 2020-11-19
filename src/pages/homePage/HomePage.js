@@ -37,8 +37,6 @@ class HomePage extends Component {
                     <Button onClick={()=>router.push('/bMap')} className = {styles.btn}>跳转百度地图</Button>
                     
                     <Button onClick={()=>router.push('/bimDemo')} className = {styles.btn}>跳转至BIMDemo</Button>
-                    <Button onClick={openNewTag} className = {styles.btn}>打开新的tag</Button>
-                    {/* <Link to="/page1">Go to list page1</Link> */}
                 </div>
                 <div className = {styles.container}>
                     {this.props.children}
