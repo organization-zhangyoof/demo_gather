@@ -26,7 +26,8 @@ class CalendarModal extends Component {
           </div>
         }
       >
-        <div style={{ width: '100%', height: '100%' }}>
+        <iframe src="http://localhost:8991/page2" style={{ width: '100%', height: '100%' }}></iframe>
+        {/* <div style={{ width: '100%', height: '100%' }}>
           <Calendar
             fullscreen={false}
             headerRender={({ value, type, onChange, onTypeChange }) => {
@@ -98,7 +99,7 @@ class CalendarModal extends Component {
               );
             }}
           />
-        </div>
+        </div> */}
       </Modal>
     );
   }

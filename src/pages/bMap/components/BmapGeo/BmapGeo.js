@@ -273,7 +273,7 @@ class BmapGeo extends React.Component {
             clickedProject: data.projectId,
           };
           if (!this.RightSideInfoDrawer.state.visible) {
-            state['visble'] = true;
+            state['visible'] = true;
           }
           /**鼠标点击时移出信息弹窗 */
           this.RightSideInfoDrawer.setState({ ...state }, () => {
