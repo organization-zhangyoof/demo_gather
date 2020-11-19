@@ -15,7 +15,7 @@ import video25 from '@/assets/tsp/video25.png';
 import video20 from '@/assets/tsp/video20.png';
 import { customInfoWindow } from './CustomInfoWindow';
 import RightSideInfoDrawer from './RightSideInfoDrawer';
-import CalendarModal from './CalendarModal'
+import CalendarModal from './CalendarModal';
 import * as CONFIG from '@/config/common/commonConfig';
 import _ from 'lodash';
 class BmapGeo extends React.Component {
@@ -34,6 +34,7 @@ class BmapGeo extends React.Component {
       checkIndex: ['keyPro', 'tsp'],
       currentMapType: '卫星',
       anchorId: '',
+      clickedProject:''
     };
   }
   /**
@@ -59,6 +60,23 @@ class BmapGeo extends React.Component {
     }
   }
 
+  directToMarker = anchorId => {
+    let allOverlay = this.map.getOverlays();
+    for (let i = 0; i < allOverlay.length; i++) {
+      if (allOverlay[i].toString() == '[object Polyline]') {
+        let polyline = allOverlay[i];
+        if(polyline.projectId ==this.state.clickedProject){
+          polyline.setStrokeColor('blue');
+        }
+        if (polyline.projectId == anchorId) {
+          polyline.setStrokeColor('red');
+          this.map.setViewport(polyline.pointArray);
+          break;
+        }
+      }
+    }
+  };
+
   //地图绘制
   drawMap() {
     const { BMap } = window;
@@ -81,7 +99,7 @@ class BmapGeo extends React.Component {
     map.disableDoubleClickZoom(); //禁用地图点击事件
     let viewPoints = [];
     let roadData = this.props.roadData;
-    roadData.map((data) => {
+    roadData.map(data => {
       data.contractCoordList.map(item => {
         for (let i = 0; i < item.contractCoord.length; i++) {
           let point = coordtransform.wgs84tobd09(item.contractCoord[i].x, item.contractCoord[i].y);
@@ -161,8 +179,8 @@ class BmapGeo extends React.Component {
       marker.siteId = item.siteId; //工地ID
       marker.addEventListener('click', () => {
         this.setState({
-          calendarVisible:true
-        })
+          calendarVisible: true,
+        });
       });
 
       let infoHTML = `
@@ -189,74 +207,20 @@ class BmapGeo extends React.Component {
           </div>
         </div>
           `;
-      // <p class="hide_text p-t-b-5">详细地址：${item.address ? item.address : ''}</p>
-      // <p class="hide_text p-t-b-5 border-b">监管部门：${
-      //   item.regCompany ? item.regCompany : ''
-      // }</p>
-
-      // <div style="padding:0 5px;">
-      //   <div style="display: flex;justify-content: space-between; padding:5px 0;text-align:center" class="border-b">
-      //     <p style="width:25%">工地设备名称</p>
-      //     <p style="width:25%">TSP</p>
-      //     <p style="width:25%">PM10</p>
-      //     <p style="width:25%">PM2.5</p>
-      //   </div>
-      //   <div id="scrollBox" style="max-height:57px;overflow:auto" class="scrollBox">
-
-      // if (item.equipDetailList.length > 0) {
-      //   item.equipDetailList.map(item => {
-      //     infoHTML += `
-      //             <div style="display: flex;justify-content: space-between; padding:5px 0;text-align:center;">
-      //               <p style="width:25%" class="hide_text">${
-      //                 item.equipName ? item.equipName : ''
-      //               }</p>
-      //               <p style="width:25%" class="hide_text">${item.tsp ? item.tsp : ''}</p>
-      //               <p style="width:25%" class="hide_text">${item.pm10 ? item.pm10 : ''}</p>
-      //               <p style="width:25%" class="hide_text">${item.pm25 ? item.pm25 : ''}</p>
-      //             </div>
-      //         `;
-      //   });
-      // }
-      // infoHTML += `
-      //       </div>
-      //     </div>
-      //   </div>
-      //   `;
       let myCompOverlay = customInfoWindow(pt, infoHTML, 420, 20);
       let timer = null;
-      marker.addEventListener(
-        'mouseover',
-        // _.debounce(
-        function(e) {
-          !_this.state.showTspInfo && map.removeOverlay(myCompOverlay);
-          timer = null;
-          map.addOverlay(myCompOverlay);
-          let infoH = document.getElementById('customInfoWindow').offsetHeight + 30;
-          let x = e.pixel.x;
-          let y = e.pixel.y;
-          _this.moveMap(x, y, 420);
-          _this.state.showRoadInfo = false;
-          _this.state.showTspInfo = true;
-          // /**设置信息弹窗下方的信息自动滚动 */
-          // let obj = document.getElementById('scrollBox');
-          // let H = obj.scrollHeight; /*总高度（包括可见区域及不可见区域高度）*/
-          // let h = obj.clientHeight; /*可见区域高度*/
-          // let move = 2;
-          // let scrollDirection = 1;
-          // if (H - h) {
-          //   timer = setInterval(function() {
-          //     if (obj.scrollTop == 0) {
-          //       scrollDirection = 1;
-          //     } else if (H - h == obj.scrollTop) {
-          //       scrollDirection = -1;
-          //     }
-          //     obj.scrollBy(0, move * scrollDirection);
-          //   }, 200);
-          // }
-        },
-      );
-      //   200,
-      // );
+      marker.addEventListener('mouseover', function(e) {
+        !_this.state.showTspInfo && map.removeOverlay(myCompOverlay);
+        timer = null;
+        map.addOverlay(myCompOverlay);
+        let infoH = document.getElementById('customInfoWindow').offsetHeight + 30;
+        let x = e.pixel.x;
+        let y = e.pixel.y;
+        _this.moveMap(x, y, 420);
+        _this.state.showRoadInfo = false;
+        _this.state.showTspInfo = true;
+      });
+
       marker.addEventListener('mouseout', function(e) {
         _this.state.showRoadInfo = true;
         _this.state.showTspInfo = true;
@@ -271,18 +235,12 @@ class BmapGeo extends React.Component {
     const { BMap } = window;
     let color = ['red', 'blue', 'black'];
     let lineBg = '';
-    let _this = this;
     let map = this.map;
-    let myCompOverlay;
-    let showRoadInfo = this.state.showRoadInfo;
     let roadData = this.props.roadData;
-    //   console.log("道路数据=====>>>>>>",roadData)
     let points = [];
     let tmpPoints = [];
     roadData.map((data, index) => {
-      // console.log(index)
       lineBg = color[index % 3];
-      // console.log(lineBg)
       data.contractCoordList.map(item => {
         points = [];
         tmpPoints = [];
@@ -300,60 +258,27 @@ class BmapGeo extends React.Component {
       });
       points.map(line => {
         let polyline = new BMap.Polyline(line, {
-          strokeColor: lineBg,
-          strokeWeight: 3,
+          strokeColor: 'blue',
+          strokeWeight: 5,
           strokeOpacity: 1,
         }); //创建折线
         polyline.projectId = data.projectId;
         polyline.projectName = data.projectName;
         polyline.totalInvestment = data.totalInvestment;
         polyline.scheduleTime = data.scheduleTime;
-        polyline.addEventListener('mousemove', function(e) {
-          /**鼠标悬浮至道路时显示信息弹窗 */
-          // polyline.setStrokeColor('blue')
-          // polyline.setStrokeWeight(5)
-          // console.log("道路悬浮====>>>>>",e)
-          if (_this.state.showRoadInfo) {
-            map.removeOverlay(myCompOverlay);
-            let pt = e.point;
-            let infoHTML = `
-                <div style="border-radius: 15px;padding:5px 10px;color:#fff;background:rgba(0,0,0,0.65)">
-                  <p class="p-t-b-5 line-height-18">项目名称： ${
-                    e.target.projectName ? e.target.projectName : ''
-                  }</p>
-                  <p class="p-t-b-5">项目投资金额(万)： ${
-                    e.target.totalInvestment ? e.target.totalInvestment : ''
-                  }</p>
-                  <p class="p-t-b-5">计划工期(月)： ${
-                    e.target.scheduleTime ? e.target.scheduleTime : ''
-                  }</p>
-                </div>
-              `;
-            myCompOverlay = customInfoWindow(pt, infoHTML, 220, 10);
-            map.addOverlay(myCompOverlay);
+        polyline.pointArray = tmpPoints; //把整条折线存起来
+        polyline.addEventListener('click', () => {
+          polyline.setStrokeColor('red');
+          let state = {
+            clickedProject: data.projectId,
+          };
+          if (!this.RightSideInfoDrawer.state.visible) {
+            state['visble'] = true;
           }
-        });
-        polyline.addEventListener('mouseout', function(e) {
-          /**鼠标移出时移出信息弹窗 */
-          // polyline.setStrokeColor('#F70315')
-          // polyline.setStrokeWeight(1)
-          map.removeOverlay(myCompOverlay);
-        });
-        polyline.addEventListener('click', ()=> {
           /**鼠标点击时移出信息弹窗 */
-          if (this.RightSideInfoDrawer.state.visible) {
+          this.RightSideInfoDrawer.setState({ ...state }, () => {
             this.RightSideInfoDrawer.scrollToCard(data.projectId);
-          } else {
-            this.RightSideInfoDrawer.setState(
-              {
-                visible: true,
-              },
-              () => {
-                this.RightSideInfoDrawer.scrollToCard(data.projectId);
-              },
-            );
-          }
-          polyline.setStrokeColor('red')
+          });
         });
         map.addOverlay(polyline); //将折线描绘至地图
       });
@@ -436,7 +361,7 @@ class BmapGeo extends React.Component {
         checkIndex.splice(checkIndex.indexOf(item.type), 1);
         let allOverlay = this.map.getOverlays();
         for (let i = 0; i < allOverlay.length; i++) {
-          if (allOverlay[i].type == item.type) {
+          if (allOverlay[i].toString() == '[object Marker]' && allOverlay[i].type == item.type) {
             this.map.removeOverlay(allOverlay[i]);
           }
         }
@@ -447,15 +372,17 @@ class BmapGeo extends React.Component {
     };
     const drawerProps = {
       roadData: this.props.roadData,
+      directToMarker: this.directToMarker,
     };
-    const calendarProps={
-      calendarVisible:this.state.calendarVisible,
-      closeCalendar:()=>{
+    const calendarProps = {
+      calendarVisible: this.state.calendarVisible,
+      closeCalendar: () => {
         this.setState({
-          calendarVisible:false
-        })
-      }
-    }
+          calendarVisible: false,
+        });
+      },
+    };
+
     return (
       <div className={styles.normal}>
         {/* <h1 className={styles.title}>百度地图测试demo</h1> */}
@@ -479,7 +406,7 @@ class BmapGeo extends React.Component {
               })}
           </div>
           <RightSideInfoDrawer {...drawerProps} ref={ref => (this.RightSideInfoDrawer = ref)} />
-          <CalendarModal {...calendarProps}/>
+          <CalendarModal {...calendarProps} />
         </div>
       </div>
     );

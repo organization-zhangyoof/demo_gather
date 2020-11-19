@@ -12,7 +12,7 @@ class RightSideInfoDrawer extends Component {
   }
 
   scrollToCard(anchorId) {
-    debugger
+    debugger;
     let anchorElement = document.getElementById(anchorId);
     if (anchorElement) {
       anchorElement.scrollIntoView({ block: 'start', behavior: 'smooth' });
@@ -37,7 +37,17 @@ class RightSideInfoDrawer extends Component {
       roadData &&
       roadData.length > 0 &&
       roadData.map(item => (
-        <div id={currentKey == '1' ? item.projectId : ''} className={styles.card}>
+        <div
+          id={currentKey == '1' ? item.projectId : ''}
+          className={styles.card}
+          style={{ border: this.state.anchorId == item.projectId ? '1px solid rgba(83,161,228,0.85)' : 'none' }}
+          onClick={() => {
+            this.setState({
+              anchorId:item.projectId
+            })
+            this.props.directToMarker(item.projectId)
+          }}
+        >
           <div>
             <span className={styles.ellipsisSpan}>
               标段名称：<span title={item.projectName}>{item.projectName}</span>
@@ -79,7 +89,12 @@ class RightSideInfoDrawer extends Component {
       roadData &&
       roadData.length > 0 &&
       roadData.map(item => (
-        <div id={currentKey == '2' ? item.projectId : ''} className={styles.card}>
+        <div
+          id={currentKey == '2' ? item.projectId : ''}
+          className={styles.card}
+          style={{ border: this.state.anchorId == item.projectId ? '1px solid red' : 'none' }}
+          onClick={() => this.props.directToMarker(item.projectId)}
+        >
           <div>
             <span className={styles.ellipsisSpan}>
               标段名称：<span title={item.projectName}>{item.projectName}</span>
@@ -152,7 +167,12 @@ class RightSideInfoDrawer extends Component {
       roadData &&
       roadData.length > 0 &&
       roadData.map(item => (
-        <div id={currentKey == '3' ? item.projectId : ''} className={styles.card}>
+        <div
+          id={currentKey == '3' ? item.projectId : ''}
+          className={styles.card}
+          style={{ border: this.state.anchorId == item.projectId ? '1px solid red' : 'none' }}
+          onClick={() => this.props.directToMarker(item.projectId)}
+        >
           <div>
             <span className={styles.ellipsisSpan}>
               标段名称：<span title={item.projectName}>{item.projectName}</span>
@@ -224,7 +244,12 @@ class RightSideInfoDrawer extends Component {
       roadData &&
       roadData.length > 0 &&
       roadData.map(item => (
-        <div id={currentKey == '4' ? item.projectId : ''} className={styles.card}>
+        <div
+          id={currentKey == '4' ? item.projectId : ''}
+          className={styles.card}
+          style={{ border: this.state.anchorId == item.projectId ? '1px solid red' : 'none' }}
+          onClick={() => this.props.directToMarker(item.projectId)}
+        >
           <div>
             <span className={styles.ellipsisSpan}>
               标段名称：<span title={item.projectName}>{item.projectName}</span>
@@ -275,7 +300,12 @@ class RightSideInfoDrawer extends Component {
       roadData &&
       roadData.length > 0 &&
       roadData.map(item => (
-        <div id={currentKey == '5' ? item.projectId : ''} className={styles.card}>
+        <div
+          id={currentKey == '5' ? item.projectId : ''}
+          className={styles.card}
+          style={{ border: this.state.anchorId == item.projectId ? '1px solid red' : 'none' }}
+          onClick={() => this.props.directToMarker(item.projectId)}
+        >
           <div>
             <span className={styles.ellipsisSpan}>
               标段名称：<span title={item.projectName}>{item.projectName}</span>
@@ -347,7 +377,7 @@ class RightSideInfoDrawer extends Component {
           <Icon type="left" style={{ color: '#fff', lineHeight: 3.5, paddingLeft: 3 }} />
         </div>
         <div className={visible ? styles.rightSideSlider : styles.rightSideSliderOff}>
-          <div className={styles.tabLine}>
+          <div className={styles.tabLine} style={{ display: visible ? 'inline-flex' : 'none' }}>
             <div className={styles.line} />
             <div className={styles.square} />
           </div>
@@ -358,7 +388,9 @@ class RightSideInfoDrawer extends Component {
             tabBarStyle={{ marginBottom: 0, color: '#fff', borderBottom: 'none' }}
             onChange={activeKey => {
               this.setState({ currentKey: activeKey });
-              setTimeout(()=>{this.scrollToCard(this.state.anchorId)},500)
+              setTimeout(() => {
+                this.scrollToCard(this.state.anchorId);
+              }, 500);
             }}
             tabBarExtraContent={
               <Icon
