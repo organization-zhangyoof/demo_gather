@@ -2,8 +2,8 @@ import request from '@/utils/request';
 import Axios from 'axios';
 import { message } from 'antd';
 
-//工地检测点列表
-export const getTspSiteList = params => {
+//危险源数据
+export const getDangereData = params => {
 	let data = {
         "code": "200",
         "message": "ok",
@@ -32351,4 +32351,20 @@ export const getRoadData = params =>{
         }]
       }
       return data;
+}
+//驻地与场站数据
+export const getStationData = params =>{
+    
+}
+//全景点位数据
+export const getPanoramicData = params =>{
+
+}
+//关键工程点位数据
+export const getKeyProjectData = params =>{
+
+}
+//视频监控点位数据
+export const getMonitorData = params =>{
+    
 }
