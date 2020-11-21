@@ -32365,6 +32365,224 @@ export const getKeyProjectData = params =>{
 
 }
 //视频监控点位数据
-export const getMonitorData = params =>{
-    
-}
+export const getMonitorData = params => {
+  const data = {
+    code: '200',
+    message: 'ok',
+    error: null,
+    data: [
+      {
+        projectId: '36b5f9db491d4532876de3c5b4324bf3',
+        projectCode: '026',
+        projectName: '沙河西侧接线',
+        projectaddr: null,
+        projectdes: null,
+        totalInvestment: '54992',
+        scheduleTime: null,
+        bimModel: null,
+        contractCoordList: [
+          {
+            contractId: 'd2762bfcad614ad399526f760f01a57d',
+            contractName: '全标段',
+            sgdwname: '广东强雄建设集团有限公司',
+            bimJsonData: null,
+            contractCoord: [
+              {
+                x: '113.946816190433 ',
+                y: '22.510967418594 ',
+                roadName: '沙河西路与西部通道A',
+              },
+              {
+                x: '113.947247274964 ',
+                y: '22.510791737059 ',
+                roadName: '沙河西路与西部通道B',
+              },
+              {
+                x: '113.946015166172 ',
+                y: '22.507067239697 ',
+                roadName: '沙河西路与西部通道C',
+              },
+
+            ],
+          },
+        ],
+      },
+      {
+        projectId: '3ce938879dc24648adb4adb70e39e579',
+        projectCode: '034',
+        projectName: '东部过境高速公路市政连接线配套工程新秀立交段',
+        projectaddr: null,
+        projectdes:
+          '本项目全程为“东部过境高速公路市政连接线配套工程新秀立交段”，本次新秀立交项目位于深圳市罗湖区黄贝岭街道新秀社区内，为全互通菱形立交，沿河路下穿深南东路，通道上设置平交灯控路口，本段沿河路起点桩号K4+860，终点桩号K5+450全长590米，双向八车道，相交深南东路为双向六车道，本项目为现有道路改造，在施工的同时要保证深南东路与沿河路的现有行车道数量双向八车道。主要工程量有交通疏解钢便桥一座及人行钢便桥天桥一座，钢便桥混凝土工程量142T，各类钢材361T，“321”组合式贝雷梁桁架600片；各类交通疏解道路工程量为15341m2；迁改污水箱涵486米，断面尺寸为2.4mX1.4m，污水管150米，配套检查井17座，并更换立交范围内的所有检查井盖并安装防坠网；雨水箱涵共425米，雨水管及雨水连接管1050米，配套检查井35座，并更换立交范围内的所有检查井盖并安装防坠网，排水泵站一座及其配套设备安装；双幅通道和U型槽K4+860，终点桩号为K5+262，全长402米，混凝土工程量为30950m3，钢筋工程量为6672T(不含支护桩及止水旋喷桩工程量)及完成相关配套设备设施的电力管道工程、照明工程、燃气工程及绿化工程等工程项目。',
+        totalInvestment: null,
+        scheduleTime: null,
+        bimModel: null,
+        contractCoordList: [
+          {
+            contractId: 'c5d632fee2c2457a981a619001a9b204',
+            contractName: '全标段',
+            sgdwname: '江西省群力建设有限公司',
+            bimJsonData: null,
+            contractCoord: [
+            
+              {
+                x: '114.135491427867 ',
+                y: '22.548915500479 ',
+                roadName: 'A匝道',
+              },
+            
+             
+           
+              {
+                x: '114.136863285157 ',
+                y: '22.550159900808 ',
+                roadName: 'B匝道',
+              },
+             
+              {
+                x: '114.135656780555 ',
+                y: '22.548730040959 ',
+                roadName: '沿河路',
+              },
+             
+              {
+                x: '114.133830330576 ',
+                y: '22.549238595485 ',
+                roadName: '深南东路',
+              },
+
+            ],
+          },
+        ],
+      },
+      {
+        projectId: '0a48209e7df74abeb7af0a19fe6182fb',
+        projectCode: '002',
+        projectName: '坂银通道工程',
+        projectaddr: null,
+        projectdes:
+          '坂银通道南起黄木岗立交北侧，经泥岗上步立交后以高架形式沿北环大道布线，并在北环银湖立交西侧上跨北环大道，往北以隧道形式下穿金湖路、鸡公山，出隧道后上跨南坪快速，向北接坂雪岗大道，止于环城南路路口，全长约10.7公里。工程批复概算32.8651亿元。项目于2014年12月底动工，共需新建道路7.6公里，改造拓宽道路3.14公里，包括新建4.6公里的鸡公山隧道，以及新建和改造坂银-泥岗立交、坂银-北环立交、坂银-南坪立交以及坂银-环城立交等4座立交。桥隧工程占主线长度达91%以上。',
+        totalInvestment: '328651',
+        scheduleTime: null,
+        bimModel: null,
+        contractCoordList: [
+          {
+            contractId: 'a7ee100db17d4d8d9aea570bf495297b',
+            contractName: '1标',
+            sgdwname: '广西华宇建工有限责任公司',
+            bimJsonData: null,
+            contractCoord: [           
+
+              {
+                x: '114.082386185443',
+                y: '22.57160171877',
+                roadName: '坂银通道左线一标',
+              },
+
+              {
+                x: '114.083456295023',
+                y: '22.570743844271',
+                roadName: '坂银通道右线一标',
+              },
+            ],
+          },
+          {
+            contractId: '4382512d9767456f800cf4a1c9356b0b',
+            contractName: '2标',
+            sgdwname: '中交第二公路工程局有限公司',
+            bimJsonData: null,
+            contractCoord: [
+     
+              {
+                x: '114.086818365381',
+                y: '22.581580484598',
+                roadName: '坂银通道左线二标',
+              },
+   
+              {
+                x: '114.085705415761',
+                y: '22.589277137597',
+                roadName: '坂银通道右线二标',
+              },
+
+            ],
+          },
+          {
+            contractId: 'c6533734b1744320ab1efcee17f7e54f',
+            contractName: '3标',
+            sgdwname: '中铁六局',
+            bimJsonData: null,
+            contractCoord: [             
+              {
+                x: '114.074698063735',
+                y: '22.609320516306',
+                roadName: '坂银通道左线三标',
+              },            
+              {
+                x: '114.078801141054',
+                y: '22.607229393035',
+                roadName: '坂银通道右线三标',
+              },
+            ],
+          },
+          {
+            contractId: '35a28e692777432da66055be593dfe9c',
+            contractName: '4标',
+            sgdwname: '曙光建设有限公司',
+            bimJsonData: null,
+            contractCoord: [             
+              {
+                x: '114.067169519952',
+                y: '22.621449440715',
+                roadName: '坂银通道左线四标',
+              },              
+              {
+                x: '114.06729512905',
+                y: '22.61888046714',
+                roadName: '坂银通道右线四标',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        projectId: '9428357706f84cc183c4c098a7fb8c4a',
+        projectCode: '055',
+        projectName: '深华快速路-竹村微循环辅道系统工程',
+        projectaddr: null,
+        projectdes: null,
+        totalInvestment: null,
+        scheduleTime: null,
+        bimModel: null,
+        contractCoordList: [
+          {
+            contractId: 'dc2254765dd948a2ab8db9506de98b1d',
+            contractName: '全标段',
+            sgdwname: null,
+            bimJsonData: null,
+            contractCoord: [
+
+              {
+                x: '114.028138440273 ',
+                y: '22.685372838271 ',
+                roadName: '右辅道C',
+              },
+              {
+                x: '114.026679975346 ',
+                y: '22.685183583067 ',
+                roadName: '左辅道C',
+              },
+             
+              {
+                x: '114.026125689996 ',
+                y: '22.684875388706 ',
+                roadName: '松山仔路',
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+  return data;
+};
