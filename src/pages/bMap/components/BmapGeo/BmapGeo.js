@@ -16,6 +16,7 @@ import video20 from '@/assets/tsp/video20.png';
 import { customInfoWindow } from './CustomInfoWindow';
 import RightSideInfoDrawer from './RightSideInfoDrawer';
 import CalendarModal from './CalendarModal';
+import VideoViewModal from './VideoViewModal'
 import * as CONFIG from '@/config/common/commonConfig';
 import _ from 'lodash';
 class BmapGeo extends React.Component {
@@ -335,7 +336,6 @@ class BmapGeo extends React.Component {
     const { BMap } = window;
     let map = this.map;
     let monitorData = this.props.monitorData||[];
-    // console.log(monitorData)
     monitorData.map((data, index) => {
       data.contractCoordList.map(item => {
         for (let i = 0; i < item.contractCoord.length; i++) {
@@ -344,8 +344,10 @@ class BmapGeo extends React.Component {
           let myIcon = new BMap.Icon(video25, new BMap.Size(25, 25));
           let marker = new BMap.Marker(pt, { icon: myIcon }); // 创建标注
           marker.type = 'monitor';
-          marker.addEventListener('click', function(e) {
-            console.log('摄像头点击事件====>>>>', e.target);
+          marker.addEventListener('click', ()=> {
+            this.setState({
+              videoVisible: true,
+            });
           });
           map.addOverlay(marker);
         }
@@ -414,6 +416,14 @@ class BmapGeo extends React.Component {
         });
       },
     };
+    const videoProps={
+      videoVisible:this.state.videoVisible,
+      closeVideoModal: () => {
+        this.setState({
+          videoVisible: false,
+        });
+      },
+    }
 
     return (
       <div className={styles.normal}>
@@ -439,6 +449,7 @@ class BmapGeo extends React.Component {
           </div>
           <RightSideInfoDrawer {...drawerProps} ref={ref => (this.RightSideInfoDrawer = ref)} />
           <CalendarModal {...calendarProps} />
+          <VideoViewModal {...videoProps}/>
         </div>
       </div>
     );
