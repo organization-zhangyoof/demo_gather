@@ -1,6 +1,6 @@
 import * as commonFunction from '@/utils/commonFunction';
 import * as mapService from '../services/mapServices';
-
+import localforage from 'localforage'
 export default {
     namespace: 'map', // 构配件新增页
     state: {
@@ -17,6 +17,21 @@ export default {
         *initData({ }, { call, put, select }) {
             yield put({ type :'getRoadData',payload : {} })
             yield put({ type :'getDangereData',payload : {} })
+            yield put({ type :'testData',payload : {} })
+        },
+        *testData({ }, { call, put, select }) {
+            // let test =  localforage.getItem('__somekey___').then(res=>{
+            //     console.log(res)
+            // })          
+
+            const aaa = () =>{
+
+                return localforage.getItem('__somekey___')
+
+            }
+
+            const res = yield call(aaa);
+            console.log('testData=========',res)
         },
         /**获取危险源点位 */
         *getDangereData({ }, { call, put, select }) {
