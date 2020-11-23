@@ -8,6 +8,10 @@ const BmapRoutePage = (obj) => {
   const mapProps = {
     tspSiteList: map.tspSiteList,
     roadData: map.roadData,
+    monitorData:map.monitorData,
+    // getMonitorData:()=>{
+    //   dispatch({type:'map/getMonitorData',payload:{}})
+    // }
   }
 
 

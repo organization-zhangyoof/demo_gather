@@ -19,7 +19,7 @@ class BimDemo extends Component {
       positionInfo: {},
       positionInfoPop: false,
       flyPosition: {},
-      allSceneLayers:[]
+      allSceneLayers: [],
     };
   }
 
@@ -51,7 +51,7 @@ class BimDemo extends Component {
       positionInfoPop: false,
     });
 
-    let { viewer, bimAddress, flyPosition, allSceneLayers } = this.state;
+    let { viewer, bimAddress, flyPosition, allSceneLayers, modelId } = this.state;
     let scene = viewer.scene;
     let widget = viewer.cesiumWidget;
     this.pickPositionHandler &&
@@ -66,8 +66,9 @@ class BimDemo extends Component {
             })
           : viewer.zoomTo(promise);
         for (let i = 0; i < layers.length; i++) {
-          allSceneLayers.push(layers);
+          layers[i].modelId = modelId;
           layers[i].selectEnabled = false;
+          this.allSceneLayers.push(layers[i]);
         }
       });
     } catch (e) {
@@ -210,6 +211,8 @@ class BimDemo extends Component {
       this.setState(
         {
           bimAddress: 'http://iserver2.gcnao.cn/iserver/services/3D-shajiangxilu/rest/realspace',
+          flyPosition: {},
+          modelId: '3D-shajiangxilu',
         },
         () => {
           this.onloadModel();
@@ -227,6 +230,7 @@ class BimDemo extends Component {
               pitch: -0.46239072362282485,
               roll: 6.283185307179583,
             },
+            modelId: '3D-WebGLCBD',
           },
         },
         () => {
@@ -235,8 +239,8 @@ class BimDemo extends Component {
       );
     };
     const clearLayers = () => {
-
-    }
+      
+    };
     return (
       <div className={styles._bim_modal_}>
         <div className={styles.btn_box}>

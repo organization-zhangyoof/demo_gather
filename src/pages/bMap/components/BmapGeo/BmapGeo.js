@@ -16,6 +16,7 @@ import video20 from '@/assets/tsp/video20.png';
 import { customInfoWindow } from './CustomInfoWindow';
 import RightSideInfoDrawer from './RightSideInfoDrawer';
 import CalendarModal from './CalendarModal';
+import VideoViewModal from './VideoViewModal'
 import * as CONFIG from '@/config/common/commonConfig';
 import _ from 'lodash';
 class BmapGeo extends React.Component {
@@ -123,6 +124,7 @@ class BmapGeo extends React.Component {
         let iconList = this.state.checkIndex;
         if (iconList.length > 0) {
           this.drawRoad();
+          console.log(iconList)
           iconList.forEach(item => {
             item == 'keyPro' && this.drawRoadPic();
             item == 'tsp' && this.drawTspPoint();
@@ -333,17 +335,24 @@ class BmapGeo extends React.Component {
     //监控图标
     const { BMap } = window;
     let map = this.map;
-    let monitorPoint = this.state.monitorPoint;
-    monitorPoint.map(item => {
-      let pt = new BMap.Point(item.x, item.y);
-      let myIcon = new BMap.Icon(video25, new BMap.Size(25, 25));
-      let marker = new BMap.Marker(pt, { icon: myIcon }); // 创建标注
-      marker.type = 'monitor';
-      marker.addEventListener('click', function(e) {
-        console.log('摄像头点击事件====>>>>', e.target);
-      });
-      map.addOverlay(marker);
-    });
+    let monitorData = this.props.monitorData||[];
+    monitorData.map((data, index) => {
+      data.contractCoordList.map(item => {
+        for (let i = 0; i < item.contractCoord.length; i++) {
+          let point = coordtransform.wgs84tobd09(item.contractCoord[i].x, item.contractCoord[i].y);
+          let pt = new BMap.Point(point[0], point[1]);
+          let myIcon = new BMap.Icon(video25, new BMap.Size(25, 25));
+          let marker = new BMap.Marker(pt, { icon: myIcon }); // 创建标注
+          marker.type = 'monitor';
+          marker.addEventListener('click', ()=> {
+            this.setState({
+              videoVisible: true,
+            });
+          });
+          map.addOverlay(marker);
+        }
+      })
+    })
   }
 
   componentDidMount() {
@@ -369,7 +378,7 @@ class BmapGeo extends React.Component {
         checkIndex.push(item.type);
         item.type == 'keyPro' && this.drawRoad();
         item.type == 'tsp' && this.drawTspPoint();
-        item.type == 'monitor' && this.drawMonitorPic();
+        item.type == 'monitor' && this.drawMonitorPic();         
         item.type == 'bim' && this.drawBimPic();
       } else {
         checkIndex.splice(checkIndex.indexOf(item.type), 1);
@@ -407,6 +416,14 @@ class BmapGeo extends React.Component {
         });
       },
     };
+    const videoProps={
+      videoVisible:this.state.videoVisible,
+      closeVideoModal: () => {
+        this.setState({
+          videoVisible: false,
+        });
+      },
+    }
 
     return (
       <div className={styles.normal}>
@@ -432,6 +449,7 @@ class BmapGeo extends React.Component {
           </div>
           <RightSideInfoDrawer {...drawerProps} ref={ref => (this.RightSideInfoDrawer = ref)} />
           <CalendarModal {...calendarProps} />
+          <VideoViewModal {...videoProps}/>
         </div>
       </div>
     );
