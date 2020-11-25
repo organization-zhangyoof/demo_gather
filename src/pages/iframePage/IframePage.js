@@ -7,7 +7,10 @@ class IframePage extends Component {
     render(){
         return (
             <div style={{width:'100%',height:'100%',background:'#f1f1f1'}} className={styles.page1_main}>
-                <iframe src = 'blob:http://localhost:8991/109064cf-177e-47bf-9001-3792136f1700'  style={{width:'100%',height:'100%'}}></iframe>
+                <div style={{width:500,height:500}}>
+                    <iframe src = 'http://localhost:8991/page2'  style={{width:'100%',height:'100%',border:'none'}}></iframe>
+                </div>
+                
             </div>
         )
     }

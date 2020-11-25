@@ -17,7 +17,7 @@ class HomePage extends Component {
         }
     }
     render(){
-        
+        let obj = {a:789,b:456}
         return (
             <div className={styles.main}>
                 {/* <div className = {styles.nav}>
@@ -34,7 +34,7 @@ class HomePage extends Component {
                     <Button onClick={()=>router.push('/spreadDesign')} className = {styles.btn}>跳转至spread设计器</Button>
                     <Button onClick={()=>router.push('/iframe')} className = {styles.btn}>跳转至iframe嵌套页面</Button>
                     <Button onClick={()=>router.push('/bim')} className = {styles.btn}>跳转至BIM</Button>
-                    <Button onClick={()=>router.push('/bMap')} className = {styles.btn}>跳转百度地图</Button>
+                    <Button onClick={()=>router.push('/bMap?a=123&b=456&c='+JSON.stringify(obj))} className = {styles.btn}>跳转百度地图</Button>
                     
                     <Button onClick={()=>router.push('/bimDemo')} className = {styles.btn}>跳转至BIMDemo</Button>
                 </div>

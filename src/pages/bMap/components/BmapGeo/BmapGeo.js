@@ -409,6 +409,9 @@ class BmapGeo extends React.Component {
       }
     };
     const calendarProps = {
+      projectId: '00469fda708f411aafcb7368b3c27cc1',
+      contractId: '16ae9205871f49b1975ff722618d78ed',
+      sourceId: 'd03ffa59f73b4bf6915eb7ae56318dc9',
       calendarVisible: this.state.calendarVisible,
       closeCalendar: () => {
         this.setState({
@@ -417,6 +420,7 @@ class BmapGeo extends React.Component {
       },
     };
     const videoProps={
+      videoList:[],
       videoVisible:this.state.videoVisible,
       closeVideoModal: () => {
         this.setState({

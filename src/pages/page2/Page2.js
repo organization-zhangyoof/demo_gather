@@ -2,7 +2,10 @@ import React,{Component} from'react'
 import { Button,Upload } from 'antd'
 class Page2 extends Component {
     render(){
-        
+        let W = window.innerWidth 
+        let H = window.innerHeight 
+        console.log("W=====",W)
+        console.log("H=====",H)
         const getObjectURL = (file) => {
             let url = null;
             if (window.createObjcectURL != undefined) {

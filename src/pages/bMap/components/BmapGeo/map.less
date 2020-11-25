@@ -348,34 +348,31 @@
   display: inline-flex;
   position: absolute;
   top: 10px;
-  right: 0;
+  right: 10px;
+  background: rgba(75,133,252,0.8);
+  padding:10px 0 10px 10px;
+  border-radius: 10px;
   .checkBox_li {
-    display: inline-flex;
-    padding-right: 20px;
+    display:flex;
+    padding-right: 10px;
+    align-items: center;
+    cursor:pointer;
     .checkBox {
-      width: 17px;
-      height: 17px;
-      border: 2px solid rgba(44, 139, 231, 0.5);
+      width: 16px;
+      height: 16px;
+      border: 1px solid #fff;
+      border-radius: 3px;
+      box-sizing: border-box;
       margin-right: 5px;
-      div {
-        cursor: pointer;
-      }
+      display: flex;
+      justify-content: center;
+      align-items: center;
       .check {
-        border: 1px solid rgba(44, 139, 231, 0.5);
-        margin-top: 15%;
-        margin-left: 15%;
-        background: rgba(52, 153, 236, 0.8);
+        border-radius: 3px;
+        background: #fff;
         width: 70%;
         height: 70%;
       }
-    }
-    .checkBox_check {
-      width: 17px;
-      height: 17px;
-      border: 1px solid lightskyblue;
-    }
-    span {
-      font-weight: 600;
     }
   }
 }

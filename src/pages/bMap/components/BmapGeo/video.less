@@ -1,0 +1,91 @@
+:global {
+    .__bmap_video_list_modal__{
+        .ant-modal-content{
+            width:100%;
+            height:100%;
+            .ant-modal-header{
+                background:#383838;
+                border-bottom: 1px solid #797979;
+                .ant-modal-title{
+                    color:#fff;
+                }
+            }
+            .ant-modal-body{
+                width:100%;
+                height:calc(100% - 55px);
+                background: #0A0E27
+            }
+        }
+        
+        ::-webkit-scrollbar {
+            //滚动条整体部分
+            width: 5px;
+            height: 10px;
+        }
+        ::-webkit-scrollbar-button:vertical {
+        display: none;
+        } //滚动条两端的按钮
+        ::-webkit-scrollbar-track ::-webkit-scrollbar-corner {
+        background: #4fd8e6;
+        } //外层轨道
+        ::-webkit-scrollbar-thumb {
+        border-radius: 5px;
+        background-color: #797979;
+        }
+        ::-webkit-scrollbar-thumb:vertical:hover {
+        background-color: #797979;
+        }
+        ::-webkit-scrollbar-thumb:vertical:hover {
+        background-color: #797979;
+        }
+    }
+}
+.video_container{
+    width:100%;
+    height:100%;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    overflow: hidden;
+    padding: 10px 5px;
+    &:hover{
+        overflow: auto;
+        padding:10px 0 10px 5px
+    }
+    
+    .video_item{
+        width:30%;
+        height:200px;
+        border:1px solid #545454;
+        display: flex;
+        flex-direction: column;
+        padding:5px;
+        margin-bottom: 10px;
+        position:relative;
+        &:hover .full_box{
+            display: block;
+        }
+        cursor:pointer;
+        img{
+            width:100%;
+            flex:1;
+        }
+        .video_name{
+            height: 30px;
+            color: #fff;
+            align-items: center;
+            padding-top: 10px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        .full_box{
+            position:absolute;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            display: none;
+        }
+    }
+}

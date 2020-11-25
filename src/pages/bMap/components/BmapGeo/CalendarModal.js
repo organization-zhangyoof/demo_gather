@@ -10,13 +10,14 @@ class CalendarModal extends Component {
   }
 
   render() {
-    const { calendarVisible, closeCalendar } = this.props;
-
+    const { calendarVisible, closeCalendar,projectI ,contractI ,sourceId } = this.props;
+    let obj = {projectI ,contractI ,sourceId}
+    let token = 'eyJhbGciOiJIUzI1NiJ9.eyJhY2NvdW50SWQiOiI3NDk3MzVmMWVlNTk0ODYyYmI2YjI4YzIwZDljZmY4OSIsImVtYWlsIjoiMTM3NTE0MzAwMDFAcXEuY29tIiwibmFtZSI6IuWFrOi3r-a1i-ivleS4muS4uyIsInVzZXJuYW1lIjoiMTM3NTE0MzAwMDFhIiwicGhvbmVOdW1iZXIiOiIxMzc1MTQzMDAwMSIsImFjY291bnRUeXBlIjoiUEVSU09OQUwiLCJ1c2VySWQiOiJlOTVjZjY3ZDVkM2M0YzIwYWQ4MWQ3MGMwOWY1NGFlMCIsImNvbXBhbnlJZCI6IjM5Y2E2MWRmY2ZhYzQzZGNhOGQ1Y2RiMGYxY2ZkZGYxIiwiY29tcGFueU5hbWUiOiJJVOS4iemDqOS4muS4u-WNleS9jSIsImV4cCI6MTYwNjE1OTM5OX0.RZ8-aUHi2ClOyzyhJ7R3cKSx-JypJhAjV_qCc9omUCI'
+    let url ="http://bimcloud.gcnao.cn:9001/safe/CheckCalendar?state=" + JSON.stringify(obj)+"&token="+ token
     return (
       <Modal
         visible={calendarVisible}
         width={700}
-        height={510}
         title="巡查情况"
         onCancel={closeCalendar}
         bodyStyle={{ padding: '0px 20px' }}
@@ -26,8 +27,8 @@ class CalendarModal extends Component {
           </div>
         }
       >
-        {/* <iframe src="http://localhost:8991/page2" style={{ width: '100%', height: '100%' }}></iframe> */}
-        <div style={{ width: '100%', height: '100%' }}>
+        <iframe src={url}  style={{ width: '100%', height: '510px' }}></iframe>
+        {/* <div style={{ width: '100%', height: '100%' }}>
           <Calendar
             fullscreen={false}
             headerRender={({ value, type, onChange, onTypeChange }) => {
@@ -99,7 +100,7 @@ class CalendarModal extends Component {
               );
             }}
           />
-        </div>
+        </div> */}
       </Modal>
     );
   }
