@@ -32590,12 +32590,12 @@ export const getMonitorData = params => {
 export const getVideoList = params => {
     let tmpVideoList = [
         {id:'',name:'视频1',url:'http://jspro-test.oss-cn-shenzhen.aliyuncs.com/530fd576-c3cd-4827-bfd9-1c7833990b56?Expires=3183185396&OSSAccessKeyId=LTAI4FvrfndXDm83BSgCrSoZ&Signature=rC1GO0xYwOSFUgu3PQRi8Hrvw9A%3D'}
-        ,{id:'',name:'视频2',url:'blob:https://haokan.baidu.com/8b6ba938-9acd-4a33-be8b-edee3a1a72ac'}
-        ,{id:'',name:'视频3',url:'http://video.sina.com.cn/p/news/2020-10-11/detail-iivhvpwz1456173.d.html?cre=videopagepc&mod=r&loc=1&r=9&rfunc=13&tj=none?hasPlayedTime=0.570313'}
-        ,{id:'',name:'视频3',url:'http://video.sina.com.cn/p/news/2020-10-31/detail-iiznezxr9187358.d.html?cre=videopagepc&mod=r&loc=6&r=9&rfunc=13&tj=none?hasPlayedTime=9.292851'}
-        ,{id:'',name:'视频2',url:'http://video.sina.com.cn/p/news/2020-10-31/detail-iiznezxr9187358.d.html?cre=videopagepc&mod=r&loc=2&r=9&rfunc=13&tj=none?hasPlayedTime=0.975'}
-        ,{id:'',name:'视频3',url:'http://video.sina.com.cn/p/news/2020-10-11/detail-iivhvpwz1456173.d.html?cre=videopagepc&mod=r&loc=1&r=9&rfunc=13&tj=none?hasPlayedTime=0.570313'}
-        ,{id:'',name:'视频3',url:'http://video.sina.com.cn/p/news/2020-10-31/detail-iiznezxr9187358.d.html?cre=videopagepc&mod=r&loc=6&r=9&rfunc=13&tj=none?hasPlayedTime=9.292851'}
+        ,{id:'',name:'视频2',url:'http://jspro-test.oss-cn-shenzhen.aliyuncs.com/2b8f7836-ca55-46d2-a681-f077c966a63a?Expires=3183192390&OSSAccessKeyId=LTAI4FvrfndXDm83BSgCrSoZ&Signature=2u0WGZGawNKXZS%2B4tRHVDvlqJw8%3D'}
+        // ,{id:'',name:'视频3',url:'http://video.sina.com.cn/p/news/2020-10-11/detail-iivhvpwz1456173.d.html?cre=videopagepc&mod=r&loc=1&r=9&rfunc=13&tj=none?hasPlayedTime=0.570313'}
+        // ,{id:'',name:'视频3',url:'http://video.sina.com.cn/p/news/2020-10-31/detail-iiznezxr9187358.d.html?cre=videopagepc&mod=r&loc=6&r=9&rfunc=13&tj=none?hasPlayedTime=9.292851'}
+        // ,{id:'',name:'视频2',url:'http://video.sina.com.cn/p/news/2020-10-31/detail-iiznezxr9187358.d.html?cre=videopagepc&mod=r&loc=2&r=9&rfunc=13&tj=none?hasPlayedTime=0.975'}
+        // ,{id:'',name:'视频3',url:'http://video.sina.com.cn/p/news/2020-10-11/detail-iivhvpwz1456173.d.html?cre=videopagepc&mod=r&loc=1&r=9&rfunc=13&tj=none?hasPlayedTime=0.570313'}
+        // ,{id:'',name:'视频3',url:'http://video.sina.com.cn/p/news/2020-10-31/detail-iiznezxr9187358.d.html?cre=videopagepc&mod=r&loc=6&r=9&rfunc=13&tj=none?hasPlayedTime=9.292851'}
     ]
     let tmpVideoList1 = [
         {id:'',name:'视频1',url:'http://edge.ivideo.sina.com.cn/31360210703.mp4?KID=sina,viask&Expires=1606406400&ssig=ODZdUKushQ&reqid='},{id:'',name:'视频3',url:'http://video.sina.com.cn/p/news/2020-10-31/detail-iiznezxr9187358.d.html?cre=videopagepc&mod=r&loc=6&r=9&rfunc=13&tj=none?hasPlayedTime=9.292851'}

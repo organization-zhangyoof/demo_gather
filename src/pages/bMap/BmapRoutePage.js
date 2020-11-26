@@ -45,8 +45,14 @@ const BmapRoutePage = (obj) => {
     videoPlayVisible,
     playTitle,
     //切换视频
-    changeVideo: () => {
-
+    changeVideo: (index) => {
+        dispatch({
+            type:'video/setState',
+            payload:{
+                currentIndex:index,
+                playTitle:videoList[index].name
+            }
+        })
     },
     //关闭视频播放
     closeVideoPlay: () => {

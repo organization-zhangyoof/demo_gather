@@ -22,8 +22,27 @@ class VideoPlayModal extends Component {
   }
 
   render() {
-    const { videoList,closeVideoPlay,videoPlayVisible,currentIndex,playTitle } = this.props;
+    const { videoList,closeVideoPlay,videoPlayVisible,currentIndex,playTitle,changeVideo } = this.props;
     const {W,H} = this.state
+    const changePlaySource = (type) => {
+        let index = currentIndex
+        let len = videoList.length
+        if(type === 'right'){
+            if(index == len - 1){
+                index = 0
+            }else{
+                index ++
+            }
+        }
+        if(type === 'left'){
+            if(index == 0){
+                index = len - 1
+            }else{
+                index --
+            }
+        }
+        changeVideo(index)
+    }
     return (
       <Modal
         visible={videoPlayVisible}
@@ -38,8 +57,16 @@ class VideoPlayModal extends Component {
         zIndex ={1100}
         wrapClassName={'__bmap_video_list_modal__'}
       >
-          <div style={{width:'100%',height:'100%'}}>
-          {videoList && videoList.length && <video autoplay ='autoplay' controls="controls" src={(videoList[currentIndex]).url} style={{width:'100%',height:'100%'}}></video>}
+          <div className = {styles.play_container}>
+            <div className = {styles.to_left} onClick = {()=>{changePlaySource('left')}}>
+                <Icon type={'left'} style={{fontSize:30}}/>
+            </div>
+            {videoList && videoList.length && 
+                <video autoplay ='autoplay'  src={(videoList[currentIndex]).url} style={{width:'100%',height:'100%'}}></video>
+            }
+            <div className = {styles.to_right} onClick = {()=>{changePlaySource('right')}}>
+                <Icon type={'right'} style={{fontSize:30}}/>
+            </div>
           </div>
 
       </Modal>
