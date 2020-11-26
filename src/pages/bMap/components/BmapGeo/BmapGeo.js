@@ -16,7 +16,6 @@ import video20 from '@/assets/tsp/video20.png';
 import { customInfoWindow } from './CustomInfoWindow';
 import RightSideInfoDrawer from './RightSideInfoDrawer';
 import CalendarModal from './CalendarModal';
-import VideoViewModal from './VideoViewModal'
 import * as CONFIG from '@/config/common/commonConfig';
 import _ from 'lodash';
 class BmapGeo extends React.Component {
@@ -345,9 +344,8 @@ class BmapGeo extends React.Component {
           let marker = new BMap.Marker(pt, { icon: myIcon }); // 创建标注
           marker.type = 'monitor';
           marker.addEventListener('click', ()=> {
-            this.setState({
-              videoVisible: true,
-            });
+              console.log("this.props===",this.props)
+           this.props.getVideoList()
           });
           map.addOverlay(marker);
         }
@@ -419,15 +417,8 @@ class BmapGeo extends React.Component {
         });
       },
     };
-    const videoProps={
-      videoList:[],
-      videoVisible:this.state.videoVisible,
-      closeVideoModal: () => {
-        this.setState({
-          videoVisible: false,
-        });
-      },
-    }
+    
+    
 
     return (
       <div className={styles.normal}>
@@ -452,8 +443,7 @@ class BmapGeo extends React.Component {
               })}
           </div>
           <RightSideInfoDrawer {...drawerProps} ref={ref => (this.RightSideInfoDrawer = ref)} />
-          <CalendarModal {...calendarProps} />
-          <VideoViewModal {...videoProps}/>
+
         </div>
       </div>
     );

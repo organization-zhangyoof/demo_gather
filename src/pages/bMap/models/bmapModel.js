@@ -4,7 +4,7 @@ import localforage from 'localforage'
 export default {
   namespace: 'map', // 构配件新增页
   state: {
-    tspSiteList: [],
+    dangereData: [],
     roadData: [],
     monitorData: [],
   },
@@ -24,7 +24,7 @@ export default {
     *getDangereData({}, { call, put, select }) {
       const res = yield call(mapService.getDangereData, {});
       if (res.code == 200) {
-        yield put({ type: 'setState', payload: { tspSiteList: res.data } });
+        yield put({ type: 'setState', payload: { dangereData: res.data } });
       }
     },
     /**获取道路点 */
