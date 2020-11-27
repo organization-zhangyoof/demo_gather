@@ -58,15 +58,15 @@ class VideoPlayModal extends Component {
         wrapClassName={'__bmap_video_list_modal__'}
       >
           <div className = {styles.play_container}>
-            <div className = {styles.to_left} onClick = {()=>{changePlaySource('left')}}>
+            {videoList && videoList.length > 1 && <div className = {styles.to_left} onClick = {()=>{changePlaySource('left')}}>
                 <Icon type={'left'} style={{fontSize:30}}/>
-            </div>
+            </div>}
             {videoList && videoList.length && 
-                <video autoplay ='autoplay'  src={(videoList[currentIndex]).url} style={{width:'100%',height:'100%'}}></video>
+                <video autoplay ='autoplay' controls="controls" src={(videoList[currentIndex]).url} style={{width:'100%',height:'100%'}}></video>
             }
-            <div className = {styles.to_right} onClick = {()=>{changePlaySource('right')}}>
+            {videoList && videoList.length > 1 && <div className = {styles.to_right} onClick = {()=>{changePlaySource('right')}}>
                 <Icon type={'right'} style={{fontSize:30}}/>
-            </div>
+            </div>}
           </div>
 
       </Modal>

@@ -42,7 +42,8 @@ export default {
                     payload: { 
                         videoList: res.data ,
                         currentIndex:0,
-                        videoPlayVisible: true
+                        videoPlayVisible: true,
+                        playTitle:res.data[0].name
                     } 
                 });
             }

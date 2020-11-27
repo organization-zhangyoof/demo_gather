@@ -16,7 +16,9 @@
                 background: #0A0E27
             }
         }
-        
+        .ant-modal-close-x{
+            color:#fff
+        }
         ::-webkit-scrollbar {
             //滚动条整体部分
             width: 5px;
@@ -44,13 +46,15 @@
     width:100%;
     height:100%;
     display: flex;
-    justify-content: space-between;
+    
     flex-wrap: wrap;
-    overflow: hidden;
-    padding: 10px 5px;
+    overflow: auto;
+    // padding: 10px 5px;
+    padding: 10px;
     &:hover{
         overflow: auto;
-        padding:10px 0 10px 5px
+        // padding:10px 0 10px 5px
+        padding:10px ;
     }
     
     .video_item{
@@ -59,8 +63,8 @@
         border:1px solid #545454;
         display: flex;
         flex-direction: column;
-        padding:5px;
-        margin-bottom: 10px;
+        padding:10px;
+        margin: 10px 1.66%;
         position:relative;
         &:hover .full_box{
             display: block;
@@ -93,6 +97,9 @@
     width:100%;
     height:100%;
     position:relative;
+    video{
+        outline: none;
+    }
     &:hover .to_left{
         display: flex;
     }
