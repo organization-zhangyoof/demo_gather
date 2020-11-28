@@ -1,5 +1,6 @@
 import * as commonFunction from '@/utils/commonFunction';
 import * as mapService from '../services/mapServices';
+import * as mapData from '../services/roadData'
 import localforage from 'localforage'
 export default {
   namespace: 'map', // 构配件新增页
@@ -29,8 +30,7 @@ export default {
     },
     /**获取道路点 */
     *getRoadData({}, { call, put, select }) {
-      const res = yield call(mapService.getRoadData, {});
-      // console.log("工地列表返回====>>>>",res)
+      const res = yield call(mapService.getRoadData2, {});
       if (res.code == 200) {
         yield put({ type: 'setState', payload: { roadData: res.data } });
       }

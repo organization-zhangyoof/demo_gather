@@ -96,19 +96,19 @@ class BmapGeo extends React.Component {
     });
     map.addControl(MapTypeControl); //添加二维地图与卫星地图切换按钮
     map.setMapType(BMAP_SATELLITE_MAP);
-    map.setCurrentCity('深圳'); // 设置地图显示的城市 此项是必须设置的
+    map.setCurrentCity('西安'); // 设置地图显示的城市 此项是必须设置的
     // map.centerAndZoom("深圳",10);      // 初始化地图,用城市名设置地图中心点
     map.enableScrollWheelZoom(); //开启鼠标滚轮缩放
     map.disableDoubleClickZoom(); //禁用地图点击事件
     let viewPoints = [];
     let roadData = this.props.roadData;
     roadData.map(data => {
-      data.contractCoordList.map(item => {
-        for (let i = 0; i < item.contractCoord.length; i++) {
-          let point = coordtransform.wgs84tobd09(item.contractCoord[i].x, item.contractCoord[i].y);
+      // data.contractCoordList.map(item => {
+        for (let i = 0; i < data.roadNameList.length; i++) {
+          let point = coordtransform.wgs84tobd09(data.roadNameList[i].latitude, data.roadNameList[i].longitude);
           viewPoints.push(new BMap.Point(point[0], point[1]));
         }
-      });
+      // });
     });
     map.setViewport(viewPoints);
     zoomNum = map.getZoom();
@@ -245,21 +245,22 @@ class BmapGeo extends React.Component {
     let tmpPoints = [];
     roadData.map((data, index) => {
       lineBg = color[index % 3];
-      data.contractCoordList.map(item => {
+      // data.contractCoordList.map(item => {
         points = [];
         tmpPoints = [];
-        for (let i = 0; i < item.contractCoord.length; i++) {
-          if (i > 0 && item.contractCoord[i].roadName != item.contractCoord[i - 1].roadName) {
+        for (let i = 0; i < data.roadNameList.length; i++) {
+          if (i > 0 && data.roadNameList[i].roadName != data.roadNameList[i - 1].roadName) {
             points.push(tmpPoints);
             tmpPoints = [];
-          } else if (i == item.contractCoord.length - 1) {
+          } else if (i == data.roadNameList.length - 1) {
             points.push(tmpPoints);
             tmpPoints = [];
           }
-          let point = coordtransform.wgs84tobd09(item.contractCoord[i].x, item.contractCoord[i].y);
+          let point = coordtransform.wgs84tobd09(data.roadNameList[i].latitude, data.roadNameList[i].longitude);
           tmpPoints.push(new BMap.Point(point[0], point[1]));
         }
-      });
+      // });
+      console.log('points=======',points)
       points.map(line => {
         let polyline = new BMap.Polyline(line, {
           strokeColor: this.state.clickedProject==data.projectId?'red':'blue',
