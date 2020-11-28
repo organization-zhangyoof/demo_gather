@@ -23,7 +23,6 @@ export default {
       yield put({ type: 'getMonitorData', payload: {} });
     },
     *getVideoList({ }, { call, put, select }) {
-        debugger
         const res = yield call(mapService.getVideoList, {});
         console.log('rex====',res)
         if (res.code == 200) {

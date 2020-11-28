@@ -10,6 +10,8 @@ const BmapRoutePage = (obj) => {
     dangereData,
     roadData,
     monitorData,
+    bimPoints,
+    videoPoints
   } = map
   const {
     videoList,
@@ -36,7 +38,9 @@ const BmapRoutePage = (obj) => {
             type:'video/getVideoList',
             payload:{ }
         })
-    }
+    },
+    bimPoints,
+    videoPoints
   }
 
   const videoPlayProps = {

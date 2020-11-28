@@ -40068,6 +40068,8 @@ export const getRoadData2 = params => {
         projectId: '1-1-1',
         contractId: '1',
         roadName: '',
+        isBim:true,
+        isVideo:true,
         roadNameList: [
           {
             roadName: '西沣中路',
@@ -40441,6 +40443,8 @@ export const getRoadData2 = params => {
         projectId: '1-1-1',
         contractId: '2',
         roadName: '',
+        isBim:true,
+        isVideo:true,
         roadNameList: [
           {
             roadName: '西沣中路-1',
@@ -40694,6 +40698,8 @@ export const getRoadData2 = params => {
         projectId: '1-1-1',
         contractId: '3',
         roadName: '',
+        isBim:true,
+        isVideo:true,
         roadNameList: [
           {
             roadName: '西沣中路-2',
@@ -41038,6 +41044,8 @@ export const getRoadData2 = params => {
         projectId: '1-1-1',
         contractId: '4',
         roadName: '',
+        isBim:false,
+        isVideo:false,
         roadNameList: [
           {
             roadName: '太白南路',
@@ -41213,6 +41221,8 @@ export const getRoadData2 = params => {
         projectId: '1-1-1',
         contractId: '5',
         roadName: '',
+        isBim:true,
+        isVideo:true,
         roadNameList: [
           {
             roadName: '太白北路',
@@ -41370,6 +41380,8 @@ export const getRoadData2 = params => {
         projectId: '1-1-1',
         contractId: '6',
         roadName: '',
+        isBim:true,
+        isVideo:true,
         roadNameList: [
           {
             roadName: '太白立交-1',

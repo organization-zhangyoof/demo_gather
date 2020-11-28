@@ -8,16 +8,14 @@ import riskGreen from '../../img/riskGreen.png';
 import riskYellow from '../../img/riskYellow.png';
 import riskRed from '../../img/riskRed.png';
 import road25 from '@/assets/tsp/road25.png';
-import road20 from '@/assets/tsp/road20.png';
 import bim25 from '@/assets/tsp/bim25.png';
-import bim20 from '@/assets/tsp/bim20.png';
 import video25 from '@/assets/tsp/video25.png';
-import video20 from '@/assets/tsp/video20.png';
 import { customInfoWindow } from './CustomInfoWindow';
 import RightSideInfoDrawer from './RightSideInfoDrawer';
 import CalendarModal from './CalendarModal';
 import * as CONFIG from '@/config/common/commonConfig';
 import _ from 'lodash';
+import config from '../../config/mapConfig'
 class BmapGeo extends React.Component {
   constructor() {
     super();
@@ -30,12 +28,12 @@ class BmapGeo extends React.Component {
       monitorPoint: [],
       showRoadInfo: false,
       showTspInfo: false,
-      rightSiderVisible:false,
+      rightSiderVisible: false,
       mapCenter: [],
-      checkIndex: ['keyPro', 'tsp'],
+      checkIndex: ['road'],
       currentMapType: '卫星',
       anchorId: '',
-      clickedProject:''
+      clickedContract: '',
     };
   }
   /**
@@ -61,21 +59,30 @@ class BmapGeo extends React.Component {
     }
   }
 
-  directToMarker = anchorId => {
+  //寻找路线，id要匹配的线的属性，compareIds为要查找的线的属性值
+  findRoadLine = (id, compareIds = []) => {
     let allOverlay = this.map.getOverlays();
+    let polylines = [];
     for (let i = 0; i < allOverlay.length; i++) {
       if (allOverlay[i].toString() == '[object Polyline]') {
-        let polyline = allOverlay[i];
-        if(polyline.projectId ==this.state.clickedProject){
-          polyline.setStrokeColor('blue');
+        let line = allOverlay[i];
+        if (compareIds.indexOf(line[id]) !== -1) {
+          polylines.push(line);
         }
-        if (polyline.projectId == anchorId) {
-          polyline.setStrokeColor('red');
-          setTimeout(()=>{
-            this.map.setViewport(polyline.pointArray);
-          },200)
-          break;
-        }
+      }
+    }
+    return polylines;
+  };
+
+  directToMarker = anchorId => {
+    let polylines = this.findRoadLine('contractId', [this.state.clickedContract, anchorId]);
+    for (let line of polylines) {
+      if (line.contractId == this.state.clickedContract) {
+        line.setStrokeColor('#ffebb4');
+      }
+      if (line.contractId == anchorId) {
+        line.setStrokeColor('red');
+        this.map.setViewport(line.pointArray);
       }
     }
   };
@@ -88,8 +95,6 @@ class BmapGeo extends React.Component {
     let zoomNum = 0;
     let mapType = '';
     map.centerAndZoom(new BMap.Point(114.08306, 22.60197), 10); // 初始化地图,设置中心点坐标和地图级别
-    // map.centerAndZoom(new BMap.Point(116.32715863448607, 39.990912172420714), 10); // 初始化地图,设置中心点坐标和地图级别
-    // map.addControl(new BMap.MapTypeControl()); //添加地图类型控件
     let MapTypeControl = new BMap.MapTypeControl({
       mapTypes: [BMAP_SATELLITE_MAP, BMAP_NORMAL_MAP],
       anchor: BMAP_ANCHOR_TOP_LEFT,
@@ -103,19 +108,19 @@ class BmapGeo extends React.Component {
     let viewPoints = [];
     let roadData = this.props.roadData;
     roadData.map(data => {
-      // data.contractCoordList.map(item => {
-        for (let i = 0; i < data.roadNameList.length; i++) {
-          let point = coordtransform.wgs84tobd09(data.roadNameList[i].latitude, data.roadNameList[i].longitude);
-          viewPoints.push(new BMap.Point(point[0], point[1]));
-        }
-      // });
+      for (let i = 0; i < data.roadNameList.length; i++) {
+        let point = coordtransform.wgs84tobd09(
+          data.roadNameList[i].latitude,
+          data.roadNameList[i].longitude,
+        );
+        viewPoints.push(new BMap.Point(point[0], point[1]));
+      }
     });
     map.setViewport(viewPoints);
     zoomNum = map.getZoom();
     mapType = map.getMapType();
     map.getMapType().getName() == '地图' && map.setMapStyle({ styleJson: CONFIG.styleJson });
     const getZoomNum = () => {
-      debugger;
       /**获取当前地图等级 */
       zoomNum = map.getZoom();
       map.clearOverlays();
@@ -123,10 +128,10 @@ class BmapGeo extends React.Component {
         let iconList = this.state.checkIndex;
         if (iconList.length > 0) {
           this.drawRoad();
-          console.log(iconList)
+          console.log(iconList);
           iconList.forEach(item => {
-            item == 'keyPro' && this.drawRoadPic();
-            item == 'tsp' && this.drawTspPoint();
+            item == 'road' && this.drawRoadPic();
+            item == 'danger' && this.drawDangerPoint();
             item == 'monitor' && this.drawMonitorPic();
             item == 'bim' && this.drawBimPic();
           });
@@ -146,7 +151,7 @@ class BmapGeo extends React.Component {
     });
   }
   //危险源图标绘制
-  drawTspPoint() {
+  drawDangerPoint() {
     const { BMap } = window;
     let _this = this;
     let map = this.map;
@@ -179,7 +184,7 @@ class BmapGeo extends React.Component {
         });
       }
       let marker = new BMap.Marker(pt, { icon: myIcon }); // 创建标注
-      marker.type = 'tsp';
+      marker.type = 'danger';
       marker.siteId = item.siteId; //工地ID
       marker.addEventListener('click', () => {
         this.setState({
@@ -237,70 +242,52 @@ class BmapGeo extends React.Component {
   }
   drawRoad() {
     const { BMap } = window;
-    let color = ['red', 'blue', 'black'];
-    let lineBg = '';
     let map = this.map;
     let roadData = this.props.roadData;
-    let points = [];
+    let lines = [];
     let tmpPoints = [];
     roadData.map((data, index) => {
-      lineBg = color[index % 3];
-      // data.contractCoordList.map(item => {
-        points = [];
-        tmpPoints = [];
-        for (let i = 0; i < data.roadNameList.length; i++) {
-            let point = coordtransform.wgs84tobd09(data.roadNameList[i].latitude, data.roadNameList[i].longitude);
-            tmpPoints.push(new BMap.Point(point[0], point[1]));
-          if (i < (data.roadNameList.length - 1) && data.roadNameList[i].roadName != data.roadNameList[i + 1].roadName) {
-            points.push(tmpPoints);
-            tmpPoints = [];
-          } else if (i == data.roadNameList.length - 1) {
-              if(data.roadNameList[i].roadName != data.roadNameList[i - 1].roadName){
-                points.push(tmpPoints);
-                tmpPoints = [];
-              }
-              tmpPoints.push(new BMap.Point(point[0], point[1]));
-              points.push(tmpPoints);
-              tmpPoints = [];
-            }
-
-            
-          }
-      // });
-      console.log('points=======',points)
-      points.map(line => {
+      lines = [];
+      tmpPoints = [];
+      for (let i = 0; i < data.roadNameList.length; i++) {
+        let point = coordtransform.wgs84tobd09(
+          data.roadNameList[i].latitude,
+          data.roadNameList[i].longitude,
+        );
+        tmpPoints.push(new BMap.Point(point[0], point[1]));
+      }
+      lines.push(tmpPoints);
+      lines.map(line => {
         let polyline = new BMap.Polyline(line, {
-          strokeColor: this.state.clickedProject==data.projectId?'red':'blue',
+          strokeColor: this.state.clickedContract == data.contractId ? 'red' : '#ffebb4',
           strokeWeight: 5,
           strokeOpacity: 1,
         }); //创建折线
         polyline.projectId = data.projectId;
+        polyline.contractId = data.contractId;
         polyline.projectName = data.projectName;
-        polyline.totalInvestment = data.totalInvestment;
-        polyline.scheduleTime = data.scheduleTime;
         polyline.pointArray = tmpPoints; //把整条折线存起来
         polyline.addEventListener('click', () => {
-          debugger
           let allOverlay = this.map.getOverlays();
           for (let i = 0; i < allOverlay.length; i++) {
             if (allOverlay[i].toString() == '[object Polyline]') {
               let preline = allOverlay[i];
-              if(preline.projectId ==this.state.clickedProject){
-                preline.setStrokeColor('blue');
+              if (preline.contractId == this.state.clickedContract) {
+                preline.setStrokeColor('#ffebb4');
                 break;
               }
             }
           }
           polyline.setStrokeColor('red');
           let state = {
-            clickedProject: data.projectId,
+            clickedContract: data.contractId,
           };
           if (!this.state.rightSiderVisible) {
             state['rightSiderVisible'] = true;
           }
           /**鼠标点击时移出信息弹窗 */
           this.setState({ ...state }, () => {
-            this.RightSideInfoDrawer.scrollToCard(data.projectId);
+            this.RightSideInfoDrawer.scrollToCard(data.contractId);
           });
         });
         map.addOverlay(polyline); //将折线描绘至地图
@@ -310,17 +297,20 @@ class BmapGeo extends React.Component {
   drawBimPic() {
     const { BMap } = window;
     let map = this.map;
-    let bimPoint = this.state.bimPoint;
-    bimPoint.point.map(item => {
-      let pt = new BMap.Point(item.x, item.y);
-      let myIcon = new BMap.Icon(bim25, new BMap.Size(25, 25));
-      let marker = new BMap.Marker(pt, { icon: myIcon }); // 创建标注
-      marker.id = bimPoint.bimId;
-      marker.type = 'bim';
-      marker.addEventListener('click', function(e) {
-        console.log('bim点击事件====>>>>', e.target);
-      });
-      map.addOverlay(marker);
+    let bimPoint = this.props.bimPoints;
+    bimPoint.map(item => {
+      if (item.isBim) {
+        let pt = new BMap.Point(item.latitude, item.longitude);
+        let myIcon = new BMap.Icon(bim25, new BMap.Size(25, 25));
+        let marker = new BMap.Marker(pt, { icon: myIcon }); // 创建标注
+        marker.projectId = item.pid;
+        marker.contractId = item.cid;
+        marker.type = 'bim';
+        marker.addEventListener('click', function(e) {
+          console.log('bim点击事件====>>>>', e.target);
+        });
+        map.addOverlay(marker);
+      }
     });
   }
   drawRoadPic() {
@@ -331,7 +321,7 @@ class BmapGeo extends React.Component {
       let pt = new BMap.Point(item.x, item.y);
       let myIcon = new BMap.Icon(road25, new BMap.Size(25, 25));
       let marker = new BMap.Marker(pt, { icon: myIcon }); // 创建标注
-      marker.type = 'keyPro';
+      marker.type = 'road';
       marker.addEventListener('click', function(e) {
         console.log('点击事件====>>>>', e.target);
       });
@@ -342,38 +332,34 @@ class BmapGeo extends React.Component {
     //监控图标
     const { BMap } = window;
     let map = this.map;
-    let monitorData = this.props.monitorData||[];
-    monitorData.map((data, index) => {
-      data.contractCoordList.map(item => {
-        for (let i = 0; i < item.contractCoord.length; i++) {
-          let point = coordtransform.wgs84tobd09(item.contractCoord[i].x, item.contractCoord[i].y);
-          let pt = new BMap.Point(point[0], point[1]);
-          let myIcon = new BMap.Icon(video25, new BMap.Size(25, 25));
-          let marker = new BMap.Marker(pt, { icon: myIcon }); // 创建标注
-          marker.type = 'monitor';
-          marker.addEventListener('click', ()=> {
-              console.log("this.props===",this.props)
-           this.props.getVideoList()
-          });
-          map.addOverlay(marker);
-        }
-      })
-    })
+    let monitorData = this.props.videoPoints;
+    monitorData.map(item => {
+      if (item.isVideo) {
+        let pt = new BMap.Point(item.latitude, item.longitude);
+        let myIcon = new BMap.Icon(video25, new BMap.Size(25, 25));
+        let marker = new BMap.Marker(pt, { icon: myIcon }); // 创建标注
+        marker.projectId = item.pid;
+        marker.contractId = item.cid;
+        marker.type = 'monitor';
+        marker.addEventListener('click', function(e) {
+          console.log('bim点击事件====>>>>', e.target);
+        });
+        map.addOverlay(marker);
+      }
+    });
   }
 
   componentDidMount() {
     this.drawMap();
-    this.drawTspPoint();
+    // this.drawDangerPoint();
     this.drawRoad();
-    // // this.drawBimPic();
-    // this.drawRoadPic()
   }
 
   render() {
     let list = [
       { type: 'station', name: '驻地与场站' },
-      { type: 'keyPro', name: '关键工程' },
-      { type: 'tsp', name: '危险源图标' },
+      { type: 'road', name: '关键工程' },
+      { type: 'danger', name: '危险源图标' },
       { type: 'pic', name: '全景照片' },
       { type: 'monitor', name: '监控视频' },
       { type: 'bim', name: 'BIM模型' },
@@ -382,9 +368,9 @@ class BmapGeo extends React.Component {
     const onCheckOneBox = item => {
       if (checkIndex.indexOf(item.type) == -1) {
         checkIndex.push(item.type);
-        item.type == 'keyPro' && this.drawRoad();
-        item.type == 'tsp' && this.drawTspPoint();
-        item.type == 'monitor' && this.drawMonitorPic();         
+        item.type == 'road' && this.drawRoad();
+        item.type == 'danger' && this.drawDangerPoint();
+        item.type == 'monitor' && this.drawMonitorPic();
         item.type == 'bim' && this.drawBimPic();
       } else {
         checkIndex.splice(checkIndex.indexOf(item.type), 1);
@@ -402,17 +388,20 @@ class BmapGeo extends React.Component {
     const drawerProps = {
       roadData: this.props.roadData,
       directToMarker: this.directToMarker,
-      visible:rightSiderVisible,
-      onClose:()=>{
+      visible: rightSiderVisible,
+      onClose: () => {
         this.setState({
-          rightSiderVisible:false
-        })
+          rightSiderVisible: false,
+        });
+        let anchorId = this.RightSideInfoDrawer.state.anchorId;
+        let polyline = this.findRoadLine('contractId', [anchorId])[0];
+        polyline.setStrokeColor('#ffebb4');
       },
-      showInfoBox:()=>{
+      showInfoBox: () => {
         this.setState({
-          rightSiderVisible:true
-        })
-      }
+          rightSiderVisible: true,
+        });
+      },
     };
     const calendarProps = {
       projectId: '00469fda708f411aafcb7368b3c27cc1',
@@ -425,8 +414,6 @@ class BmapGeo extends React.Component {
         });
       },
     };
-    
-    
 
     return (
       <div className={styles.normal}>
@@ -451,7 +438,6 @@ class BmapGeo extends React.Component {
               })}
           </div>
           <RightSideInfoDrawer {...drawerProps} ref={ref => (this.RightSideInfoDrawer = ref)} />
-
         </div>
       </div>
     );
