@@ -249,16 +249,23 @@ class BmapGeo extends React.Component {
         points = [];
         tmpPoints = [];
         for (let i = 0; i < data.roadNameList.length; i++) {
-          if (i > 0 && data.roadNameList[i].roadName != data.roadNameList[i - 1].roadName) {
+            let point = coordtransform.wgs84tobd09(data.roadNameList[i].latitude, data.roadNameList[i].longitude);
+            tmpPoints.push(new BMap.Point(point[0], point[1]));
+          if (i < (data.roadNameList.length - 1) && data.roadNameList[i].roadName != data.roadNameList[i + 1].roadName) {
             points.push(tmpPoints);
             tmpPoints = [];
           } else if (i == data.roadNameList.length - 1) {
-            points.push(tmpPoints);
-            tmpPoints = [];
+              if(data.roadNameList[i].roadName != data.roadNameList[i - 1].roadName){
+                points.push(tmpPoints);
+                tmpPoints = [];
+              }
+              tmpPoints.push(new BMap.Point(point[0], point[1]));
+              points.push(tmpPoints);
+              tmpPoints = [];
+            }
+
+            
           }
-          let point = coordtransform.wgs84tobd09(data.roadNameList[i].latitude, data.roadNameList[i].longitude);
-          tmpPoints.push(new BMap.Point(point[0], point[1]));
-        }
       // });
       console.log('points=======',points)
       points.map(line => {

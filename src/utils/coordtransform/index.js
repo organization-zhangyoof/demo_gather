@@ -75,9 +75,10 @@
    * WGS84 转换为 百度坐标系 (BD-09)
    */
   export function wgs84tobd09(lng, lat){
-    let point = wgs84togcj02(lng, lat);
-    let bdPoint = gcj02tobd09(point[0], point[1]);
-    return bdPoint;
+    // let point = wgs84togcj02(lng, lat);
+    // let bdPoint = gcj02tobd09(point[0], point[1]);
+    // return bdPoint;
+    return [lng, lat]
   }
   /**
    * GCJ02 转换为 WGS84
