@@ -39967,9 +39967,31 @@ export const getPanoramicData = params => {
                 url:'',
                 shootingTime:'2020-11-01 06:40:40',
                 pile:"",
-                latitude:'',
-                longitude:''
-            }
+                latitude:108.87252366819116,
+                longitude:34.1659601189891
+            },
+            {
+                id:'',
+                projectId:'',
+                contractId:'',
+                name:'',
+                url:'',
+                shootingTime:'2020-11-01 06:40:40',
+                pile:"",
+                latitude:108.90203329097884,
+                longitude:34.197057481179755
+            },
+            {
+                id:'',
+                projectId:'',
+                contractId:'',
+                name:'',
+                url:'',
+                shootingTime:'2020-11-01 06:40:40',
+                pile:"",
+                latitude:108.92873826493152,
+                longitude:34.239556201986176
+            },
         ]
     }
     return res
