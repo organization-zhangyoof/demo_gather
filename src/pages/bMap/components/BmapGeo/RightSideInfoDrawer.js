@@ -33,14 +33,14 @@ class RightSideInfoDrawer extends Component {
       roadData.length > 0 &&
       roadData.map(item => (
         <div
-          id={currentKey == '1' ? item.projectId : ''}
+          id={currentKey == '1' ? item.contractId : ''}
           className={styles.card}
-          style={{ border: this.state.anchorId == item.projectId ? '1px solid rgba(83,161,228,0.85)' : 'none' }}
+          style={{ border: this.state.anchorId == item.contractId ? '1px solid rgba(83,161,228,0.85)' : 'none' }}
           onClick={() => {
             this.setState({
-              anchorId:item.projectId
+              anchorId:item.contractId
             })
-            directToMarker(item.projectId)
+            directToMarker(item.contractId)
           }}
         >
           <div>
@@ -85,14 +85,14 @@ class RightSideInfoDrawer extends Component {
       roadData.length > 0 &&
       roadData.map(item => (
         <div
-          id={currentKey == '2' ? item.projectId : ''}
+          id={currentKey == '2' ? item.contractId : ''}
           className={styles.card}
-          style={{ border: this.state.anchorId == item.projectId ? '1px solid rgba(83,161,228,0.85)' : 'none' }}
+          style={{ border: this.state.anchorId == item.contractId ? '1px solid rgba(83,161,228,0.85)' : 'none' }}
           onClick={() => {
             this.setState({
-              anchorId:item.projectId
+              anchorId:item.contractId
             })
-            directToMarker(item.projectId)
+            directToMarker(item.contractId)
           }}
         >
           <div>
@@ -168,14 +168,14 @@ class RightSideInfoDrawer extends Component {
       roadData.length > 0 &&
       roadData.map(item => (
         <div
-          id={currentKey == '3' ? item.projectId : ''}
+          id={currentKey == '3' ? item.contractId : ''}
           className={styles.card}
-          style={{ border: this.state.anchorId == item.projectId ? '1px solid rgba(83,161,228,0.85)' : 'none' }}
+          style={{ border: this.state.anchorId == item.contractId ? '1px solid rgba(83,161,228,0.85)' : 'none' }}
           onClick={() => {
             this.setState({
-              anchorId:item.projectId
+              anchorId:item.contractId
             })
-            directToMarker(item.projectId)
+            directToMarker(item.contractId)
           }}
         >
           <div>
@@ -250,14 +250,14 @@ class RightSideInfoDrawer extends Component {
       roadData.length > 0 &&
       roadData.map(item => (
         <div
-          id={currentKey == '4' ? item.projectId : ''}
+          id={currentKey == '4' ? item.contractId : ''}
           className={styles.card}
-          style={{ border: this.state.anchorId == item.projectId ? '1px solid rgba(83,161,228,0.85)' : 'none' }}
+          style={{ border: this.state.anchorId == item.contractId ? '1px solid rgba(83,161,228,0.85)' : 'none' }}
           onClick={() => {
             this.setState({
-              anchorId:item.projectId
+              anchorId:item.contractId
             })
-            directToMarker(item.projectId)
+            directToMarker(item.contractId)
           }}
         >
           <div>
@@ -311,14 +311,14 @@ class RightSideInfoDrawer extends Component {
       roadData.length > 0 &&
       roadData.map(item => (
         <div
-          id={currentKey == '5' ? item.projectId : ''}
+          id={currentKey == '5' ? item.contractId : ''}
           className={styles.card}
-          style={{ border: this.state.anchorId == item.projectId ? '1px solid rgba(83,161,228,0.85)' : 'none' }}
+          style={{ border: this.state.anchorId == item.contractId ? '1px solid rgba(83,161,228,0.85)' : 'none' }}
           onClick={() => {
             this.setState({
-              anchorId:item.projectId
+              anchorId:item.contractId
             })
-            directToMarker(item.projectId)
+            directToMarker(item.contractId)
           }}
         >
           <div>

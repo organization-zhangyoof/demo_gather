@@ -1,13 +1,16 @@
 import * as commonFunction from '@/utils/commonFunction';
 import * as mapService from '../services/mapServices';
-import * as mapData from '../services/roadData'
-import localforage from 'localforage'
+import * as mapData from '../services/roadData';
+import localforage from 'localforage';
+import { last } from 'lodash';
 export default {
   namespace: 'map', // 构配件新增页
   state: {
     dangereData: [],
     roadData: [],
     monitorData: [],
+    videoPoints:[],
+    bimPoints:[]
   },
   reducers: {
     // 更新状态
@@ -32,7 +35,33 @@ export default {
     *getRoadData({}, { call, put, select }) {
       const res = yield call(mapService.getRoadData2, {});
       if (res.code == 200) {
-        yield put({ type: 'setState', payload: { roadData: res.data } });
+        let videoPoints = [], bimPoints = [];
+        if (res.data && res.data.length > 0) {
+          res.data.forEach(item => {
+            videoPoints.push({
+              pid:item.projectId,
+              cid:item.contractId,
+              isVideo:item.isVideo,
+              latitude:item.roadNameList[Math.ceil(item.roadNameList.length*2/3)].latitude,
+              longitude:item.roadNameList[Math.ceil(item.roadNameList.length*2/3)].longitude
+            })
+            bimPoints.push({
+              pid:item.projectId,
+              cid:item.contractId,
+              isBim:item.isBim,
+              latitude:item.roadNameList[Math.ceil(item.roadNameList.length*1/3)].latitude,
+              longitude:item.roadNameList[Math.ceil(item.roadNameList.length*1/3)].longitude
+            })
+          });
+        }
+        yield put({
+          type: 'setState',
+          payload: {
+            roadData: res.data,
+            videoPoints,
+            bimPoints
+          },
+        });
       }
     },
     /**获取视频监控点位 */
