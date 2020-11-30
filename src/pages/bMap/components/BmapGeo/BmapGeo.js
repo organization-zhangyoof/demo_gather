@@ -271,19 +271,22 @@ class BmapGeo extends React.Component {
       lines = [];
       tmpPoints = [];
       for (let i = 0; i < item.roadNameList.length; i++) {
-        if (i > 0 && item.roadNameList[i].roadName != item.roadNameList[i - 1].roadName) {
-          lines.push(tmpPoints);
-          tmpPoints = [];
-        } else if (i == item.roadNameList.length - 1) {
+        let point = coordtransform.wgs84tobd09(item.roadNameList[i].latitude,item.roadNameList[i].longitude,);
+        tmpPoints.push(new BMap.Point(point[0], point[1]));
+      if (i < (item.roadNameList.length - 1) && item.roadNameList[i].roadName != item.roadNameList[i + 1].roadName) {
+        lines.push(tmpPoints);
+        tmpPoints = [];
+      }else if (i == item.roadNameList.length - 1) {
+        if(item.roadNameList[i].roadName !== item.roadNameList[i - 1].roadName){
           lines.push(tmpPoints);
           tmpPoints = [];
         }
-        let point = coordtransform.wgs84tobd09(
-          item.roadNameList[i].latitude,
-          item.roadNameList[i].longitude,
-        );
         tmpPoints.push(new BMap.Point(point[0], point[1]));
+        lines.push(tmpPoints);
+        tmpPoints = [];
       }
+    }
+    console.log('lines=====',lines)
       lines.map(line => {
         let polyline = new BMap.Polyline(line, {
           strokeColor: this.state.clickedContract == item.contractId ? 'red' : '#ffebb4',
