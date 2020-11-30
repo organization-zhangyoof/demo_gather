@@ -41,7 +41,7 @@ class BmapGeo extends React.Component {
       showTspInfo: false,
       rightSiderVisible: false,
       mapCenter: [],
-      checkIndex: [],
+      checkIndex: ['keyProject'],
       currentMapType: '卫星',
       anchorId: '',
       clickedContract: '',
@@ -136,23 +136,23 @@ class BmapGeo extends React.Component {
       zoomNum = map.getZoom();
       map.clearOverlays();
       if (zoomNum > 12) {
-        let iconList = this.state.checkIndex;
+
         this.drawRoad();
         this.drawRoadStartAndEndPic();
-        if (iconList.length > 0) {
-          console.log(iconList);
-          iconList.forEach(item => {
-            item == 'keyProject' && this.drawKeyProject();
-            item == 'danger' && this.drawDangerPoint();
-            item == 'monitor' && this.drawMonitorPic();
-            item == 'bim' && this.drawBimPic();
-            item == 'panoramic' && this.drawPanoramicData();
-            item == 'station' && this.drawStationAndSite();
-          });
-        }
       } else {
         this.drawRoad();
         this.drawRoadStartAndEndPic();
+      }
+      let iconList = this.state.checkIndex;
+      if (iconList.length > 0) {
+        iconList.forEach(item => {
+          item == 'keyProject' && this.drawKeyProject();
+          item == 'danger' && this.drawDangerPoint();
+          item == 'monitor' && this.drawMonitorPic();
+          item == 'bim' && this.drawBimPic();
+          item == 'panoramic' && this.drawPanoramicData();
+          item == 'station' && this.drawStationAndSite();
+        });
       }
     };
     map.addEventListener('zoomend', getZoomNum); /**地图缩放结束事件 */
@@ -369,13 +369,13 @@ class BmapGeo extends React.Component {
       <div class="info-window">
         <p class="hide_text">${
           item.bizType == 0 && item.type == 0
-            ? '项目起点桩号:'
+            ? '项目起点桩号：'
             : item.bizType == 0 && item.type == 1
-            ? '项目终点桩号:'
+            ? '项目终点桩号：'
             : item.bizType == 1 && item.type == 0
-            ? (item.contractName ? item.contractName : '') + '标起点桩号:'
+            ? (item.contractName ? item.contractName : '') + '标起点桩号：'
             : item.bizType == 1 && item.type == 1
-            ? (item.contractName ? item.contractName : '') + '标终点桩号:'
+            ? (item.contractName ? item.contractName : '') + '标终点桩号：'
             : ''
         }${item.pile ? item.pile : ''}</p>
       </div>
@@ -414,13 +414,13 @@ class BmapGeo extends React.Component {
         marker.projectId = item.pid;
         marker.contractId = item.cid;
         marker.type = 'monitor';
-        marker.addEventListener('click', () =>{
+        marker.addEventListener('click', () => {
           this.props.getVideoList();
         });
         let infoHTML = `
         <div class="info-window">
-          <p class="hide_text">项目名称:${item.projectName ? item.projectName : ''}</p>
-          <p class="hide_text">合同段:${item.contractName ? item.contractName : ''}</p>
+          <p class="hide_text">项目名称：${item.projectName ? item.projectName : ''}</p>
+          <p class="hide_text">合同段：${item.contractName ? item.contractName : ''}</p>
         </div>
           `;
         let myCompOverlay = customInfoWindow(pt, infoHTML, 200, 20);
@@ -553,9 +553,9 @@ class BmapGeo extends React.Component {
       marker.type = 'panoramic';
       let infoHTML = `
       <div class="info-window">
-        <p class="hide_text">项目名称:${item.projectName ? item.projectName : ''}</p>
-        <p class="hide_text">合同段:${item.contractName ? item.contractName : ''}</p>
-        <p class="hide_text">全景点名称:${item.name ? item.name : ''}</p>
+        <p class="hide_text">项目名称：${item.projectName ? item.projectName : ''}</p>
+        <p class="hide_text">合同段：${item.contractName ? item.contractName : ''}</p>
+        <p class="hide_text">全景点名称：${item.name ? item.name : ''}</p>
       </div>
         `;
       let myCompOverlay = customInfoWindow(pt, infoHTML, 200, 20);
@@ -587,6 +587,17 @@ class BmapGeo extends React.Component {
     this.drawMap();
     this.drawRoadStartAndEndPic();
     this.drawRoad();
+    let iconList = this.state.checkIndex;
+    if (iconList.length > 0) {
+      iconList.forEach(item => {
+        item == 'keyProject' && this.drawKeyProject();
+        item == 'danger' && this.drawDangerPoint();
+        item == 'monitor' && this.drawMonitorPic();
+        item == 'bim' && this.drawBimPic();
+        item == 'panoramic' && this.drawPanoramicData();
+        item == 'station' && this.drawStationAndSite();
+      });
+    }
   }
 
   render() {
