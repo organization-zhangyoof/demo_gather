@@ -42309,7 +42309,7 @@ export const getStartAndEndData = params => {
                 projectId:'1-1-1',
                 contractId:'6',
                 name:'太白立交',//起讫点名称
-                bizType:0,//点类型：0项目，1合同
+                bizType:1,//点类型：0项目，1合同
                 type:0, //起讫类型：0起点，1讫点
                 pile:'6-start',
                 latitude: 108.91334585979996,
@@ -42320,11 +42320,11 @@ export const getStartAndEndData = params => {
                 projectId:'1-1-1',
                 contractId:'6',
                 name:'太白立交',//起讫点名称
-                bizType:0,//点类型：0项目，1合同
-                type:0, //起讫类型：0起点，1讫点
+                bizType:1,//点类型：0项目，1合同
+                type:1, //起讫类型：0起点，1讫点
                 pile:'6-end',
-                latitude: 108.93595570610802,
-                longitude: 34.23643872719827,
+                latitude: 108.94897488947029,
+                longitude: 34.236327946835274,
             },
         ]
     }
