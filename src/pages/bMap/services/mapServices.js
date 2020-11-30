@@ -40087,8 +40087,8 @@ export const getRoadData2 = params => {
         projectName:'南北干线项目',
         contractName:'南北干线合同段一',
         roadName: '',
-        isBim:true,
-        isVideo:true,
+        bimShow:true,
+        videoShow:true,
         roadNameList: [
           {
             roadName: '西沣中路',
@@ -40464,8 +40464,8 @@ export const getRoadData2 = params => {
         roadName: '',
         projectName:'南北干线项目',
         contractName:'南北干线合同段二',
-        isBim:true,
-        isVideo:true,
+        bimShow:true,
+        videoShow:true,
         roadNameList: [
           {
             roadName: '西沣中路-1',
@@ -40721,8 +40721,8 @@ export const getRoadData2 = params => {
         roadName: '',
         projectName:'南北干线项目',
         contractName:'南北干线合同段三',
-        isBim:true,
-        isVideo:true,
+        bimShow:true,
+        videoShow:true,
         roadNameList: [
           {
             roadName: '西沣中路-2',
@@ -41069,8 +41069,8 @@ export const getRoadData2 = params => {
         roadName: '',
         projectName:'南北干线项目',
         contractName:'南北干线合同段四',
-        isBim:false,
-        isVideo:false,
+        bimShow:false,
+        videoShow:false,
         roadNameList: [
           {
             roadName: '太白南路',
@@ -41248,8 +41248,8 @@ export const getRoadData2 = params => {
         roadName: '',
         projectName:'南北干线项目',
         contractName:'南北干线合同段五',
-        isBim:true,
-        isVideo:true,
+        bimShow:true,
+        videoShow:true,
         roadNameList: [
           {
             roadName: '太白北路',
@@ -41409,8 +41409,8 @@ export const getRoadData2 = params => {
         roadName: '',
         projectName:'南北干线项目',
         contractName:'南北干线合同段六',
-        isBim:true,
-        isVideo:true,
+        bimShow:true,
+        videoShow:true,
         roadNameList: [
           {
             roadName: '太白立交-1',
