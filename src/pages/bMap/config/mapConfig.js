@@ -1,10 +1,10 @@
 const config = {
   //风险源等级
   RISK_LEVEL: [
-    { id: '1', name: '风险等级:I级（低度风险）' },
-    { id: '2', name: '风险等级:II级（中度风险）' },
-    { id: '3', name: '风险等级:III级（高度风险）' },
-    { id: '4', name: '风险等级:IV级（极高风险）' },
+    { id: '1', name: 'I级（低度风险）' },
+    { id: '2', name: 'II级（中度风险）' },
+    { id: '3', name: 'III级（高度风险）' },
+    { id: '4', name: 'IV级（极高风险）' },
   ],
   //施工状态
   CONSTRUCT_STATUS: [
