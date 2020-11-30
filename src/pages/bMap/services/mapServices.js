@@ -39918,8 +39918,9 @@ export const getStationData = params => {
                 id:'',
                 projectId:'',
                 contractId:'',
-                name:'',
-                pile:'',
+                name:'驻地1',
+                pile:'驻地1',
+                type:1,
                 latitude:108.87418289925174,
                 longitude:34.188987800338964
             },
@@ -39927,8 +39928,9 @@ export const getStationData = params => {
                 id:'',
                 projectId:'',
                 contractId:'',
-                name:'',
-                pile:'',
+                name:'场站1',
+                pile:'场站1',
+                type:2,
                 latitude:108.86968713920626,
                 longitude:34.15244825790729
             },
@@ -39936,8 +39938,9 @@ export const getStationData = params => {
                 id:'',
                 projectId:'',
                 contractId:'',
-                name:'',
-                pile:'',
+                name:'驻地2',
+                pile:'驻地2',
+                type:1,
                 latitude:108.8819255971078,
                 longitude:34.15784714988538
             },
@@ -39945,8 +39948,9 @@ export const getStationData = params => {
                 id:'',
                 projectId:'',
                 contractId:'',
-                name:'',
-                pile:'',
+                name:'场站2',
+                pile:'场站2',
+                type:2,
                 latitude:108.9009076950775,
                 longitude:34.213061949626045
             },
@@ -39964,6 +39968,8 @@ export const getPanoramicData = params => {
                 id:'',
                 projectId:'',
                 contractId:'',
+                projectName:'南北干线项目',
+                contractName:'南北干线合同段一',
                 name:'',
                 url:'',
                 shootingTime:'2020-11-01 06:40:40',
@@ -39975,6 +39981,8 @@ export const getPanoramicData = params => {
                 id:'',
                 projectId:'',
                 contractId:'',
+                projectName:'南北干线项目',
+                contractName:'南北干线合同段一',
                 name:'',
                 url:'',
                 shootingTime:'2020-11-01 06:40:40',
@@ -39986,6 +39994,8 @@ export const getPanoramicData = params => {
                 id:'',
                 projectId:'',
                 contractId:'',
+                projectName:'南北干线项目',
+                contractName:'南北干线合同段一',
                 name:'',
                 url:'',
                 shootingTime:'2020-11-01 06:40:40',
@@ -40006,54 +40016,60 @@ export const getKeyProjectData = params => {
             {
                 id:'',
                 projectId:'',
-                name:'',
+                name:'关键工程-桥梁',
                 wbsId:'',
-                pile:'',
+                pile:'关键工程-1',
+                type:1,
                 latitude:108.86045169930863,
                 longitude:34.14843547179479
             },
             {
                 id:'',
                 projectId:'',
-                name:'',
+                name:'关键工程-隧道',
                 wbsId:'',
-                pile:'',
+                pile:'关键工程-2',
+                type:2,
                 latitude:108.88225161123982,
                 longitude:34.17505093209512
             },
             {
                 id:'',
                 projectId:'',
-                name:'',
+                name:'关键工程-服务区',
                 wbsId:'',
-                pile:'',
+                pile:'关键工程-3',
+                type:3,
                 latitude:108.89797540561197,
                 longitude:34.19715758228471
             },
             {
                 id:'',
                 projectId:'',
-                name:'',
+                name:'关键工程-互通',
                 wbsId:'',
-                pile:'',
+                pile:'关键工程-4',
+                type:4,
                 latitude:108.91697748204614,
                 longitude:34.2206175381204
             },
             {
                 id:'',
                 projectId:'',
-                name:'',
+                name:'关键工程-收费站',
                 wbsId:'',
-                pile:'',
+                pile:'关键工程-5',
+                type:5,
                 latitude:108.92742786356037,
                 longitude:34.23978326991035
             },
             {
                 id:'',
                 projectId:'',
-                name:'',
+                name:'关键工程-服务区1',
                 wbsId:'',
-                pile:'',
+                pile:'关键工程-6',
+                type:3,
                 latitude:108.92989416429343,
                 longitude:34.25148209993651
             },
@@ -40068,6 +40084,8 @@ export const getRoadData2 = params => {
       {
         projectId: '1-1-1',
         contractId: '1',
+        projectName:'南北干线项目',
+        contractName:'南北干线合同段一',
         roadName: '',
         isBim:true,
         isVideo:true,
@@ -40444,6 +40462,8 @@ export const getRoadData2 = params => {
         projectId: '1-1-1',
         contractId: '2',
         roadName: '',
+        projectName:'南北干线项目',
+        contractName:'南北干线合同段二',
         isBim:true,
         isVideo:true,
         roadNameList: [
@@ -40699,6 +40719,8 @@ export const getRoadData2 = params => {
         projectId: '1-1-1',
         contractId: '3',
         roadName: '',
+        projectName:'南北干线项目',
+        contractName:'南北干线合同段三',
         isBim:true,
         isVideo:true,
         roadNameList: [
@@ -41045,6 +41067,8 @@ export const getRoadData2 = params => {
         projectId: '1-1-1',
         contractId: '4',
         roadName: '',
+        projectName:'南北干线项目',
+        contractName:'南北干线合同段四',
         isBim:false,
         isVideo:false,
         roadNameList: [
@@ -41222,6 +41246,8 @@ export const getRoadData2 = params => {
         projectId: '1-1-1',
         contractId: '5',
         roadName: '',
+        projectName:'南北干线项目',
+        contractName:'南北干线合同段五',
         isBim:true,
         isVideo:true,
         roadNameList: [
@@ -41381,6 +41407,8 @@ export const getRoadData2 = params => {
         projectId: '1-1-1',
         contractId: '6',
         roadName: '',
+        projectName:'南北干线项目',
+        contractName:'南北干线合同段六',
         isBim:true,
         isVideo:true,
         roadNameList: [
@@ -41841,11 +41869,11 @@ export const getDangereData2 = params => {
                 content:'通用作业-高处作业',//重大危险源内容 长度200
                 type:'交通事故',//危险类别 长度20
                 level:'1',//风险等级 1-4对应Ⅰ-Ⅳ级
-                status:'1',//危险源状态 1、已激活；2未激活；3、已关闭
+                riskStatus:'1',//危险源状态 1、已激活；2未激活；3、已关闭
                 patrolResult:'1',//巡查情况  1、正常；2、异常
                 constructStatus:'1',//施工状态  1、未开工；2、施工中；3、停工；4、已完工
                 dynamicEvaluation:'有',//动态评估情况 
-                contractCoordList:[
+                coordinateList:[
                     {
                         roadName:'',
                         pile:'',
@@ -41863,11 +41891,11 @@ export const getDangereData2 = params => {
                 content:'通用作业-高处作业',//重大危险源内容
                 type:'交通事故',//危险类别
                 level:'1',//风险等级 1-4对应Ⅰ-Ⅳ级
-                status:'2',//危险源状态 1、已激活；2未激活；3、已关闭
+                riskStatus:'2',//危险源状态 1、已激活；2未激活；3、已关闭
                 patrolResult:'1',//巡查情况  1、正常；2、异常
                 constructStatus:'1',//施工状态  1、未开工；2、施工中；3、停工；4、已完工
                 dynamicEvaluation:'有',//动态评估情况 
-                contractCoordList:[
+                coordinateList:[
                     {
                         roadName:'',
                         pile:'',
@@ -41885,11 +41913,11 @@ export const getDangereData2 = params => {
                 content:'通用作业-高处作业',//重大危险源内容
                 type:'交通事故',//危险类别
                 level:'1',//风险等级 1-4对应Ⅰ-Ⅳ级
-                status:'3',//危险源状态 1、已激活；2未激活；3、已关闭
+                riskStatus:'3',//危险源状态 1、已激活；2未激活；3、已关闭
                 patrolResult:'1',//巡查情况  1、正常；2、异常
                 constructStatus:'1',//施工状态  1、未开工；2、施工中；3、停工；4、已完工
                 dynamicEvaluation:'有',//动态评估情况 
-                contractCoordList:[
+                coordinateList:[
                     {
                         roadName:'',
                         pile:'',
@@ -41907,11 +41935,11 @@ export const getDangereData2 = params => {
                 content:'通用作业-高处作业',//重大危险源内容
                 type:'交通事故',//危险类别
                 level:'2',//风险等级 1-4对应Ⅰ-Ⅳ级
-                status:'1',//危险源状态 1、已激活；2未激活；3、已关闭
+                riskStatus:'1',//危险源状态 1、已激活；2未激活；3、已关闭
                 patrolResult:'1',//巡查情况  1、正常；2、异常
                 constructStatus:'1',//施工状态  1、未开工；2、施工中；3、停工；4、已完工
                 dynamicEvaluation:'有',//动态评估情况 
-                contractCoordList:[
+                coordinateList:[
                     {
                         roadName:'',
                         pile:'',
@@ -41929,11 +41957,11 @@ export const getDangereData2 = params => {
                 content:'通用作业-高处作业',//重大危险源内容
                 type:'交通事故',//危险类别
                 level:'2',//风险等级 1-4对应Ⅰ-Ⅳ级
-                status:'2',//危险源状态 1、已激活；2未激活；3、已关闭
+                riskStatus:'2',//危险源状态 1、已激活；2未激活；3、已关闭
                 patrolResult:'1',//巡查情况  1、正常；2、异常
                 constructStatus:'1',//施工状态  1、未开工；2、施工中；3、停工；4、已完工
                 dynamicEvaluation:'有',//动态评估情况 
-                contractCoordList:[
+                coordinateList:[
                     {
                         roadName:'',
                         pile:'',
@@ -41951,11 +41979,11 @@ export const getDangereData2 = params => {
                 content:'通用作业-高处作业',//重大危险源内容
                 type:'交通事故',//危险类别
                 level:'2',//风险等级 1-4对应Ⅰ-Ⅳ级
-                status:'3',//危险源状态 1、已激活；2未激活；3、已关闭
+                riskStatus:'3',//危险源状态 1、已激活；2未激活；3、已关闭
                 patrolResult:'1',//巡查情况  1、正常；2、异常
                 constructStatus:'1',//施工状态  1、未开工；2、施工中；3、停工；4、已完工
                 dynamicEvaluation:'有',//动态评估情况 
-                contractCoordList:[
+                coordinateList:[
                     {
                         roadName:'',
                         pile:'',
@@ -41973,11 +42001,11 @@ export const getDangereData2 = params => {
                 content:'通用作业-高处作业的数据库撒很简单都好得',//重大危险源内容
                 type:'交通事故讲哈圣诞节哈数据库汇顶科技爱神箭',//危险类别
                 level:'3',//风险等级 1-4对应Ⅰ-Ⅳ级
-                status:'1',//危险源状态 1、已激活；2未激活；3、已关闭
+                riskStatus:'1',//危险源状态 1、已激活；2未激活；3、已关闭
                 patrolResult:'1',//巡查情况  1、正常；2、异常
                 constructStatus:'1',//施工状态  1、未开工；2、施工中；3、停工；4、已完工
                 dynamicEvaluation:'有',//动态评估情况 
-                contractCoordList:[
+                coordinateList:[
                     {
                         roadName:'',
                         pile:'',
@@ -41995,11 +42023,11 @@ export const getDangereData2 = params => {
                 content:'通用作业-高处作业',//重大危险源内容
                 type:'交通事故大胜靠德卡萨',//危险类别
                 level:'3',//风险等级 1-4对应Ⅰ-Ⅳ级
-                status:'2',//危险源状态 1、已激活；2未激活；3、已关闭
+                riskStatus:'2',//危险源状态 1、已激活；2未激活；3、已关闭
                 patrolResult:'1',//巡查情况  1、正常；2、异常
                 constructStatus:'1',//施工状态  1、未开工；2、施工中；3、停工；4、已完工
                 dynamicEvaluation:'有',//动态评估情况 
-                contractCoordList:[
+                coordinateList:[
                     {
                         roadName:'',
                         pile:'',
@@ -42017,11 +42045,11 @@ export const getDangereData2 = params => {
                 content:'通用作业-高处作业',//重大危险源内容
                 type:'交通事故',//危险类别
                 level:'3',//风险等级 1-4对应Ⅰ-Ⅳ级
-                status:'3',//危险源状态 1、已激活；2未激活；3、已关闭
+                riskStatus:'3',//危险源状态 1、已激活；2未激活；3、已关闭
                 patrolResult:'1',//巡查情况  1、正常；2、异常
                 constructStatus:'1',//施工状态  1、未开工；2、施工中；3、停工；4、已完工
                 dynamicEvaluation:'有',//动态评估情况 
-                contractCoordList:[
+                coordinateList:[
                     {
                         roadName:'',
                         pile:'',
@@ -42039,11 +42067,11 @@ export const getDangereData2 = params => {
                 content:'通用作业-高处作业',//重大危险源内容
                 type:'交通事故',//危险类别
                 level:'4',//风险等级 1-4对应Ⅰ-Ⅳ级
-                status:'1',//危险源状态 1、已激活；2未激活；3、已关闭
+                riskStatus:'1',//危险源状态 1、已激活；2未激活；3、已关闭
                 patrolResult:'1',//巡查情况  1、正常；2、异常
                 constructStatus:'1',//施工状态  1、未开工；2、施工中；3、停工；4、已完工
                 dynamicEvaluation:'有',//动态评估情况 
-                contractCoordList:[
+                coordinateList:[
                     {
                         roadName:'',
                         pile:'',
@@ -42061,11 +42089,11 @@ export const getDangereData2 = params => {
                 content:'通用作业-高处作业',//重大危险源内容
                 type:'交通事故',//危险类别
                 level:'4',//风险等级 1-4对应Ⅰ-Ⅳ级
-                status:'2',//危险源状态 1、已激活；2未激活；3、已关闭
+                riskStatus:'2',//危险源状态 1、已激活；2未激活；3、已关闭
                 patrolResult:'1',//巡查情况  1、正常；2、异常
                 constructStatus:'3',//施工状态  1、未开工；2、施工中；3、停工；4、已完工
                 dynamicEvaluation:'有',//动态评估情况 
-                contractCoordList:[
+                coordinateList:[
                     {
                         roadName:'',
                         pile:'',
@@ -42083,11 +42111,11 @@ export const getDangereData2 = params => {
                 content:'通用作业-高处作业',//重大危险源内容
                 type:'交通事故',//危险类别
                 level:'4',//风险等级 1-4对应Ⅰ-Ⅳ级
-                status:'3',//危险源状态 1、已激活；2未激活；3、已关闭
+                riskStatus:'3',//危险源状态 1、已激活；2未激活；3、已关闭
                 patrolResult:'2',//巡查情况  1、正常；2、异常
                 constructStatus:'1',//施工状态  1、未开工；2、施工中；3、停工；4、已完工
                 dynamicEvaluation:'有',//动态评估情况 
-                contractCoordList:[
+                coordinateList:[
                     {
                         roadName:'',
                         pile:'',
