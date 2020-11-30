@@ -44,7 +44,6 @@ class BmapGeo extends React.Component {
       checkIndex: ['keyProject'],
       currentMapType: '卫星',
       anchorId: '',
-      clickedContract: '',
     };
   }
   /**
@@ -83,19 +82,6 @@ class BmapGeo extends React.Component {
       }
     }
     return polylines;
-  };
-
-  directToMarker = anchorId => {
-    let polylines = this.findRoadLine('contractId', [this.state.clickedContract, anchorId]);
-    for (let line of polylines) {
-      if (line.contractId == this.state.clickedContract) {
-        line.setStrokeColor('#ffebb4');
-      }
-      if (line.contractId == anchorId) {
-        line.setStrokeColor('red');
-        this.map.setViewport(line.pointArray);
-      }
-    }
   };
 
   //地图绘制
@@ -270,55 +256,58 @@ class BmapGeo extends React.Component {
     roadData.map((item, index) => {
       lines = [];
       tmpPoints = [];
+      let points = [];
       for (let i = 0; i < item.roadNameList.length; i++) {
-        let point = coordtransform.wgs84tobd09(item.roadNameList[i].latitude,item.roadNameList[i].longitude);
+        let point = coordtransform.wgs84tobd09(
+          item.roadNameList[i].latitude,
+          item.roadNameList[i].longitude,
+        );
         tmpPoints.push(new BMap.Point(point[0], point[1]));
-      if (i < (item.roadNameList.length - 1) && item.roadNameList[i].roadName != item.roadNameList[i + 1].roadName) {
-        lines.push(tmpPoints);
-        tmpPoints = [];
-      }else if (i == item.roadNameList.length - 1) {
-        if(item.roadNameList[i].roadName !== item.roadNameList[i - 1].roadName){
+        points.push(new BMap.Point(point[0], point[1]));
+        if (
+          i < item.roadNameList.length - 1 &&
+          item.roadNameList[i].roadName != item.roadNameList[i + 1].roadName
+        ) {
+          lines.push(tmpPoints);
+          tmpPoints = [];
+        } else if (i == item.roadNameList.length - 1) {
+          if (item.roadNameList[i].roadName !== item.roadNameList[i - 1].roadName) {
+            lines.push(tmpPoints);
+            tmpPoints = [];
+          }
+          tmpPoints.push(new BMap.Point(point[0], point[1]));
           lines.push(tmpPoints);
           tmpPoints = [];
         }
-        tmpPoints.push(new BMap.Point(point[0], point[1]));
-        lines.push(tmpPoints);
-        tmpPoints = [];
       }
-    }
-    console.log('lines=====',lines)
       lines.map(line => {
         let polyline = new BMap.Polyline(line, {
-          strokeColor: this.state.clickedContract == item.contractId ? 'red' : '#ffebb4',
+          strokeColor: this.state.anchorId == item.contractId ? 'red' : '#ffebb4',
           strokeWeight: 5,
           strokeOpacity: 1,
         }); //创建折线
         polyline.projectId = item.projectId;
         polyline.contractId = item.contractId;
         polyline.projectName = item.projectName;
-        polyline.pointArray = tmpPoints; //把整条折线存起来
+        polyline.pointArray = points; //把整条折线存起来
         polyline.addEventListener('click', () => {
-          let allOverlay = this.map.getOverlays();
-          for (let i = 0; i < allOverlay.length; i++) {
-            if (allOverlay[i].toString() == '[object Polyline]') {
-              let preline = allOverlay[i];
-              if (preline.contractId == this.state.clickedContract) {
-                preline.setStrokeColor('#ffebb4');
-                break;
-              }
+          let activeLines = this.findRoadLine('contractId', [this.state.anchorId, item.contractId]);
+          for (let li of activeLines) {
+            if (li.contractId == this.state.anchorId) {
+              li.setStrokeColor('#ffebb4');
+            } else {
+              li.setStrokeColor('red');
             }
           }
-          polyline.setStrokeColor('red');
           let state = {
-            clickedContract: item.contractId,
+            anchorId: item.contractId,
           };
           if (!this.state.rightSiderVisible) {
             state['rightSiderVisible'] = true;
           }
           /**鼠标点击时移出信息弹窗 */
-          this.setState({ ...state }, () => {
-            this.RightSideInfoDrawer.scrollToCard(item.contractId);
-          });
+          this.setState({ ...state });
+          this.RightSideInfoDrawer.scrollToCard(item.contractId);
         });
         map.addOverlay(polyline); //将折线描绘至地图
       });
@@ -330,7 +319,7 @@ class BmapGeo extends React.Component {
     let bimPoint = this.props.bimPoints;
     bimPoint.map(item => {
       if (item.isBim) {
-        let point = coordtransform.wgs84tobd09(item.latitude,item.longitude);
+        let point = coordtransform.wgs84tobd09(item.latitude, item.longitude);
         let pt = new BMap.Point(point[0], point[1]);
         let myIcon = new BMap.Icon(bim25, new BMap.Size(25, 25));
         let marker = new BMap.Marker(pt, { icon: myIcon }); // 创建标注
@@ -351,7 +340,7 @@ class BmapGeo extends React.Component {
     let _this = this;
     let startAndEndData = this.props.startAndEndData;
     startAndEndData.map(item => {
-      let point = coordtransform.wgs84tobd09(item.latitude,item.longitude);
+      let point = coordtransform.wgs84tobd09(item.latitude, item.longitude);
       let pt = new BMap.Point(point[0], point[1]);
       let myIcon = new BMap.Icon(
         item.bizType == 0 && item.type == 0
@@ -413,7 +402,7 @@ class BmapGeo extends React.Component {
     let monitorData = this.props.videoPoints;
     monitorData.map(item => {
       if (item.isVideo) {
-        let point = coordtransform.wgs84tobd09(item.latitude,item.longitude);
+        let point = coordtransform.wgs84tobd09(item.latitude, item.longitude);
         let pt = new BMap.Point(point[0], point[1]);
         let myIcon = new BMap.Icon(video25, new BMap.Size(25, 25));
         let marker = new BMap.Marker(pt, { icon: myIcon }); // 创建标注
@@ -456,7 +445,7 @@ class BmapGeo extends React.Component {
     let map = this.map;
     let keyProjectData = this.props.keyProjectData;
     keyProjectData.map(item => {
-      let point = coordtransform.wgs84tobd09(item.latitude,item.longitude);
+      let point = coordtransform.wgs84tobd09(item.latitude, item.longitude);
       let pt = new BMap.Point(point[0], point[1]);
       let myIcon = new BMap.Icon(
         item.type == 1
@@ -511,7 +500,7 @@ class BmapGeo extends React.Component {
     let map = this.map;
     let stationData = this.props.stationData;
     stationData.map(item => {
-      let point = coordtransform.wgs84tobd09(item.latitude,item.longitude);
+      let point = coordtransform.wgs84tobd09(item.latitude, item.longitude);
       let pt = new BMap.Point(point[0], point[1]);
       let myIcon = new BMap.Icon(item.type == 1 ? department : siteIcon, new BMap.Size(25, 25), {
         imageSize: new BMap.Size(25, 25),
@@ -551,7 +540,7 @@ class BmapGeo extends React.Component {
     let panoramicData = this.props.panoramicData;
     let _this = this;
     panoramicData.map(item => {
-      let point = coordtransform.wgs84tobd09(item.latitude,item.longitude);
+      let point = coordtransform.wgs84tobd09(item.latitude, item.longitude);
       let pt = new BMap.Point(point[0], point[1]);
       let myIcon = new BMap.Icon(panoramic, new BMap.Size(25, 25), {
         imageSize: new BMap.Size(25, 25),
@@ -643,15 +632,35 @@ class BmapGeo extends React.Component {
     };
     const drawerProps = {
       roadData: this.props.roadData,
-      directToMarker: this.directToMarker,
+      anchorId: this.state.anchorId,
+      directToMarker: anchorId => {
+        let polylines = this.findRoadLine('contractId', [this.state.anchorId, anchorId]);
+        polylines
+          .filter(item => item.contractId == this.state.anchorId)
+          .forEach(fe => {
+            fe.setStrokeColor('#ffebb4');
+          });
+        let viewPoints = [];
+        polylines
+          .filter(item => item.contractId == anchorId)
+          .forEach(fe => {
+            fe.setStrokeColor('red');
+            viewPoints = viewPoints.concat(fe.pointArray);
+          });
+        this.setState({
+          anchorId,
+        },()=>{
+          this.map.setViewport(viewPoints);
+        });
+      },
       visible: rightSiderVisible,
       onClose: () => {
         this.setState({
           rightSiderVisible: false,
         });
         let anchorId = this.RightSideInfoDrawer.state.anchorId;
-        let polyline = this.findRoadLine('contractId', [anchorId])[0];
-        polyline.setStrokeColor('#ffebb4');
+        let polylines = this.findRoadLine('contractId', [anchorId])[0];
+        polylines.forEach(item => item.setStrokeColor('#ffebb4'));
       },
       showInfoBox: () => {
         this.setState({

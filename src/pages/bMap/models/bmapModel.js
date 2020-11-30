@@ -48,14 +48,14 @@ export default {
             videoPoints.push({
               pid:item.projectId,
               cid:item.contractId,
-              isVideo:item.isVideo,
+              isVideo:item.videoShow,
               latitude:item.roadNameList[Math.ceil(item.roadNameList.length*2/3)].latitude,
               longitude:item.roadNameList[Math.ceil(item.roadNameList.length*2/3)].longitude
             })
             bimPoints.push({
               pid:item.projectId,
               cid:item.contractId,
-              isBim:item.isBim,
+              isBim:item.bimShow,
               latitude:item.roadNameList[Math.ceil(item.roadNameList.length*1/3)].latitude,
               longitude:item.roadNameList[Math.ceil(item.roadNameList.length*1/3)].longitude
             })

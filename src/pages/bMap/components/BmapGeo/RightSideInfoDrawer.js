@@ -5,7 +5,6 @@ class RightSideInfoDrawer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      anchorId: '',
       currentKey: '1',
     };
   }
@@ -15,16 +14,10 @@ class RightSideInfoDrawer extends Component {
     let anchorElement = document.getElementById(anchorId);
     if (anchorElement) {
       anchorElement.scrollIntoView({ block: 'start', behavior: 'smooth' });
-      this.setState({ anchorId: anchorId });
     }
   }
   render() {
-    let { 
-      visible,
-      onClose,
-      showInfoBox,
-      directToMarker
-     } = this.props;
+    let { visible, onClose, showInfoBox, directToMarker } = this.props;
 
     const { roadData } = this.props;
     const { currentKey } = this.state;
@@ -35,13 +28,11 @@ class RightSideInfoDrawer extends Component {
         <div
           id={currentKey == '1' ? item.contractId : ''}
           className={styles.card}
-          style={{ border: this.state.anchorId == item.contractId ? '1px solid rgba(83,161,228,0.85)' : 'none' }}
-          onClick={() => {
-            this.setState({
-              anchorId:item.contractId
-            })
-            directToMarker(item.contractId)
+          style={{
+            border:
+              this.props.anchorId == item.contractId ? '1px solid rgba(83,161,228,0.85)' : 'none',
           }}
+          onClick={() => directToMarker(item.contractId)}
         >
           <div>
             <span className={styles.ellipsisSpan}>
@@ -87,13 +78,11 @@ class RightSideInfoDrawer extends Component {
         <div
           id={currentKey == '2' ? item.contractId : ''}
           className={styles.card}
-          style={{ border: this.state.anchorId == item.contractId ? '1px solid rgba(83,161,228,0.85)' : 'none' }}
-          onClick={() => {
-            this.setState({
-              anchorId:item.contractId
-            })
-            directToMarker(item.contractId)
+          style={{
+            border:
+              this.props.anchorId == item.contractId ? '1px solid rgba(83,161,228,0.85)' : 'none',
           }}
+          onClick={() => directToMarker(item.contractId)}
         >
           <div>
             <span className={styles.ellipsisSpan}>
@@ -170,13 +159,11 @@ class RightSideInfoDrawer extends Component {
         <div
           id={currentKey == '3' ? item.contractId : ''}
           className={styles.card}
-          style={{ border: this.state.anchorId == item.contractId ? '1px solid rgba(83,161,228,0.85)' : 'none' }}
-          onClick={() => {
-            this.setState({
-              anchorId:item.contractId
-            })
-            directToMarker(item.contractId)
+          style={{
+            border:
+              this.props.anchorId == item.contractId ? '1px solid rgba(83,161,228,0.85)' : 'none',
           }}
+          onClick={() => directToMarker(item.contractId)}
         >
           <div>
             <span className={styles.ellipsisSpan}>
@@ -252,13 +239,11 @@ class RightSideInfoDrawer extends Component {
         <div
           id={currentKey == '4' ? item.contractId : ''}
           className={styles.card}
-          style={{ border: this.state.anchorId == item.contractId ? '1px solid rgba(83,161,228,0.85)' : 'none' }}
-          onClick={() => {
-            this.setState({
-              anchorId:item.contractId
-            })
-            directToMarker(item.contractId)
+          style={{
+            border:
+              this.props.anchorId == item.contractId ? '1px solid rgba(83,161,228,0.85)' : 'none',
           }}
+          onClick={() => directToMarker(item.contractId)}
         >
           <div>
             <span className={styles.ellipsisSpan}>
@@ -313,13 +298,11 @@ class RightSideInfoDrawer extends Component {
         <div
           id={currentKey == '5' ? item.contractId : ''}
           className={styles.card}
-          style={{ border: this.state.anchorId == item.contractId ? '1px solid rgba(83,161,228,0.85)' : 'none' }}
-          onClick={() => {
-            this.setState({
-              anchorId:item.contractId
-            })
-            directToMarker(item.contractId)
+          style={{
+            border:
+              this.props.anchorId == item.contractId ? '1px solid rgba(83,161,228,0.85)' : 'none',
           }}
+          onClick={() => directToMarker(item.contractId)}
         >
           <div>
             <span className={styles.ellipsisSpan}>
@@ -404,7 +387,7 @@ class RightSideInfoDrawer extends Component {
             onChange={activeKey => {
               this.setState({ currentKey: activeKey });
               setTimeout(() => {
-                this.scrollToCard(this.state.anchorId);
+                this.scrollToCard(this.props.anchorId);
               }, 500);
             }}
             tabBarExtraContent={
