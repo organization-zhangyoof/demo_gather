@@ -135,6 +135,8 @@ class BmapGeo extends React.Component {
       /**获取当前地图等级 */
       zoomNum = map.getZoom();
       map.clearOverlays();
+      this.drawRoadStartAndEndPic();
+      this.drawRoad();
       let iconList = this.state.checkIndex;
       if (iconList.length > 0) {
         iconList.forEach(item => {
@@ -195,9 +197,9 @@ class BmapGeo extends React.Component {
       marker.projectId = item.projectId; //工地ID
       marker.contractId = item.contractId; //工地ID
       marker.addEventListener('click', () => {
-        // this.setState({
-        //   calendarVisible: true,
-        // });
+        this.setState({
+          calendarVisible: true,
+        });
       });
 
       let infoHTML = `
@@ -265,26 +267,32 @@ class BmapGeo extends React.Component {
     let roadData = this.props.roadData;
     let lines = [];
     let tmpPoints = [];
-    roadData.map((data, index) => {
+    roadData.map((item, index) => {
       lines = [];
       tmpPoints = [];
-      for (let i = 0; i < data.roadNameList.length; i++) {
+      for (let i = 0; i < item.roadNameList.length; i++) {
+        if (i > 0 && item.roadNameList[i].roadName != item.roadNameList[i - 1].roadName) {
+          lines.push(tmpPoints);
+          tmpPoints = [];
+        } else if (i == item.roadNameList.length - 1) {
+          lines.push(tmpPoints);
+          tmpPoints = [];
+        }
         let point = coordtransform.wgs84tobd09(
-          data.roadNameList[i].latitude,
-          data.roadNameList[i].longitude,
+          item.roadNameList[i].latitude,
+          item.roadNameList[i].longitude,
         );
         tmpPoints.push(new BMap.Point(point[0], point[1]));
       }
-      lines.push(tmpPoints);
       lines.map(line => {
         let polyline = new BMap.Polyline(line, {
-          strokeColor: this.state.clickedContract == data.contractId ? 'red' : '#ffebb4',
+          strokeColor: this.state.clickedContract == item.contractId ? 'red' : '#ffebb4',
           strokeWeight: 5,
           strokeOpacity: 1,
         }); //创建折线
-        polyline.projectId = data.projectId;
-        polyline.contractId = data.contractId;
-        polyline.projectName = data.projectName;
+        polyline.projectId = item.projectId;
+        polyline.contractId = item.contractId;
+        polyline.projectName = item.projectName;
         polyline.pointArray = tmpPoints; //把整条折线存起来
         polyline.addEventListener('click', () => {
           let allOverlay = this.map.getOverlays();
@@ -299,14 +307,14 @@ class BmapGeo extends React.Component {
           }
           polyline.setStrokeColor('red');
           let state = {
-            clickedContract: data.contractId,
+            clickedContract: item.contractId,
           };
           if (!this.state.rightSiderVisible) {
             state['rightSiderVisible'] = true;
           }
           /**鼠标点击时移出信息弹窗 */
           this.setState({ ...state }, () => {
-            this.RightSideInfoDrawer.scrollToCard(data.contractId);
+            this.RightSideInfoDrawer.scrollToCard(item.contractId);
           });
         });
         map.addOverlay(polyline); //将折线描绘至地图
