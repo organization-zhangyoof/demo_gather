@@ -9,9 +9,12 @@ const BmapRoutePage = (obj) => {
   const {
     dangereData,
     roadData,
-    monitorData,
     bimPoints,
-    videoPoints
+    videoPoints,
+    startAndEndData,
+    stationData,
+    keyProjectData,
+    panoramicData
   } = map
   const {
     videoList,
@@ -22,11 +25,12 @@ const BmapRoutePage = (obj) => {
   } = video
   const mapProps = {
     //危险源数据
-    tspSiteList: dangereData,
+    dangereData,
     //线路数据
-    roadData: roadData,
-    //视频监控数据()
-    monitorData:monitorData,
+    roadData,
+    stationData,
+    keyProjectData,
+    panoramicData,
     //关键工程数据
     //驻地与场站数据
     //全景照片数据
@@ -40,7 +44,8 @@ const BmapRoutePage = (obj) => {
         })
     },
     bimPoints,
-    videoPoints
+    videoPoints,
+    startAndEndData,
   }
 
   const videoPlayProps = {

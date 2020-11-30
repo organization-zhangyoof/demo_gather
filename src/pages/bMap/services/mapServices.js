@@ -39911,7 +39911,7 @@ export const getRoadData = params => {
 //驻地与场站数据
 export const getStationData = params => {
     let res = {
-        code:'',
+        code:'200',
         message:'',
         data:[
             {
@@ -39952,6 +39952,7 @@ export const getStationData = params => {
             },
         ]
     }
+    return res
 };
 //全景点位数据
 export const getPanoramicData = params => {
@@ -42138,7 +42139,7 @@ export const getVideoList = params => {
   return res;
 };
 //获取起讫点坐标
-export const getStartAndEndDate = params => {
+export const getStartAndEndData = params => {
     let res = {
         code:'200',
         message:'',

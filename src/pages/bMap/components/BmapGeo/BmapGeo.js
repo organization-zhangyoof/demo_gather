@@ -7,15 +7,19 @@ import riskBlue from '../../img/riskBlue.png';
 import riskGreen from '../../img/riskGreen.png';
 import riskYellow from '../../img/riskYellow.png';
 import riskRed from '../../img/riskRed.png';
-import road25 from '@/assets/tsp/road25.png';
 import bim25 from '@/assets/tsp/bim25.png';
 import video25 from '@/assets/tsp/video25.png';
+import startIcon from '../../img/proStart.png';
+import endIcon from '../../img/proEnd.png';
+import keyProjectIcon from '../../img/bridge.png';
+import stationIcon from '../../img/station.png';
+import siteIcon from '../../img/site.png';
 import { customInfoWindow } from './CustomInfoWindow';
 import RightSideInfoDrawer from './RightSideInfoDrawer';
 import CalendarModal from './CalendarModal';
 import * as CONFIG from '@/config/common/commonConfig';
 import _ from 'lodash';
-import config from '../../config/mapConfig'
+import config from '../../config/mapConfig';
 class BmapGeo extends React.Component {
   constructor() {
     super();
@@ -30,7 +34,7 @@ class BmapGeo extends React.Component {
       showTspInfo: false,
       rightSiderVisible: false,
       mapCenter: [],
-      checkIndex: ['road'],
+      checkIndex: [],
       currentMapType: '卫星',
       anchorId: '',
       clickedContract: '',
@@ -130,14 +134,16 @@ class BmapGeo extends React.Component {
           this.drawRoad();
           console.log(iconList);
           iconList.forEach(item => {
-            item == 'road' && this.drawRoadPic();
+            item == 'keyProject' && this.drawKeyProject();
             item == 'danger' && this.drawDangerPoint();
             item == 'monitor' && this.drawMonitorPic();
             item == 'bim' && this.drawBimPic();
+            item == 'panoramic' && this.drawPanoramicData();
+            item == 'station' && this.drawStationAndSite();
           });
         }
       } else {
-        this.drawRoadPic();
+        this.drawRoadStartAndEndPic();
         this.drawRoad();
       }
     };
@@ -157,35 +163,39 @@ class BmapGeo extends React.Component {
     let map = this.map;
     let mapW = map.getSize().width;
     let mapH = map.getSize().height;
-    let tspSiteList = this.props.tspSiteList;
+    let dangereData = this.props.dangereData;
     let viewPoints = [];
-    tspSiteList.map(item => {
+    dangereData.map(item => {
       let width = 30;
       let height = 30;
       let myIcon = '';
-      let point = coordtransform.wgs84tobd09(item.longitude, item.latitude);
+      let point = coordtransform.wgs84tobd09(
+        item.contractCoordList[0].latitude,
+        item.contractCoordList[0].longitude,
+      );
       let pt = new BMap.Point(point[0], point[1]);
       viewPoints.push(pt);
-      if (item.superviseStatus == 1) {
-        myIcon = new BMap.Icon(riskBlue, new BMap.Size(width, height), {
-          imageSize: new BMap.Size(30, 30),
-        });
-      } else if (item.superviseStatus == 2) {
+      if (item.level == '1') {
         myIcon = new BMap.Icon(riskGreen, new BMap.Size(width, height), {
           imageSize: new BMap.Size(30, 30),
         });
-      } else if (item.superviseStatus == 3) {
+      } else if (item.level == '2') {
+        myIcon = new BMap.Icon(riskBlue, new BMap.Size(width, height), {
+          imageSize: new BMap.Size(30, 30),
+        });
+      } else if (item.level == '3') {
         myIcon = new BMap.Icon(riskYellow, new BMap.Size(width, width), {
           imageSize: new BMap.Size(30, 30),
         });
-      } else if (item.superviseStatus == 4) {
+      } else if (item.level == '4') {
         myIcon = new BMap.Icon(riskRed, new BMap.Size(width, height), {
           imageSize: new BMap.Size(30, 30),
         });
       }
       let marker = new BMap.Marker(pt, { icon: myIcon }); // 创建标注
       marker.type = 'danger';
-      marker.siteId = item.siteId; //工地ID
+      marker.projectId = item.projectId; //工地ID
+      marker.contractId = item.contractId; //工地ID
       marker.addEventListener('click', () => {
         this.setState({
           calendarVisible: true,
@@ -195,24 +205,36 @@ class BmapGeo extends React.Component {
       let infoHTML = `
         <div class="info-window">
           <p class="hide_text">项目名称：${item.projectName ? item.projectName : ''}</p>
-          <p class="hide_text">合同段：${item.workCompany ? item.workCompany : ''}</p>
+          <p class="hide_text">合同段：${item.contractName ? item.contractName : ''}</p>
           <div style="display: flex;justify-content: space-between;" class="p-t-b-10">
-            <p style="width:50%;">危险源编号：${item.projectManager ? item.projectManager : ''}</p>
-            <p style="width:50%;">重大危险源内容：${
-              item.projectNumber ? item.projectNumber : ''
+            <p style="width:50%;">危险源编号：${item.code ? item.code : ''}</p>
+            <p style="width:50%;">重大危险源内容：${item.content ? item.content : ''}</p>
+          </div>
+          <div style="display: flex;justify-content: space-between;" class="p-t-b-10">
+            <p style="width:50%;">危险类别：${item.type ? item.type : ''}</p>
+            <p style="width:50%;">风险等级：${
+              item.level ? (config.RISK_LEVEL.find(fi => fi.id == item.level) || {}).name : ''
             }</p>
           </div>
           <div style="display: flex;justify-content: space-between;" class="p-t-b-10">
-            <p style="width:50%;">危险类别：${item.projectManager ? item.projectManager : ''}</p>
-            <p style="width:50%;">风险等级：${item.projectNumber ? item.projectNumber : ''}</p>
+            <p style="width:50%;">施工状态：${
+              item.constructStatus
+                ? (config.CONSTRUCT_STATUS.find(fi => fi.id == item.constructStatus) || {}).name
+                : ''
+            }</p>
+            <p style="width:50%;">危险源状态：${
+              item.status ? (config.RISK_STATUS.find(fi => fi.id == item.status) || {}).name : ''
+            }</p>
           </div>
           <div style="display: flex;justify-content: space-between;" class="p-t-b-10">
-            <p style="width:50%;">施工状态：${item.projectManager ? item.projectManager : ''}</p>
-            <p style="width:50%;">危险源状态：${item.projectNumber ? item.projectNumber : ''}</p>
-          </div>
-          <div style="display: flex;justify-content: space-between;" class="p-t-b-10">
-            <p style="width:50%;">巡查情况：${item.projectManager ? item.projectManager : ''}</p>
-            <p style="width:50%;">动态评估情况：${item.projectNumber ? item.projectNumber : ''}</p>
+            <p style="width:50%;">巡查情况：${
+              item.patrolResult
+                ? (config.CHECK_STATUS.find(fi => fi.id == item.patrolResult) || {}).name
+                : ''
+            }</p>
+            <p style="width:50%;">动态评估情况：${
+              item.dynamicEvaluation ? item.dynamicEvaluation : ''
+            }</p>
           </div>
         </div>
           `;
@@ -313,15 +335,17 @@ class BmapGeo extends React.Component {
       }
     });
   }
-  drawRoadPic() {
+  //道路起讫点
+  drawRoadStartAndEndPic() {
     const { BMap } = window;
     let map = this.map;
-    let roadPoint = this.state.roadPoint;
-    roadPoint.map(item => {
-      let pt = new BMap.Point(item.x, item.y);
-      let myIcon = new BMap.Icon(road25, new BMap.Size(25, 25));
+    let startAndEndData = this.props.startAndEndData;
+    console.log(startAndEndData,'=======startAndEndData=====')
+    startAndEndData.map(item => {
+      let pt = new BMap.Point(item.latitude, item.longitude);
+      let myIcon = new BMap.Icon(item.type == 0 ? startIcon : endIcon, new BMap.Size(25, 25));
       let marker = new BMap.Marker(pt, { icon: myIcon }); // 创建标注
-      marker.type = 'road';
+      marker.type = 'startEnd';
       marker.addEventListener('click', function(e) {
         console.log('点击事件====>>>>', e.target);
       });
@@ -348,19 +372,74 @@ class BmapGeo extends React.Component {
       }
     });
   }
+  drawKeyProject() {
+    debugger
+    const { BMap } = window;
+    let map = this.map;
+    let keyProjectData = this.props.keyProjectData;
+    console.log(keyProjectData,'=======keyProjectData====')
+    keyProjectData.map(item => {
+      let pt = new BMap.Point(item.latitude, item.longitude);
+      let myIcon = new BMap.Icon(keyProjectIcon, new BMap.Size(25, 25));
+      let marker = new BMap.Marker(pt, { icon: myIcon }); // 创建标注
+      marker.projectId = item.projectId;
+      marker.contractId = item.contractId;
+      marker.type = 'keyProject';
+      marker.addEventListener('click', function(e) {
+        console.log('bim点击事件====>>>>', e.target);
+      });
+      map.addOverlay(marker);
+    });
+  }
+  drawStationAndSite() {
+    const { BMap } = window;
+    let map = this.map;
+    let stationData = this.props.stationData;
+    console.log(stationData,'=======stationData======')
+    stationData.map(item => {
+      let pt = new BMap.Point(item.latitude, item.longitude);
+      let myIcon = new BMap.Icon(stationIcon, new BMap.Size(25, 25));
+      let marker = new BMap.Marker(pt, { icon: myIcon }); // 创建标注
+      marker.projectId = item.projectId;
+      marker.contractId = item.contractId;
+      marker.type = 'station';
+      marker.addEventListener('click', function(e) {
+        console.log('bim点击事件====>>>>', e.target);
+      });
+      map.addOverlay(marker);
+    });
+  }
+  drawPanoramicData() {
+    const { BMap } = window;
+    let map = this.map;
+    let panoramicData = this.props.panoramicData;
+    console.log(panoramicData,'=======panoramicData=====');
+    panoramicData.map(item => {
+      let pt = new BMap.Point(item.latitude, item.longitude);
+      let myIcon = new BMap.Icon(siteIcon, new BMap.Size(25, 25));
+      let marker = new BMap.Marker(pt, { icon: myIcon }); // 创建标注
+      marker.projectId = item.projectId;
+      marker.contractId = item.contractId;
+      marker.type = 'panoramic';
+      marker.addEventListener('click', function(e) {
+        console.log('bim点击事件====>>>>', e.target);
+      });
+      map.addOverlay(marker);
+    });
+  }
 
   componentDidMount() {
     this.drawMap();
-    // this.drawDangerPoint();
+    this.drawRoadStartAndEndPic();
     this.drawRoad();
   }
 
   render() {
     let list = [
       { type: 'station', name: '驻地与场站' },
-      { type: 'road', name: '关键工程' },
+      { type: 'keyProject', name: '关键工程' },
       { type: 'danger', name: '危险源图标' },
-      { type: 'pic', name: '全景照片' },
+      { type: 'panoramic', name: '全景照片' },
       { type: 'monitor', name: '监控视频' },
       { type: 'bim', name: 'BIM模型' },
     ];
@@ -368,10 +447,12 @@ class BmapGeo extends React.Component {
     const onCheckOneBox = item => {
       if (checkIndex.indexOf(item.type) == -1) {
         checkIndex.push(item.type);
-        item.type == 'road' && this.drawRoad();
+        item.type == 'keyProject' && this.drawKeyProject();
         item.type == 'danger' && this.drawDangerPoint();
         item.type == 'monitor' && this.drawMonitorPic();
         item.type == 'bim' && this.drawBimPic();
+        item.type == 'panoramic' && this.drawPanoramicData();
+        item.type == 'station' && this.drawStationAndSite();
       } else {
         checkIndex.splice(checkIndex.indexOf(item.type), 1);
         let allOverlay = this.map.getOverlays();
