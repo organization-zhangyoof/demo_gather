@@ -45,7 +45,7 @@ class RightSideInfoDrawer extends Component {
         >
           <div>
             <span className={styles.ellipsisSpan}>
-              标段名称：<span title={item.projectName}>{item.projectName}</span>
+              标段名称：<span title={item.contractName}>{item.contractName}</span>
             </span>
           </div>
           <div>
@@ -97,7 +97,7 @@ class RightSideInfoDrawer extends Component {
         >
           <div>
             <span className={styles.ellipsisSpan}>
-              标段名称：<span title={item.projectName}>{item.projectName}</span>
+              标段名称：<span title={item.contractName}>{item.contractName}</span>
             </span>
           </div>
           <div>
@@ -180,7 +180,7 @@ class RightSideInfoDrawer extends Component {
         >
           <div>
             <span className={styles.ellipsisSpan}>
-              标段名称：<span title={item.projectName}>{item.projectName}</span>
+              标段名称：<span title={item.contractName}>{item.contractName}</span>
             </span>
           </div>
           <div>
@@ -262,7 +262,7 @@ class RightSideInfoDrawer extends Component {
         >
           <div>
             <span className={styles.ellipsisSpan}>
-              标段名称：<span title={item.projectName}>{item.projectName}</span>
+              标段名称：<span title={item.contractName}>{item.contractName}</span>
             </span>
           </div>
           <div>
@@ -323,7 +323,7 @@ class RightSideInfoDrawer extends Component {
         >
           <div>
             <span className={styles.ellipsisSpan}>
-              标段名称：<span title={item.projectName}>{item.projectName}</span>
+              标段名称：<span title={item.contractName}>{item.contractName}</span>
             </span>
           </div>
           <div>

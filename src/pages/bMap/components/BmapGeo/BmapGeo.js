@@ -9,11 +9,18 @@ import riskYellow from '../../img/riskYellow.png';
 import riskRed from '../../img/riskRed.png';
 import bim25 from '@/assets/tsp/bim25.png';
 import video25 from '@/assets/tsp/video25.png';
-import startIcon from '../../img/proStart.png';
-import endIcon from '../../img/proEnd.png';
-import keyProjectIcon from '../../img/bridge.png';
-import stationIcon from '../../img/station.png';
+import projectStart from '../../img/proStart.png';
+import projectEnd from '../../img/proEnd.png';
+import contractStart from '../../img/contractStart.png';
+import contractEnd from '../../img/contractEnd.png';
+import station from '../../img/station.png';
 import siteIcon from '../../img/site.png';
+import interFlow from '../../img/interFlow.png';
+import bridge from '../../img/bridge.png';
+import service from '../../img/service.png';
+import department from '../../img/department.png';
+import tunnel from '../../img/tunnel.png';
+import panoramic from '../../img/panoramic.png';
 import { customInfoWindow } from './CustomInfoWindow';
 import RightSideInfoDrawer from './RightSideInfoDrawer';
 import CalendarModal from './CalendarModal';
@@ -130,8 +137,9 @@ class BmapGeo extends React.Component {
       map.clearOverlays();
       if (zoomNum > 12) {
         let iconList = this.state.checkIndex;
+        this.drawRoad();
+        this.drawRoadStartAndEndPic();
         if (iconList.length > 0) {
-          this.drawRoad();
           console.log(iconList);
           iconList.forEach(item => {
             item == 'keyProject' && this.drawKeyProject();
@@ -143,8 +151,8 @@ class BmapGeo extends React.Component {
           });
         }
       } else {
-        this.drawRoadStartAndEndPic();
         this.drawRoad();
+        this.drawRoadStartAndEndPic();
       }
     };
     map.addEventListener('zoomend', getZoomNum); /**地图缩放结束事件 */
@@ -161,35 +169,33 @@ class BmapGeo extends React.Component {
     const { BMap } = window;
     let _this = this;
     let map = this.map;
-    let mapW = map.getSize().width;
-    let mapH = map.getSize().height;
     let dangereData = this.props.dangereData;
     let viewPoints = [];
     dangereData.map(item => {
-      let width = 30;
-      let height = 30;
+      let width = 25;
+      let height = 25;
       let myIcon = '';
       let point = coordtransform.wgs84tobd09(
-        item.contractCoordList[0].latitude,
-        item.contractCoordList[0].longitude,
+        item.coordinateList[0].latitude,
+        item.coordinateList[0].longitude,
       );
       let pt = new BMap.Point(point[0], point[1]);
       viewPoints.push(pt);
       if (item.level == '1') {
         myIcon = new BMap.Icon(riskGreen, new BMap.Size(width, height), {
-          imageSize: new BMap.Size(30, 30),
+          imageSize: new BMap.Size(25, 25),
         });
       } else if (item.level == '2') {
         myIcon = new BMap.Icon(riskBlue, new BMap.Size(width, height), {
-          imageSize: new BMap.Size(30, 30),
+          imageSize: new BMap.Size(25, 25),
         });
       } else if (item.level == '3') {
         myIcon = new BMap.Icon(riskYellow, new BMap.Size(width, width), {
-          imageSize: new BMap.Size(30, 30),
+          imageSize: new BMap.Size(25, 25),
         });
       } else if (item.level == '4') {
         myIcon = new BMap.Icon(riskRed, new BMap.Size(width, height), {
-          imageSize: new BMap.Size(30, 30),
+          imageSize: new BMap.Size(25, 25),
         });
       }
       let marker = new BMap.Marker(pt, { icon: myIcon }); // 创建标注
@@ -197,9 +203,9 @@ class BmapGeo extends React.Component {
       marker.projectId = item.projectId; //工地ID
       marker.contractId = item.contractId; //工地ID
       marker.addEventListener('click', () => {
-        this.setState({
-          calendarVisible: true,
-        });
+        // this.setState({
+        //   calendarVisible: true,
+        // });
       });
 
       let infoHTML = `
@@ -223,7 +229,9 @@ class BmapGeo extends React.Component {
                 : ''
             }</p>
             <p style="width:50%;">危险源状态：${
-              item.status ? (config.RISK_STATUS.find(fi => fi.id == item.status) || {}).name : ''
+              item.riskStatus
+                ? (config.RISK_STATUS.find(fi => fi.id == item.riskStatus) || {}).name
+                : ''
             }</p>
           </div>
           <div style="display: flex;justify-content: space-between;" class="p-t-b-10">
@@ -244,16 +252,13 @@ class BmapGeo extends React.Component {
         !_this.state.showTspInfo && map.removeOverlay(myCompOverlay);
         timer = null;
         map.addOverlay(myCompOverlay);
-        let infoH = document.getElementById('customInfoWindow').offsetHeight + 30;
         let x = e.pixel.x;
         let y = e.pixel.y;
         _this.moveMap(x, y, 420);
-        _this.state.showRoadInfo = false;
         _this.state.showTspInfo = true;
       });
 
       marker.addEventListener('mouseout', function(e) {
-        _this.state.showRoadInfo = true;
         _this.state.showTspInfo = true;
         map.removeOverlay(myCompOverlay);
         clearTimeout(timer);
@@ -339,15 +344,58 @@ class BmapGeo extends React.Component {
   drawRoadStartAndEndPic() {
     const { BMap } = window;
     let map = this.map;
+    let _this = this;
     let startAndEndData = this.props.startAndEndData;
-    console.log(startAndEndData,'=======startAndEndData=====')
     startAndEndData.map(item => {
       let pt = new BMap.Point(item.latitude, item.longitude);
-      let myIcon = new BMap.Icon(item.type == 0 ? startIcon : endIcon, new BMap.Size(25, 25));
+      let myIcon = new BMap.Icon(
+        item.bizType == 0 && item.type == 0
+          ? projectStart
+          : item.bizType == 0 && item.type == 1
+          ? projectEnd
+          : item.bizType == 1 && item.type == 0
+          ? contractStart
+          : item.bizType == 1 && item.type == 1
+          ? contractEnd
+          : null,
+        new BMap.Size(25, 25),
+        {
+          imageSize: new BMap.Size(25, 25),
+        },
+      );
       let marker = new BMap.Marker(pt, { icon: myIcon }); // 创建标注
       marker.type = 'startEnd';
-      marker.addEventListener('click', function(e) {
-        console.log('点击事件====>>>>', e.target);
+      let infoHTML = `
+      <div class="info-window">
+        <p class="hide_text">${
+          item.bizType == 0 && item.type == 0
+            ? '项目起点桩号:'
+            : item.bizType == 0 && item.type == 1
+            ? '项目终点桩号:'
+            : item.bizType == 1 && item.type == 0
+            ? (item.contractName ? item.contractName : '') + '标起点桩号:'
+            : item.bizType == 1 && item.type == 1
+            ? (item.contractName ? item.contractName : '') + '标终点桩号:'
+            : ''
+        }${item.pile ? item.pile : ''}</p>
+      </div>
+        `;
+      let myCompOverlay = customInfoWindow(pt, infoHTML, 200, 20);
+      let timer = null;
+      marker.addEventListener('mouseover', function(e) {
+        !_this.state.showTspInfo && map.removeOverlay(myCompOverlay);
+        timer = null;
+        map.addOverlay(myCompOverlay);
+        let x = e.pixel.x;
+        let y = e.pixel.y;
+        _this.moveMap(x, y, 200);
+        _this.state.showTspInfo = true;
+      });
+      marker.addEventListener('mouseout', function(e) {
+        _this.state.showTspInfo = true;
+        map.removeOverlay(myCompOverlay);
+        clearTimeout(timer);
+        timer = null;
       });
       map.addOverlay(marker);
     });
@@ -355,6 +403,7 @@ class BmapGeo extends React.Component {
   drawMonitorPic() {
     //监控图标
     const { BMap } = window;
+    let _this = this;
     let map = this.map;
     let monitorData = this.props.videoPoints;
     monitorData.map(item => {
@@ -365,46 +414,125 @@ class BmapGeo extends React.Component {
         marker.projectId = item.pid;
         marker.contractId = item.cid;
         marker.type = 'monitor';
-        marker.addEventListener('click', function(e) {
-          console.log('bim点击事件====>>>>', e.target);
+        marker.addEventListener('click', () =>{
+          this.props.getVideoList();
+        });
+        let infoHTML = `
+        <div class="info-window">
+          <p class="hide_text">项目名称:${item.projectName ? item.projectName : ''}</p>
+          <p class="hide_text">合同段:${item.contractName ? item.contractName : ''}</p>
+        </div>
+          `;
+        let myCompOverlay = customInfoWindow(pt, infoHTML, 200, 20);
+        let timer = null;
+        marker.addEventListener('mouseover', function(e) {
+          !_this.state.showTspInfo && map.removeOverlay(myCompOverlay);
+          timer = null;
+          map.addOverlay(myCompOverlay);
+          let x = e.pixel.x;
+          let y = e.pixel.y;
+          _this.moveMap(x, y, 200);
+          _this.state.showTspInfo = true;
+        });
+        marker.addEventListener('mouseout', function(e) {
+          _this.state.showTspInfo = true;
+          map.removeOverlay(myCompOverlay);
+          clearTimeout(timer);
+          timer = null;
         });
         map.addOverlay(marker);
       }
     });
   }
   drawKeyProject() {
-    debugger
     const { BMap } = window;
+    let _this = this;
     let map = this.map;
     let keyProjectData = this.props.keyProjectData;
-    console.log(keyProjectData,'=======keyProjectData====')
     keyProjectData.map(item => {
       let pt = new BMap.Point(item.latitude, item.longitude);
-      let myIcon = new BMap.Icon(keyProjectIcon, new BMap.Size(25, 25));
+      let myIcon = new BMap.Icon(
+        item.type == 1
+          ? bridge
+          : item.type == 2
+          ? tunnel
+          : item.type == 3
+          ? service
+          : item.type == 4
+          ? interFlow
+          : item.type == 5
+          ? station
+          : null,
+        new BMap.Size(25, 25),
+        {
+          imageSize: new BMap.Size(25, 25),
+        },
+      );
       let marker = new BMap.Marker(pt, { icon: myIcon }); // 创建标注
       marker.projectId = item.projectId;
       marker.contractId = item.contractId;
       marker.type = 'keyProject';
-      marker.addEventListener('click', function(e) {
-        console.log('bim点击事件====>>>>', e.target);
+      let infoHTML = `
+      <div class="info-window">
+        <p class="hide_text">中点里程桩号：${item.pile ? item.pile : ''}</p>
+        <p class="hide_text">名称：${item.name ? item.name : ''}</p>
+      </div>
+        `;
+      let myCompOverlay = customInfoWindow(pt, infoHTML, 200, 20);
+      let timer = null;
+      marker.addEventListener('mouseover', function(e) {
+        !_this.state.showTspInfo && map.removeOverlay(myCompOverlay);
+        timer = null;
+        map.addOverlay(myCompOverlay);
+        let x = e.pixel.x;
+        let y = e.pixel.y;
+        _this.moveMap(x, y, 200);
+        _this.state.showTspInfo = true;
+      });
+      marker.addEventListener('mouseout', function(e) {
+        _this.state.showTspInfo = true;
+        map.removeOverlay(myCompOverlay);
+        clearTimeout(timer);
+        timer = null;
       });
       map.addOverlay(marker);
     });
   }
   drawStationAndSite() {
     const { BMap } = window;
+    let _this = this;
     let map = this.map;
     let stationData = this.props.stationData;
-    console.log(stationData,'=======stationData======')
     stationData.map(item => {
       let pt = new BMap.Point(item.latitude, item.longitude);
-      let myIcon = new BMap.Icon(stationIcon, new BMap.Size(25, 25));
+      let myIcon = new BMap.Icon(item.type == 1 ? department : siteIcon, new BMap.Size(25, 25), {
+        imageSize: new BMap.Size(25, 25),
+      });
       let marker = new BMap.Marker(pt, { icon: myIcon }); // 创建标注
       marker.projectId = item.projectId;
       marker.contractId = item.contractId;
       marker.type = 'station';
-      marker.addEventListener('click', function(e) {
-        console.log('bim点击事件====>>>>', e.target);
+      let infoHTML = `
+      <div class="info-window">
+        <p class="hide_text">${item.name ? item.name : ''}</p>
+      </div>
+        `;
+      let myCompOverlay = customInfoWindow(pt, infoHTML, 200, 20);
+      let timer = null;
+      marker.addEventListener('mouseover', function(e) {
+        !_this.state.showTspInfo && map.removeOverlay(myCompOverlay);
+        timer = null;
+        map.addOverlay(myCompOverlay);
+        let x = e.pixel.x;
+        let y = e.pixel.y;
+        _this.moveMap(x, y, 200);
+        _this.state.showTspInfo = true;
+      });
+      marker.addEventListener('mouseout', function(e) {
+        _this.state.showTspInfo = true;
+        map.removeOverlay(myCompOverlay);
+        clearTimeout(timer);
+        timer = null;
       });
       map.addOverlay(marker);
     });
@@ -413,17 +541,44 @@ class BmapGeo extends React.Component {
     const { BMap } = window;
     let map = this.map;
     let panoramicData = this.props.panoramicData;
-    console.log(panoramicData,'=======panoramicData=====');
+    let _this = this;
     panoramicData.map(item => {
       let pt = new BMap.Point(item.latitude, item.longitude);
-      let myIcon = new BMap.Icon(siteIcon, new BMap.Size(25, 25));
+      let myIcon = new BMap.Icon(panoramic, new BMap.Size(25, 25), {
+        imageSize: new BMap.Size(25, 25),
+      });
       let marker = new BMap.Marker(pt, { icon: myIcon }); // 创建标注
       marker.projectId = item.projectId;
       marker.contractId = item.contractId;
       marker.type = 'panoramic';
-      marker.addEventListener('click', function(e) {
-        console.log('bim点击事件====>>>>', e.target);
+      let infoHTML = `
+      <div class="info-window">
+        <p class="hide_text">项目名称:${item.projectName ? item.projectName : ''}</p>
+        <p class="hide_text">合同段:${item.contractName ? item.contractName : ''}</p>
+        <p class="hide_text">全景点名称:${item.name ? item.name : ''}</p>
+      </div>
+        `;
+      let myCompOverlay = customInfoWindow(pt, infoHTML, 200, 20);
+      let timer = null;
+      marker.addEventListener('mouseover', function(e) {
+        !_this.state.showTspInfo && map.removeOverlay(myCompOverlay);
+        timer = null;
+        map.addOverlay(myCompOverlay);
+        let x = e.pixel.x;
+        let y = e.pixel.y;
+        _this.moveMap(x, y, 200);
+        _this.state.showTspInfo = true;
       });
+      marker.addEventListener('mouseout', function(e) {
+        _this.state.showTspInfo = true;
+        map.removeOverlay(myCompOverlay);
+        clearTimeout(timer);
+        timer = null;
+      });
+      marker.addEventListener('click', function(e) {
+        window.open(item.url);
+      });
+
       map.addOverlay(marker);
     });
   }

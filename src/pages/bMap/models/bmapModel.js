@@ -8,7 +8,6 @@ export default {
   state: {
     dangereData: [],
     roadData: [],
-    monitorData: [],
     videoPoints:[],
     bimPoints:[],
     startAndEndData:[],
@@ -26,7 +25,6 @@ export default {
     *initData({}, { call, put, select }) {
       yield put({ type: 'getRoadData', payload: {} });
       yield put({ type: 'getDangereData', payload: {} });
-      yield put({ type: 'getMonitorData', payload: {} });
       yield put({ type: 'getStartAndEndData', payload: {} });
       yield put({ type: 'getStationData', payload: {} });
       yield put({ type: 'getPanoramicData', payload: {} });
@@ -77,6 +75,7 @@ export default {
     *getStartAndEndData({}, { call, put, select }) {
       const res = yield call(mapService.getStartAndEndData, {});
       if (res.code == '200') {
+        console.log(res)
         yield put({ type: 'setState', payload: { startAndEndData: res.data } });
       }
     },
@@ -90,7 +89,7 @@ export default {
     /**获取驻地场站点位 */
     *getStationData({}, { call, put, select }) {
       const res = yield call(mapService.getStationData, {});
-      // console.log("工地列表返回====>>>>",res)
+      console.log("工地列表返回====>>>>",res)
       if (res.code == '200') {
         yield put({ type: 'setState', payload: { stationData: res.data } });
       }

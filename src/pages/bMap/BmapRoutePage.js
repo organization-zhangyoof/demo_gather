@@ -4,7 +4,6 @@ import { BmapGeo, VideoPlayModal, VideoListModal } from "./components/index"
 
 const BmapRoutePage = (obj) => {
   const { location, dispatch, map,video  } = obj
-  console.log('video====',video)
 
   const {
     dangereData,
@@ -31,21 +30,21 @@ const BmapRoutePage = (obj) => {
     stationData,
     keyProjectData,
     panoramicData,
+    bimPoints,
+    videoPoints,
+    startAndEndData,
     //关键工程数据
     //驻地与场站数据
     //全景照片数据
     //起讫点数据
     //获取视频监控数据
     getVideoList: ( ) => {
-        debugger
         dispatch({
             type:'video/getVideoList',
             payload:{ }
         })
     },
-    bimPoints,
-    videoPoints,
-    startAndEndData,
+
   }
 
   const videoPlayProps = {
