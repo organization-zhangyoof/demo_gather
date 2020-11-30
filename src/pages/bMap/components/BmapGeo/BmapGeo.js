@@ -135,14 +135,6 @@ class BmapGeo extends React.Component {
       /**获取当前地图等级 */
       zoomNum = map.getZoom();
       map.clearOverlays();
-      if (zoomNum > 12) {
-
-        this.drawRoad();
-        this.drawRoadStartAndEndPic();
-      } else {
-        this.drawRoad();
-        this.drawRoadStartAndEndPic();
-      }
       let iconList = this.state.checkIndex;
       if (iconList.length > 0) {
         iconList.forEach(item => {
