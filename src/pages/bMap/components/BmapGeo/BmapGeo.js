@@ -657,8 +657,8 @@ class BmapGeo extends React.Component {
         this.setState({
           rightSiderVisible: false,
         });
-        let anchorId = this.RightSideInfoDrawer.state.anchorId;
-        let polylines = this.findRoadLine('contractId', [anchorId])[0];
+        let anchorId = this.state.anchorId;
+        let polylines = this.findRoadLine('contractId', [anchorId]);
         polylines.forEach(item => item.setStrokeColor('#ffebb4'));
       },
       showInfoBox: () => {
