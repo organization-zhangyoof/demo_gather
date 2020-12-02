@@ -42130,42 +42130,56 @@ export const getDangereData2 = params => {
     return res
 };
 //获取视频列表数据
-export const getVideoList = params => {
-  let tmpVideoList = [
-    {
-      id: '',
-      name: '视频1',
-      url:
-        'http://jspro-test.oss-cn-shenzhen.aliyuncs.com/530fd576-c3cd-4827-bfd9-1c7833990b56?Expires=3183185396&OSSAccessKeyId=LTAI4FvrfndXDm83BSgCrSoZ&Signature=rC1GO0xYwOSFUgu3PQRi8Hrvw9A%3D',
-    },
-    {
-      id: '',
-      name: '视频2',
-      url:
-        'http://jspro-test.oss-cn-shenzhen.aliyuncs.com/2b8f7836-ca55-46d2-a681-f077c966a63a?Expires=3183192390&OSSAccessKeyId=LTAI4FvrfndXDm83BSgCrSoZ&Signature=2u0WGZGawNKXZS%2B4tRHVDvlqJw8%3D',
-    },
-    // ,{id:'',name:'视频3',url:'http://video.sina.com.cn/p/news/2020-10-11/detail-iivhvpwz1456173.d.html?cre=videopagepc&mod=r&loc=1&r=9&rfunc=13&tj=none?hasPlayedTime=0.570313'}
-    // ,{id:'',name:'视频3',url:'http://video.sina.com.cn/p/news/2020-10-31/detail-iiznezxr9187358.d.html?cre=videopagepc&mod=r&loc=6&r=9&rfunc=13&tj=none?hasPlayedTime=9.292851'}
-    // ,{id:'',name:'视频2',url:'http://video.sina.com.cn/p/news/2020-10-31/detail-iiznezxr9187358.d.html?cre=videopagepc&mod=r&loc=2&r=9&rfunc=13&tj=none?hasPlayedTime=0.975'}
-    // ,{id:'',name:'视频3',url:'http://video.sina.com.cn/p/news/2020-10-11/detail-iivhvpwz1456173.d.html?cre=videopagepc&mod=r&loc=1&r=9&rfunc=13&tj=none?hasPlayedTime=0.570313'}
-    // ,{id:'',name:'视频3',url:'http://video.sina.com.cn/p/news/2020-10-31/detail-iiznezxr9187358.d.html?cre=videopagepc&mod=r&loc=6&r=9&rfunc=13&tj=none?hasPlayedTime=9.292851'}
-  ];
-  let tmpVideoList1 = [
-    {
-      id: '',
-      name: '视频1',
-      url:
-        'http://jspro-test.oss-cn-shenzhen.aliyuncs.com/530fd576-c3cd-4827-bfd9-1c7833990b56?Expires=3183185396&OSSAccessKeyId=LTAI4FvrfndXDm83BSgCrSoZ&Signature=rC1GO0xYwOSFUgu3PQRi8Hrvw9A%3D',
-    },
-  ];
-  let tmp = Math.ceil(Math.random() * 10);
-  let res = {
-    code: '200',
-    data: tmp % 2 == 0 ? tmpVideoList : tmpVideoList1,
-    // data: tmpVideoList
-  };
-  return res;
-};
+export function getVideoList(params) {
+    let tmpVideoList = [
+      {
+        id: '',
+        name: '视频1',
+        projectId:'',
+        contractId:'',
+        coverUrl:'',
+        shootingTime:'2020-12-01 15:01:35',
+        pile:'',
+        latitude:'',
+        longitude:'',
+        videoUrl:'http://jspro-test.oss-cn-shenzhen.aliyuncs.com/530fd576-c3cd-4827-bfd9-1c7833990b56?Expires=3183185396&OSSAccessKeyId=LTAI4FvrfndXDm83BSgCrSoZ&Signature=rC1GO0xYwOSFUgu3PQRi8Hrvw9A%3D',
+      },
+      {
+          id: '',
+          name: '视频2',
+          projectId:'',
+          contractId:'',
+          coverUrl:'',
+          shootingTime:'2020-12-01 15:01:35',
+          pile:'',
+          latitude:'',
+          longitude:'',
+          videoUrl:'http://jspro-test.oss-cn-shenzhen.aliyuncs.com/2b8f7836-ca55-46d2-a681-f077c966a63a?Expires=3183192390&OSSAccessKeyId=LTAI4FvrfndXDm83BSgCrSoZ&Signature=2u0WGZGawNKXZS%2B4tRHVDvlqJw8%3D',
+      },
+    ];
+    let tmpVideoList1 = [
+      {
+          id: '',
+          name: '视频2',
+          projectId:'',
+          contractId:'',
+          coverUrl:'',
+          shootingTime:'2020-12-01 15:01:35',
+          pile:'',
+          latitude:'',
+          longitude:'',
+          videoUrl:'http://jspro-test.oss-cn-shenzhen.aliyuncs.com/530fd576-c3cd-4827-bfd9-1c7833990b56?Expires=3183185396&OSSAccessKeyId=LTAI4FvrfndXDm83BSgCrSoZ&Signature=rC1GO0xYwOSFUgu3PQRi8Hrvw9A%3D',
+      },
+    ];
+    let tmp = Math.ceil(Math.random() * 10);
+    let res = {
+      code: '200',
+      data: tmp % 2 == 0 ? tmpVideoList : tmpVideoList1,
+      // data: tmpVideoList
+    };
+    return res;
+    // return request('get', `${config.mapApi.getVideoList}`, {...params}, false);
+  }
 //获取起讫点坐标
 export const getStartAndEndData = params => {
     let res = {

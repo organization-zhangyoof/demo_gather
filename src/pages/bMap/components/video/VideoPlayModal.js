@@ -62,7 +62,7 @@ class VideoPlayModal extends Component {
                 <Icon type={'left'} style={{fontSize:30}}/>
             </div>}
             {videoList && videoList.length && 
-                <video autoplay ='autoplay' controls="controls" src={(videoList[currentIndex]).url} style={{width:'100%',height:'100%'}}></video>
+                <video autoplay ='autoplay' controls="controls" src={(videoList[currentIndex]).videoUrl} style={{width:'100%',height:'100%'}}></video>
             }
             {videoList && videoList.length > 1 && <div className = {styles.to_right} onClick = {()=>{changePlaySource('right')}}>
                 <Icon type={'right'} style={{fontSize:30}}/>
