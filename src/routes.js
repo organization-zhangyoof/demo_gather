@@ -10,6 +10,7 @@
     const bim_routes = require("./pages/bim/routes")
     const bMap_routes = require("./pages/bMap/routes")
     const bimDemo_routes= require("./pages/bimDemo/routes")
+    const react_hook_routes= require("./pages/hookPage/routes")
 
 
     let routes = [
@@ -24,7 +25,8 @@
       ...iframe_page_routes,
       ...bim_routes,
       ...bMap_routes,
-      ...bimDemo_routes
+      ...bimDemo_routes,
+      ...react_hook_routes,
     ]
 
     module.exports = [
