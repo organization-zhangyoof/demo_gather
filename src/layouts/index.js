@@ -3,9 +3,11 @@ import Home from '@/pages/homePage/HomePage'
 class BasicLayout extends Component {
     render(){
         return (
-            <Home>
-                {this.props.children}
-            </Home>
+                this.props.children.props.location.pathname=='/publish'?
+                this.props.children:
+                <Home>
+                    {this.props.children}
+                </Home>
         )
     }
 }

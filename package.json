@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "start": "set port=8991 && umi dev",
+    "start": "set port=9999 && umi dev",
     "build": "umi build",
     "test": "umi test",
     "precommit": "lint-staged"
@@ -31,7 +31,6 @@
   },
   "devDependencies": {
     "react-test-renderer": "^16.7.0",
-    "umi": "^2.7.7",
     "umi-plugin-react": "^1.8.4"
   }
 }
