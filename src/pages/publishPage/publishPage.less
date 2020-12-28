@@ -3,4 +3,69 @@
     height:100%;
     background-image:url('./assets/publishBg.png');
     background-size: 100% 100%;
+    position: relative;
+    .percent_box{
+        position: absolute;
+        padding:20px;
+        width:500px;
+        height:500px;
+        color:#fff;
+        .percent_text{
+            position: absolute;
+            width:100%;
+            text-align: center;
+            top:140px;
+            left:0;
+            // font-size: 90px;
+        }
+        .percent_title{
+            position: absolute;
+            width:100%;
+            top:257px;
+            left:0;
+            text-align: center;
+            font-size: 30px;
+        }
+        .publish_login{
+            font-size: 25px;
+            position: absolute;
+            top:339px;
+            left:189px;
+            text-align: center;
+            color:#13447E;
+            cursor:pointer;
+            &:hover{
+                color:#207beb
+            }
+        }
+    }
+    .publish_item{
+        background-image:url('./assets/box.png');
+        background-size: 100% 100%;
+        padding: 15px 20px;
+        position: absolute;
+        color:#fff;
+        display: none;
+        .item_container{
+            display: flex;
+            align-items: center;
+            padding:5px;
+            .circle{
+                width:6px;
+                height:6px;
+                border-radius: 50%;
+                background: #fff;
+                margin-right: 10px;
+                box-shadow: -2px 0px 5px 1px #fff,
+                            0px -2px 5px 1px #fff,
+                            2px 0px 5px 1px #fff,
+                            0px 2px 5px 1px #fff;
+            }
+            .text{
+                font-size: 16px;
+                text-shadow:0 0 5px #fff
+            }
+        }   
+        
+    }
 }
