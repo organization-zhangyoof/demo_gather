@@ -69,3 +69,77 @@
         
     }
 }
+
+
+.authenticate_page{
+    width:100%;
+    height:100%;
+    background-image:url('./assets/textbg.png');
+    background-size: cover;
+    position: relative;
+    background-position: 0px -120px;
+    .mainPosition{
+        position: absolute;
+        bottom: 0;
+        height: 300px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .textPosition{
+            margin:0 auto;
+            h1{
+                font-size: 60px;
+                color:#dadfee;
+                text-shadow: 0 0 0.2em #2b96da, black 0.15em 0.1em 0.05em
+            }
+            h2{
+                font-size: 40px;
+                font-weight: 500;
+                background-image: -webkit-linear-gradient(bottom, #93fbff, #93d0ff);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+        }
+        .left{
+            height:295px;
+            .lineMove{
+                position: relative;
+                    .wrapper{
+                        width: 177px;
+                        height: 175px;
+                        background: linear-gradient(#1a98ca, #1a98ca), linear-gradient(transparent, #1a98ca);
+                        background-size: 100% 1.5%, 10% 100%, 100% 8%, 100% 100%;
+                        background-repeat: no-repeat, repeat, repeat, no-repeat;
+                        background-position: 0% 0%, 0 0, 0 0, 0 0;
+                        -webkit-clip-path: polygon(0% 0%, 100% 0%, 100% 1.5%, 0% 1.5%);
+                        clip-path: polygon(0% 0%, 100% 0%, 100% 1.5%, 0% 1.5%);
+                        animation: move 2s infinite linear;
+                        position: absolute;
+                        left: 29px;
+                        top: 20px;
+                    }
+                    @keyframes move{
+                        to{
+                            background-position: 0 100%,0 0, 0 0, 0 0;
+                            /* 终止位置 */
+                            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+                        }
+                    }
+            }
+        }
+        .middle{
+            margin: 0 50px;
+            cursor: pointer;
+        }
+        .right{
+            height:150px;
+        }
+
+       
+    }
+
+  
+
+}
+    
