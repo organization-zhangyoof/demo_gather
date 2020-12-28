@@ -303,7 +303,6 @@ class PublishPage extends Component {
                             {
                                 this.state.percent.toFixed(0)>=100?'发布成功':this.state.percent.toFixed(0) + "%"
                             }
-                            {/* {this.state.percent.toFixed(0)+"%"} */}
                         </div>
                     </div>
                     <div className={styles.percent_title}>
@@ -311,6 +310,10 @@ class PublishPage extends Component {
                     </div>
                     <div className={styles.publish_login}
                         style={{display:this.state.percent.toFixed(0)>=100?'block':'none'}}
+                        onClick = {()=>{
+                            // window.open('http://sgg.gcnao.cn/')
+                            window.location.href="http://sgg.gcnao.cn/";
+                        }}
                     >
                         登录平台 <Icon type="double-right" /> 
                     </div>
