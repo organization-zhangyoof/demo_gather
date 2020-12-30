@@ -114,10 +114,15 @@ class PublishPage extends Component {
         let pointY =  y + r * Math.sin(a * Math.PI / 180)
         return {x:pointX,y:pointY}
     }
+    
     /**
-     * 绘制圆上的小圆圈
+     * 绘制周边小圆
      * @param {*} ctx 画笔
      * @param {*} angle 角度
+     * @param {*} isFill 是否填充
+     * @param {*} isStroke 是否绘制轮廓
+     * @param {*} drawLine 是否绘制线
+     * @param {*} num 计数
      */
     lightCircle = (ctx,angle,isFill,isStroke,drawLine,num) => {
         let originX= Math.ceil(screenW/2)
