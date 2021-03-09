@@ -272,7 +272,7 @@ class IframePage extends Component {
                 isHandleBim:true,
                 type:'checkEntityTree',
                 data:{
-                    wbsIds:'',
+                    wbsIds:['600e6c55-bfa9-4d3c-97e7-6201ca4d467b'],
                 }
             }
             window.frames[index]&&window.frames[index].postMessage(iframeInfo,'*')
@@ -286,7 +286,32 @@ class IframePage extends Component {
                 isHandleBim:true,
                 type:'highlightEntityTree',
                 data:{
-                    wbsIds:'',
+                    wbsIds:['600e6c55-bfa9-4d3c-97e7-6201ca4d467b'],
+                }
+            }
+            window.frames[index]&&window.frames[index].postMessage(iframeInfo,'*')
+        }
+    }
+
+    postRelateTypeToBim(){
+        for(let index=0;index<window.frames.length;index++){
+            let iframeInfo = {
+                isHandleBim:true,
+                type:'postRelateTypeToBim',
+                data:{
+                    type:'',
+                }
+            }
+            window.frames[index]&&window.frames[index].postMessage(iframeInfo,'*')
+        }
+    }
+    postRelateValToBim(){
+        for(let index=0;index<window.frames.length;index++){
+            let iframeInfo = {
+                isHandleBim:true,
+                type:'postRelateValToBim',
+                data:{
+                    val:[],
                 }
             }
             window.frames[index]&&window.frames[index].postMessage(iframeInfo,'*')
@@ -5744,6 +5769,8 @@ class IframePage extends Component {
             window.frames[index]&&window.frames[index].postMessage(iframeInfo,'*')
         }
     }
+
+
     render(){
         let {isVisibleBim}=this.state
         return (
@@ -5768,6 +5795,8 @@ class IframePage extends Component {
                         <Button onClick={this.removeModelHighLight.bind(this)}>removeModelHighLight</Button>
                         <Button onClick={this.openProgressSwitch.bind(this)}>openProgressSwitch</Button>
                         <Button onClick={this.showComponentByNameAndIds.bind(this)}>showComponentByNameAndIds</Button>
+                        <Button onClick={this.postRelateTypeToBim.bind(this)}>postRelateTypeToBim</Button>
+                        <Button onClick={this.postRelateValToBim.bind(this)}>postRelateValToBim</Button>
                     </div>
 
                 </div>
