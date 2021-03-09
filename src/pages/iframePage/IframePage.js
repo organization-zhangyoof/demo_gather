@@ -98,7 +98,7 @@ class IframePage extends Component {
                 data:{
                     projectId: '00469fda708f411aafcb7368b3c27cc1',
                     contractId: 'e1c66b9585984be3b0ce8a92ebda138c',
-                    bool:false
+                    bool:true
                 }
             }
             window.frames[index]&&window.frames[index].postMessage(iframeInfo,'*')
@@ -269,7 +269,7 @@ class IframePage extends Component {
 
     postIntoBim(){
         let iframeInfo={
-            token:'eyJhbGciOiJIUzI1NiJ9.eyJhY2NvdW50SWQiOiI3NDk3MzVmMWVlNTk0ODYyYmI2YjI4YzIwZDljZmY4OSIsImVtYWlsIjoiMTM3NTE0MzAwMDFAcXEuY29tIiwibmFtZSI6IuWFrOi3r-a1i-ivleS4muS4uyIsInVzZXJuYW1lIjoiMTM3NTE0MzAwMDFhIiwicGhvbmVOdW1iZXIiOiIxMzc1MTQzMDAwMSIsImFjY291bnRUeXBlIjoiUEVSU09OQUwiLCJ1c2VySWQiOiJlOTVjZjY3ZDVkM2M0YzIwYWQ4MWQ3MGMwOWY1NGFlMCIsImNvbXBhbnlJZCI6IjM5Y2E2MWRmY2ZhYzQzZGNhOGQ1Y2RiMGYxY2ZkZGYxIiwiY29tcGFueU5hbWUiOiJJVOS4iemDqOS4muS4u-WNleS9jSIsImp0aS11dWlkIjoianRpLWEwMzU4NzdhLTFmZTAtNDA3NS1iNTI0LTkwZTUxYjAwODlkOSIsImV4cCI6MTYxNDg1NzQ4Mn0.3PCb-WOndJCll7At2WJyP-jmSW4TDExvLOZz1-EGtuc',
+            token:'eyJhbGciOiJIUzI1NiJ9.eyJhY2NvdW50SWQiOiI3NDk3MzVmMWVlNTk0ODYyYmI2YjI4YzIwZDljZmY4OSIsImVtYWlsIjoiMTM3NTE0MzAwMDFAcXEuY29tIiwibmFtZSI6IuWFrOi3r-a1i-ivleS4muS4uyIsInVzZXJuYW1lIjoiMTM3NTE0MzAwMDFhIiwicGhvbmVOdW1iZXIiOiIxMzc1MTQzMDAwMSIsImFjY291bnRUeXBlIjoiUEVSU09OQUwiLCJ1c2VySWQiOiJlOTVjZjY3ZDVkM2M0YzIwYWQ4MWQ3MGMwOWY1NGFlMCIsImNvbXBhbnlJZCI6IjM5Y2E2MWRmY2ZhYzQzZGNhOGQ1Y2RiMGYxY2ZkZGYxIiwiY29tcGFueU5hbWUiOiJJVOS4iemDqOS4muS4u-WNleS9jSIsImp0aS11dWlkIjoianRpLWIyNTkzNzg1LTJlYjgtNDY5Yi1iMDU1LTBjYmYwMzhjZDQyZiIsImV4cCI6MTYxNTI4OTc3N30.K4JM1LfoWO9owuYD4b7-QKrKQ3K77UvoWIdDVwTthBk',
             userInfo:{"accountId":"749735f1ee594862bb6b28c20d9cff89","email":"13751430001@qq.com","name":"公路测试业主","username":"13751430001a","phoneNumber":"13751430001","accountType":"PERSONAL","userId":"e95cf67d5d3c4c20ad81d70c09f54ae0","companyId":"39ca61dfcfac43dca8d5cdb0f1cfddf1","companyName":"IT三部业主单位","jti-uuid":"jti-736328a2-096d-4ce9-b674-76e50f9157f5","exp":1614623192},
             limitBtns:[
                 {
@@ -5720,31 +5720,38 @@ class IframePage extends Component {
     render(){
         let {isVisibleBim}=this.state
         return (
-            <div style={{width:'100%',height:'100%',background:'#f1f1f1'}} className={styles.page1_main}>
-                <div style={{width:'20%',height:'100%',background:'pink'}}>
-                    <Button onClick={this.showBimWindow.bind(this)}>实景</Button>
-                    <Button onClick={this.setBimWidth.bind(this)}>setBimWidth</Button>
-                    <Button onClick={this.openModel.bind(this)}>openModel</Button>
-                    <Button onClick={this.openModelPreview.bind(this)}>openModelPreview</Button>
-                    <Button onClick={this.closeModelPreview.bind(this)}>closeModelPreview</Button>
-                    <Button onClick={this.checkEntityTree.bind(this)}>checkEntityTree</Button>
-                    <Button onClick={this.highlightEntityTree.bind(this)}>highlightEntityTree</Button>
-                    <Button onClick={this.setViewToObj.bind(this)}>setViewToObj</Button>
-                    <Button onClick={this.setObjsColor.bind(this)}>setObjsColor</Button>
-                    <Button onClick={this.removeModelColor.bind(this)}>removeModelColor</Button>
-                    <Button onClick={this.showOrHideModel.bind(this)}>showOrHideModel</Button>
-                    <Button onClick={this.removeModelHighLight.bind(this)}>removeModelHighLight</Button>
-                    <Button onClick={this.openProgressSwitch.bind(this)}>openProgressSwitch</Button>
-                    <Button onClick={this.showComponentByNameAndIds.bind(this)}>showComponentByNameAndIds</Button>
+            <div style={{ width: '100%', height: '100%', background: '#f1f1f1' }} className={styles.page1_main}>
+                <div style={{ width: '20%', height: '100%', background: 'pink' }}>
+                    <div style={{ width: '100%', border: '1px solid red' }}>
+                        <p>模拟左侧工具栏里的自研实景入口</p>
+                        <Button onClick={this.showBimWindow.bind(this)}>实景</Button>
+                    </div>
+                    <div style={{ width: '100%', border: '1px solid blue' }}>
+                        <p>模拟业务与实景iframe交互,外侧调用iframe中bim的方法操作模型</p>
+                        <Button onClick={this.setBimWidth.bind(this)}>setBimWidth</Button>
+                        <Button onClick={this.openModel.bind(this)}>openModel</Button>
+                        <Button onClick={this.openModelPreview.bind(this)}>openModelPreview</Button>
+                        <Button onClick={this.closeModelPreview.bind(this)}>closeModelPreview</Button>
+                        <Button onClick={this.checkEntityTree.bind(this)}>checkEntityTree</Button>
+                        <Button onClick={this.highlightEntityTree.bind(this)}>highlightEntityTree</Button>
+                        <Button onClick={this.setViewToObj.bind(this)}>setViewToObj</Button>
+                        <Button onClick={this.setObjsColor.bind(this)}>setObjsColor</Button>
+                        <Button onClick={this.removeModelColor.bind(this)}>removeModelColor</Button>
+                        <Button onClick={this.showOrHideModel.bind(this)}>showOrHideModel</Button>
+                        <Button onClick={this.removeModelHighLight.bind(this)}>removeModelHighLight</Button>
+                        <Button onClick={this.openProgressSwitch.bind(this)}>openProgressSwitch</Button>
+                        <Button onClick={this.showComponentByNameAndIds.bind(this)}>showComponentByNameAndIds</Button>
+                    </div>
+
                 </div>
-                <div style={{width:'80%',height:'100%',display:isVisibleBim?'block':'none'}} id='bimBox'>
-                    <iframe 
-                    src = 'http://localhost:9988/bim'  
-                    style={{width:'100%',height:'100%',border:'none'}}
-                    onLoad={this.postIntoBim.bind(this)}
+                <div style={{ width: '80%', height: '100%', display: isVisibleBim ? 'block' : 'none' }} id='bimBox'>
+                    <iframe
+                        src='http://localhost:9988/bim'
+                        style={{ width: '100%', height: '100%', border: 'none' }}
+                        onLoad={this.postIntoBim.bind(this)}
                     ></iframe>
                 </div>
-                
+
             </div>
         )
     }
