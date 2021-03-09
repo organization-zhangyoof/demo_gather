@@ -7,19 +7,24 @@ class IframePage extends Component {
     constructor(props){
         super(props)
         this.state={
-            isVisibleBim:false
+            isVisibleBim:false,
+            showOrHideModel:true
         }
     }
+    //模拟工具栏打开实景窗口
     showBimWindow(){
         this.setState({
             isVisibleBim:!this.state.isVisibleBim
         })
     }
+
+    //业务与模型互动时,打开窗口的方式
     setBimWidth(){
         let box=document.getElementById('bimBox');
         box.style.display='block';
     }
 
+    //打开模型
     openModel(){
         this.setBimWidth();
         for(let index=0;index<window.frames.length;index++){
@@ -44,6 +49,7 @@ class IframePage extends Component {
         }
     }
 
+    //视角定位到某构件
     setViewToObj(){
         for(let index=0;index<window.frames.length;index++){
             let iframeInfo = {
@@ -63,6 +69,8 @@ class IframePage extends Component {
             window.frames[index]&&window.frames[index].postMessage(iframeInfo,'*')
         }
     }
+
+    //为构件着色
     setObjsColor(){
         for(let index=0;index<window.frames.length;index++){
             let iframeInfo = {
@@ -77,6 +85,8 @@ class IframePage extends Component {
             window.frames[index]&&window.frames[index].postMessage(iframeInfo,'*')
         }
     }
+
+    //移除模型的着色
     removeModelColor(){
         for(let index=0;index<window.frames.length;index++){
             let iframeInfo = {
@@ -90,6 +100,8 @@ class IframePage extends Component {
             window.frames[index]&&window.frames[index].postMessage(iframeInfo,'*')
         }
     }
+
+    //隐藏/显示模型
     showOrHideModel(){
         for(let index=0;index<window.frames.length;index++){
             let iframeInfo = {
@@ -98,12 +110,17 @@ class IframePage extends Component {
                 data:{
                     projectId: '00469fda708f411aafcb7368b3c27cc1',
                     contractId: 'e1c66b9585984be3b0ce8a92ebda138c',
-                    bool:true
+                    bool:!this.state.showOrHideModel
                 }
             }
             window.frames[index]&&window.frames[index].postMessage(iframeInfo,'*')
         }
+        this.setState({
+            showOrHideModel:!this.state.showOrHideModel
+        })
     }
+
+    //移除模型高亮(被选中的状态)
     removeModelHighLight(){
         for(let index=0;index<window.frames.length;index++){
             let iframeInfo = {
@@ -117,6 +134,8 @@ class IframePage extends Component {
             window.frames[index]&&window.frames[index].postMessage(iframeInfo,'*')
         }
     }
+
+    //打开进度开关
     openProgressSwitch(){
         for(let index=0;index<window.frames.length;index++){
             let iframeInfo = {
@@ -128,6 +147,7 @@ class IframePage extends Component {
         }
     }
 
+    //显示/隐藏构件
     showComponentByNameAndIds(){
         for(let index=0;index<window.frames.length;index++){
             let iframeInfo = {
@@ -143,6 +163,7 @@ class IframePage extends Component {
         }
     }
 
+    //预览模型(参考 模型管理里bim模型发布里的定位功能  就是调用这个 打开的效果就是按钮的效果)
     openModelPreview(){
         this.setBimWidth()
         for(let index=0;index<window.frames.length;index++){
@@ -232,6 +253,7 @@ class IframePage extends Component {
         }
     }
 
+    //关闭模型预览
     closeModelPreview(){
         for(let index=0;index<window.frames.length;index++){
             let iframeInfo = {
@@ -242,6 +264,8 @@ class IframePage extends Component {
             window.frames[index]&&window.frames[index].postMessage(iframeInfo,'*')
         }
     }
+
+    //勾选实体树(多选模式下)
     checkEntityTree(){
         for(let index=0;index<window.frames.length;index++){
             let iframeInfo = {
@@ -254,6 +278,8 @@ class IframePage extends Component {
             window.frames[index]&&window.frames[index].postMessage(iframeInfo,'*')
         }
     }
+
+    //高亮实体树的某一条(设为被选中状态)
     highlightEntityTree(){
         for(let index=0;index<window.frames.length;index++){
             let iframeInfo = {
@@ -267,6 +293,7 @@ class IframePage extends Component {
         }
     }
 
+    //向模型窗口发送信息
     postIntoBim(){
         let iframeInfo={
             token:'eyJhbGciOiJIUzI1NiJ9.eyJhY2NvdW50SWQiOiI3NDk3MzVmMWVlNTk0ODYyYmI2YjI4YzIwZDljZmY4OSIsImVtYWlsIjoiMTM3NTE0MzAwMDFAcXEuY29tIiwibmFtZSI6IuWFrOi3r-a1i-ivleS4muS4uyIsInVzZXJuYW1lIjoiMTM3NTE0MzAwMDFhIiwicGhvbmVOdW1iZXIiOiIxMzc1MTQzMDAwMSIsImFjY291bnRUeXBlIjoiUEVSU09OQUwiLCJ1c2VySWQiOiJlOTVjZjY3ZDVkM2M0YzIwYWQ4MWQ3MGMwOWY1NGFlMCIsImNvbXBhbnlJZCI6IjM5Y2E2MWRmY2ZhYzQzZGNhOGQ1Y2RiMGYxY2ZkZGYxIiwiY29tcGFueU5hbWUiOiJJVOS4iemDqOS4muS4u-WNleS9jSIsImp0aS11dWlkIjoianRpLWIyNTkzNzg1LTJlYjgtNDY5Yi1iMDU1LTBjYmYwMzhjZDQyZiIsImV4cCI6MTYxNTI4OTc3N30.K4JM1LfoWO9owuYD4b7-QKrKQ3K77UvoWIdDVwTthBk',
