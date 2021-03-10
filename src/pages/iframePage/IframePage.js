@@ -311,7 +311,7 @@ class IframePage extends Component {
                 isHandleBim:true,
                 type:'postRelateValToBim',
                 data:{
-                    val:[],
+                    val:['2004-桥梁-E2-copy-24831'],
                 }
             }
             window.frames[index]&&window.frames[index].postMessage(iframeInfo,'*')
@@ -321,7 +321,7 @@ class IframePage extends Component {
     //向模型窗口发送信息
     postIntoBim(){
         let iframeInfo={
-            token:'eyJhbGciOiJIUzI1NiJ9.eyJhY2NvdW50SWQiOiI3NDk3MzVmMWVlNTk0ODYyYmI2YjI4YzIwZDljZmY4OSIsImVtYWlsIjoiMTM3NTE0MzAwMDFAcXEuY29tIiwibmFtZSI6IuWFrOi3r-a1i-ivleS4muS4uyIsInVzZXJuYW1lIjoiMTM3NTE0MzAwMDFhIiwicGhvbmVOdW1iZXIiOiIxMzc1MTQzMDAwMSIsImFjY291bnRUeXBlIjoiUEVSU09OQUwiLCJ1c2VySWQiOiJlOTVjZjY3ZDVkM2M0YzIwYWQ4MWQ3MGMwOWY1NGFlMCIsImNvbXBhbnlJZCI6IjM5Y2E2MWRmY2ZhYzQzZGNhOGQ1Y2RiMGYxY2ZkZGYxIiwiY29tcGFueU5hbWUiOiJJVOS4iemDqOS4muS4u-WNleS9jSIsImp0aS11dWlkIjoianRpLWIyNTkzNzg1LTJlYjgtNDY5Yi1iMDU1LTBjYmYwMzhjZDQyZiIsImV4cCI6MTYxNTI4OTc3N30.K4JM1LfoWO9owuYD4b7-QKrKQ3K77UvoWIdDVwTthBk',
+            token:'eyJhbGciOiJIUzI1NiJ9.eyJhY2NvdW50SWQiOiI3NDk3MzVmMWVlNTk0ODYyYmI2YjI4YzIwZDljZmY4OSIsImVtYWlsIjoiMTM3NTE0MzAwMDFAcXEuY29tIiwibmFtZSI6IuWFrOi3r-a1i-ivleS4muS4uyIsInVzZXJuYW1lIjoiMTM3NTE0MzAwMDFhIiwicGhvbmVOdW1iZXIiOiIxMzc1MTQzMDAwMSIsImFjY291bnRUeXBlIjoiUEVSU09OQUwiLCJ1c2VySWQiOiJlOTVjZjY3ZDVkM2M0YzIwYWQ4MWQ3MGMwOWY1NGFlMCIsImNvbXBhbnlJZCI6IjM5Y2E2MWRmY2ZhYzQzZGNhOGQ1Y2RiMGYxY2ZkZGYxIiwiY29tcGFueU5hbWUiOiJJVOS4iemDqOS4muS4u-WNleS9jSIsImp0aS11dWlkIjoianRpLTY4M2VlMThmLWE2YjktNGU0My05ZGFiLTc4YTZlNDg4MmRhOCIsImV4cCI6MTYxNTM3NjMwMH0.h7pcH5QjdsRBk9grNl7vbk9u2R76RqrddmQfO9cLUVY',
             userInfo:{"accountId":"749735f1ee594862bb6b28c20d9cff89","email":"13751430001@qq.com","name":"公路测试业主","username":"13751430001a","phoneNumber":"13751430001","accountType":"PERSONAL","userId":"e95cf67d5d3c4c20ad81d70c09f54ae0","companyId":"39ca61dfcfac43dca8d5cdb0f1cfddf1","companyName":"IT三部业主单位","jti-uuid":"jti-736328a2-096d-4ce9-b674-76e50f9157f5","exp":1614623192},
             limitBtns:[
                 {

@@ -1,8 +1,8 @@
 import React,{Component} from'react'
 import { Button,Menu } from 'antd'
-let FS = require('fs')
 // import request from '../../utils/request'
 import request from '../../utils/newRequest'
+let FS = require('fs')
 class Page4 extends Component {
     constructor(props) {
         super(props);
