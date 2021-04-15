@@ -103,8 +103,34 @@ class Page4 extends Component {
                 
         }
       };
+    // const funasd = (str) => {
+    //     debugger
+    //     var res = ""
+    //     console.log('res')
+    //      if(typeof(str) === "string"){
+    //         res = JSON.parse(str)
+    //         funasd(res)
+    //      }
+    //      return res
+    // }
+    // var b = {a:1,b:2}
+    // var a = fun(JSON.stringify(JSON.stringify(b)))
     
     render(){
+        const funasd = (str) => {
+            debugger
+            let res = ''
+            console.log('res')
+             if(typeof(str) === "string"){
+                res = JSON.parse(str)
+                funasd(res)
+             }else{
+                res = str
+                 console.log('res----',res)
+                return res
+             }
+             
+        }
         return (
             <div style={{width:'100%',height:'100%',background:'#C1F5E8'}}>
                 <h1>this is page4</h1>
@@ -120,7 +146,9 @@ class Page4 extends Component {
                 {/* <Button onClick = {this.onPromiseTest.bind(this,{arr:[{id:1,name:1,sign:1},{id:2,name:0,sign:1},{id:3,name:1,sign:0},{id:4,sign:0,name:0}],count:0})}>开始请求</Button>   */}
                 <Button onClick = {this.testRequest}>开始请求</Button>  
                 <p>测试结果---{this.state.testId}</p>
-                <Button onClick = {this.clickDownload}>下载文件</Button>
+                {/* <Button onClick = {()=>funasd(JSON.stringify(JSON.stringify({a:1,b:2})))}>下载文件</Button> */}
+                <Button onClick = {()=>funasd("456465465")}>下载文件</Button>
+                {/* <Button onClick = {()=>this.funasd.bind(this,JSON.stringify(JSON.stringify({a:1,b:2})))}>下载文件</Button> */}
                 <Button onClick = {()=>{console.log("fs-----",FS)}}>fs</Button>
             </div>
         )
