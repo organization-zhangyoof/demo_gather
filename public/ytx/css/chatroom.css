@@ -1,0 +1,270 @@
+*{
+    padding: 0;
+    margin:0;
+    list-style: none;
+    font-style: normal;
+    font-weight: normal;
+}
+header{
+    width: 100%;
+    border-bottom: 1px solid #ccc;
+    position: fixed;
+    z-index: 199;
+    background: #fff;
+}
+.header{
+    width: 100%; max-width: 1000px; margin: 0 auto;
+    padding: 5px;
+}
+.header .logo{
+    float: left;
+}
+.header ul{
+    float: left;
+}
+.header ul li{
+    float: left;
+}
+.clear{
+    clear: both;
+}
+.log_reg{
+    float: right;
+}
+.nav{
+    margin:0 10px;
+}
+header ul li{
+    padding: 5px 10px;
+}
+
+section{
+    position: absolute;
+    padding-top:46px;
+    left:0;
+    height:100%;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.navLeft{
+    width: 200px;
+    height:100%;
+    position: fixed;
+    top:0;
+    padding-top: 47px;
+    z-index: 99;
+    background: rgb(34,34,34);
+    color: #ccc;
+    display: none;
+}
+.main{
+    float: left;
+    box-sizing: border-box;
+    padding: 10px;
+    background: rgb(247,247,247);
+    width: 100%;
+    position: absolute;
+    /*padding-left: 215px;*/
+
+}
+.mainHeader{
+    width: 84px;
+    display: block;
+    float: left;
+}
+.container{
+    background: #fff;
+    width:100%;
+    max-width:1400px;
+    min-width: 1000px;
+    margin:0 auto;
+}
+.titles{
+    float: left;
+}
+.roomTitle{
+    display: inline-block;
+    vertical-align: top;
+}
+
+
+.mainplayer{
+    width: 70%;
+    /*max-width:1000px;*/
+    border:1px solid #ccc;
+    background: #000;
+    float: left;
+    box-sizing: border-box;
+}
+.mainplayer video{
+    width: 100%;
+}
+.mainchat{
+    float: left;
+    width: 30%;
+    box-sizing: border-box;
+
+    border: 1px solid #ccc;
+    position: absolute;
+    left:70%;
+    height:100%;
+    overflow: hidden;
+}
+.mainchat ul{
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    top:-30px;
+    padding: 5px;
+    padding-top:60px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.mainchat ul li{
+    vertical-align: middle;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 30px;
+    text-align: left;
+}
+.mainchat ul li b{
+    font-weight: normal;
+}
+.mainchat ul:after{
+    clear: both;
+}
+.icon{
+    width: 40px;
+    height:16px;
+    display: inline-block;
+}
+.icon_level{
+    background: url("../chatimg/level-csssprite.png") no-repeat;
+}
+.level_1{
+    background-position: 0 0;
+}
+.level_2{
+    background-position: 0 -19px;
+}
+.level_3{
+    background-position: 0 -38px;
+}
+.level_4{
+    background-position: 0 -57px;
+}
+.level_5{
+    background-position: 0 -76px;
+}
+.level_6{
+    background-position: 0 -95px;
+}
+.level_7{
+    background-position: 0 -114px;
+}
+.level_8{
+    background-position: 0 -133px;
+}
+.level_9{
+    background-position: 0 -152px;
+}
+.level_10{
+    background-position: 0 -171px;
+}
+.level_11{
+    background-position: 0 -190px;
+}
+
+li.sendmsg{
+    text-align: right;
+}
+.sp{
+    position: relative;
+}
+.msgInput{
+    width: 100%;
+    border:1px solid #000;
+    box-sizing: border-box;
+    height:30px;
+    position: absolute;
+    bottom: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-right: 30px;
+
+}
+.sendMsg{
+    position: absolute;
+    width: 50px;
+    height: 30px;
+    line-height: 30px;
+    box-sizing: border-box;
+    background: #f7de23;
+    right: 0;
+    bottom: 0;
+    text-align: center;
+}
+.c_red{
+    color: #f00;
+}
+.c_green{
+    color: #09bd5f;
+}
+.c_normal{
+    color: #ccc;
+}
+.chat_and_online{
+    width: 100%;
+    background: #fff;
+    position: absolute;
+    z-index: 100;
+}
+.chatswin{
+    border-right:1px solid #ccc;
+}
+.chatswin,.onlinelistbtn{
+    box-sizing: border-box;
+    width: 50%;
+    float: left;
+    height:30px;
+    line-height: 30px;
+    text-align: center;
+    border-bottom: 1px solid #ccc;
+}
+
+
+.btnrole{
+    position: absolute;
+    z-index: 999;
+    padding: 5px;
+    border:1px solid #ccc;
+    border-radius:5px;
+    background: #eee;
+    display: none;
+}
+.btnrole ul li{
+    padding:5px;
+    border-bottom: 1px solid #ccc;
+}
+.btnrole ul li:last-child{
+    border-bottom: none;
+}
+.btnrole ul li:hover{
+    background: #761c19;
+    color:#fff;
+}
+.btnrole .btnroletar{
+    max-width: 80px;
+    height: 2em;
+    display:block;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    border-bottom: 1px solid #aaa;
+}
+
+.roomManage{
+    float: right;
+}
+.announce{
+    font-size:14px;
+}

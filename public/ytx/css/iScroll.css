@@ -1,0 +1,46 @@
+/* iScroll 是滚动条样式,用于控制左侧区域的菜单过多进行滚动的 */
+
+body ::-webkit-scrollbar,
+body::-webkit-scrollbar {
+	width: 7px;
+	height: 0px
+}
+
+body ::-webkit-scrollbar-button:start:decrement,
+body ::-webkit-scrollbar-button:end:increment,
+body::-webkit-scrollbar-button:start:decrement,
+body::-webkit-scrollbar-button:end:increment {
+	display: block;
+	height: 0;
+	background-color: transparent
+}
+
+body ::-webkit-scrollbar-track-piece,
+body::-webkit-scrollbar-track-piece {
+	margin: 0px 0;
+	-webkit-border-radius: 0;
+	-webkit-border-bottom-right-radius: 4px;
+	-webkit-border-bottom-left-radius: 4px
+}
+
+body ::-webkit-scrollbar-thumb:vertical,
+body::-webkit-scrollbar-thumb:vertical {
+	height: 50px;
+	background-color: rgba(0, 0, 0, 0.12);
+	-webkit-border-radius: 4px
+}
+
+body ::-webkit-scrollbar-thumb:horizontal,
+body::-webkit-scrollbar-thumb:horizontal {
+	width: 50px;
+	height: 0px;
+	background-color: rgba(0, 0, 0, 0.12);
+	-webkit-border-radius: 2px
+}
+
+body ::-webkit-scrollbar-thumb:vertical,
+body::-webkit-scrollbar-thumb:vertical {
+	height: 50px;
+	background-color: rgba(0, 0, 0, 0.06);
+	-webkit-border-radius: 2px
+}

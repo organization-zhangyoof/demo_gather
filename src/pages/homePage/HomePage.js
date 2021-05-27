@@ -91,6 +91,10 @@ const menuList = [
                 children:[]
             },
         ]
+    },
+    {
+        name:'容联云',
+        route:'/ytx',
     }
 ]
 class HomePage extends Component {

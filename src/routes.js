@@ -12,6 +12,7 @@
     const bimDemo_routes= require("./pages/bimDemo/routes")
     const react_hook_routes= require("./pages/hookPage/routes")
     const publish_routes= require("./pages/publishPage/routes")
+    const ytx_routes= require("./pages/YTX/routes")
 
 
     let routes = [
@@ -29,8 +30,8 @@
       ...bimDemo_routes,
       ...react_hook_routes,
       ...publish_routes,
+      ...ytx_routes,
     ]
-
     module.exports = [
         {
           exact: true,
