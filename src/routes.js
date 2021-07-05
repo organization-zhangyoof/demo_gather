@@ -2,6 +2,7 @@
     const page3_routes = require("./pages/page3/routes")
     const page2_routes = require("./pages/page2/routes")
     const page4_routes = require("./pages/page4/routes")
+    const page5_routes = require("./pages/page5/routes")
     const spread_routes = require("./pages/spreadjs/routes")
     const spread_io_routes = require("./pages/spreadIo/routes")
     const base_test_routes = require("./pages/base/routes")
@@ -20,6 +21,7 @@
       ...page3_routes,
       ...page2_routes,
       ...page4_routes,
+      ...page5_routes,
       ...spread_routes,
       ...spread_io_routes,
       ...base_test_routes,

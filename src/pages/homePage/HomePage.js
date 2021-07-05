@@ -27,6 +27,11 @@ const menuList = [
         children:[]
     },
     {
+        name:'PDF/IMG加水印测试',
+        route:'/page5',
+        children:[]
+    },
+    {
         name:'spreadJS相关',
         route:'',
         children:[
@@ -111,7 +116,6 @@ class HomePage extends Component {
         }
     }
     render(){
-        console.log("menuList===",menuList)
         let obj = {a:789,b:456}
         const renderMenu = () => {
             return (
