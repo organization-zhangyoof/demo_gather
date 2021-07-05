@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Button } from 'antd';
 import styles from '../index.less';
+import BmapRoutePage from '../bMap/BmapRoutePage';
+import MapboxPage from '../bMap/MapboxPage';
 import { router } from 'umi';
 
 class IframePage extends Component {
@@ -9,7 +11,8 @@ class IframePage extends Component {
         this.state={
             isVisibleBim:false,
             showOrHideModel:true,
-            showOrHideComponent:false
+            showOrHideComponent:false,
+            showType: 2, // 0 2d, 1 2.5d, 2 实景
         }
     }
     //模拟工具栏打开实景窗口
@@ -339,7 +342,7 @@ class IframePage extends Component {
     //向模型窗口发送信息
     postIntoBim(){
         let iframeInfo={
-            token:"eyJhbGciOiJIUzI1NiJ9.eyJhY2NvdW50SWQiOiI3NDk3MzVmMWVlNTk0ODYyYmI2YjI4YzIwZDljZmY4OSIsImVtYWlsIjoiMTM3NTE0MzAwMDFAcXEuY29tIiwibmFtZSI6IuWFrOi3r-a1i-ivleS4muS4uyIsInVzZXJuYW1lIjoiMTM3NTE0MzAwMDFhIiwicGhvbmVOdW1iZXIiOiIxMzc1MTQzMDAwMSIsImFjY291bnRUeXBlIjoiUEVSU09OQUwiLCJ1c2VySWQiOiJlOTVjZjY3ZDVkM2M0YzIwYWQ4MWQ3MGMwOWY1NGFlMCIsImNvbXBhbnlJZCI6IjM5Y2E2MWRmY2ZhYzQzZGNhOGQ1Y2RiMGYxY2ZkZGYxIiwiY29tcGFueU5hbWUiOiJJVOS4iemDqOS4muS4u-WNleS9jSIsImp0aS11dWlkIjoianRpLTQwZmEyYjU4LWFkZTgtNDMzMS05ZTgwLTUzYjAxNDI0M2IxYyIsImV4cCI6MTYxODQ5MDIxOH0.VafwAclE58ZYEA0UqMgvmlxYcXc9dFH4ExdtaWmPRQQ",
+            token:"eyJhbGciOiJIUzI1NiJ9.eyJhY2NvdW50SWQiOiI2ZmQ4OWM4ZmNhOTM0MDJmYWNmOTFiNzZiMjM0OGYyOCIsImVtYWlsIjoiMTM3NTE0MzAwMDFAcXEuY29tIiwibmFtZSI6IuW8oOS4iSIsInVzZXJuYW1lIjoiMTM3NTE0MzAwMDFhIiwicGhvbmVOdW1iZXIiOiIxMzc1MTQzMDAwMSIsImFjY291bnRUeXBlIjoiUEVSU09OQUwiLCJ1c2VySWQiOiI2YWE1YWE0ZDBmYzk0MmJlYmIyZTllZGFhYzhmODIyNCIsImNvbXBhbnlJZCI6ImM4ZTI5YzA4NjA2NDQzYjA5ZjMwZjhkMDE4MzM2ZGM5IiwiY29tcGFueU5hbWUiOiLkuK3lm73lu7rorr7nrKzkuIDpm4blm6LotKPku7vmnInpmZDlhazlj7giLCJqdGktdXVpZCI6Imp0aS0yMWMzYTA5ZS1jMmQxLTQ5Y2MtYWM4Zi05OTU4OWY3ZmRkZmIiLCJleHAiOjE2MjU1MDA0OTR9.FSTPT5MpE5BYz3J3ChzmBp9vW5f1x-H5FX6MX16txIs",
             userInfo:{"accountId":"749735f1ee594862bb6b28c20d9cff89","email":"13751430001@qq.com","name":"公路测试业主","username":"13751430001a","phoneNumber":"13751430001","accountType":"PERSONAL","userId":"e95cf67d5d3c4c20ad81d70c09f54ae0","companyId":"39ca61dfcfac43dca8d5cdb0f1cfddf1","companyName":"IT三部业主单位","jti-uuid":"jti-736328a2-096d-4ce9-b674-76e50f9157f5","exp":1614623192},
             limitBtns:[],
             projectId:null,
@@ -355,9 +358,21 @@ class IframePage extends Component {
         }
     }
 
+    map2D = () => {
+        this.setState({showType: 0}); 
+    }
+
+    map3D = () => {
+        this.setState({showType: 1});
+    }
+
+    mapGisv = () => {
+        this.setState({showType: 2}, this.showBimWindow.bind(this))
+    }
+
 
     render(){
-        let {isVisibleBim}=this.state
+        let {isVisibleBim, showType}=this.state
         return (
             <div style={{ width: '100%', height: '100%', background: '#f1f1f1' }} className={styles.page1_main}>
                 <div style={{ width: '20%', height: '100%', background: 'pink' }}>
@@ -382,17 +397,21 @@ class IframePage extends Component {
                         <Button onClick={this.showComponentByNameAndIds.bind(this)}>showComponentByNameAndIds</Button>
                         <Button onClick={this.postRelateTypeToBim.bind(this)}>postRelateTypeToBim</Button>
                         <Button onClick={this.postRelateValToBim.bind(this)}>postRelateValToBim</Button>
+                        <Button onClick={this.map2D.bind(this)}>切换2d地图</Button>
+                        <Button onClick={this.map3D.bind(this)}>切换2.5d地图</Button>
+                        <Button onClick={this.mapGisv.bind(this)}>切换实景地图</Button>
                     </div>
 
                 </div>
-                <div style={{ width: '80%', height: '100%', display: isVisibleBim ? 'block' : 'none' }} id='bimBox'>
+                {showType == 0 && <BmapRoutePage type={showType}/>}
+                {showType == 1 && <MapboxPage />}
+                {showType == 2 && <div style={{ width: '80%', height: '100%', display: isVisibleBim ? 'block' : 'none' }} id='bimBox'>
                     <iframe
                         src='http://localhost:9988/bim'
                         style={{ width: '100%', height: '100%', border: 'none' }}
                         onLoad={this.postIntoBim.bind(this)}
                     ></iframe>
-                </div>
-
+                </div>}
             </div>
         )
     }

@@ -30,7 +30,7 @@
       ...bimDemo_routes,
       ...react_hook_routes,
       ...publish_routes,
-      ...ytx_routes,
+      // ...ytx_routes,
     ]
     module.exports = [
         {

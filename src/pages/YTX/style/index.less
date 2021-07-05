@@ -1,7 +1,22 @@
 .layer {
+  // position: fixed;
   display: flex;
+  flex-direction: row;
   align-items:center;
-   justify-content:center;
+  justify-content:center;
   z-index: 999999;
+}
 
+.notification {
+  :global(.ant-notification-notice-close) {
+    display: none;
+  }
+}
+
+.title {
+  width: 860px;
+  height: 24px;
+  position:absolute;
+  left: 0;
+  top: 0;
 }

@@ -40,6 +40,25 @@ class BmapGeo extends React.Component {
       freshLoading: false,
     };
   }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.type != this.props.type) {
+      this.drawMap(newProps.type);
+      this.drawRoadStartAndEndPic();
+      this.drawRoad();
+      let iconList = this.state.checkIndex;
+      if (iconList.length > 0) {
+        iconList.forEach(item => {
+          item == 'keyProject' && this.drawKeyProject();
+          item == 'danger' && this.drawDangerPoint();
+          item == 'monitor' && this.drawMonitorPic();
+          item == 'bim' && this.drawBimPic();
+          item == 'panoramic' && this.drawPanoramicData();
+          item == 'station' && this.drawStationAndSite();
+        });
+      }
+    }
+  }
   /**
    *
    * @param {number} x 鼠标的X方向像素值
@@ -79,66 +98,213 @@ class BmapGeo extends React.Component {
   };
 
   //地图绘制
-  drawMap() {
+  drawMap(propstype) {
     const { BMap } = window;
-    this.map = new BMap.Map('mapContainer', { enableMapClick: false }); // 创建Map实例
-    let map = this.map;
-    let zoomNum = 0;
-    let mapType = '';
-    map.centerAndZoom(new BMap.Point(114.08306, 22.60197), 10); // 初始化地图,设置中心点坐标和地图级别
-    let MapTypeControl = new BMap.MapTypeControl({
-      mapTypes: [BMAP_SATELLITE_MAP, BMAP_NORMAL_MAP],
-      anchor: BMAP_ANCHOR_TOP_LEFT,
-    });
-    map.addControl(MapTypeControl); //添加二维地图与卫星地图切换按钮
-    map.setMapType(BMAP_SATELLITE_MAP);
-    map.setCurrentCity('西安'); // 设置地图显示的城市 此项是必须设置的
-    // map.centerAndZoom("深圳",10);      // 初始化地图,用城市名设置地图中心点
-    map.enableScrollWheelZoom(); //开启鼠标滚轮缩放
-    map.disableDoubleClickZoom(); //禁用地图点击事件
-    let viewPoints = [];
-    let roadData = this.props.roadData;
-    roadData.map(data => {
-      for (let i = 0; i < data.roadNameList.length; i++) {
-        let point = coordtransform.wgs84tobd09(
-          data.roadNameList[i].latitude,
-          data.roadNameList[i].longitude,
-        );
-        viewPoints.push(new BMap.Point(point[0], point[1]));
-      }
-    });
-    map.setViewport(viewPoints, {
-      enableAnimation: true,
-    });
-    zoomNum = map.getZoom();
-    mapType = map.getMapType();
-    map.getMapType().getName() == '地图' && map.setMapStyle({ styleJson: CONFIG.styleJson });
-    const getZoomNum = () => {
-      /**获取当前地图等级 */
-      zoomNum = map.getZoom();
-      map.clearOverlays();
-      this.drawRoadStartAndEndPic();
-      this.drawRoad();
-      let iconList = this.state.checkIndex;
-      if (iconList.length > 0) {
-        iconList.forEach(item => {
-          item == 'keyProject' && this.drawKeyProject();
-          item == 'danger' && this.drawDangerPoint();
-          item == 'monitor' && this.drawMonitorPic();
-          item == 'bim' && this.drawBimPic();
-          item == 'panoramic' && this.drawPanoramicData();
-          item == 'station' && this.drawStationAndSite();
-        });
-      }
-    };
-    map.addEventListener('zoomend', getZoomNum); /**地图缩放结束事件 */
-    map.addEventListener('maptypechange', () => {
-      /** 地图类型改事件，即切换地图、卫星地图 */
-      let mapType = map.getMapType().getName();
-      this.setState({
-        currentMapType: mapType,
+    const {type} = this.props;
+    if ((propstype != undefined && propstype == 1) || (propstype == undefined && type == 1)) {
+      var map = initMap({
+        style: snowStyle,
+        heading: -45.3,
+        tilt: 80,
+        zoom: 17,
+        center: [106.542353,29.565448],
+        skyColors: [
+            // 地面颜色
+            'rgba(226, 237, 248, 0)',
+            // 天空颜色
+            'rgba(186, 211, 252, 1)'
+        ],
       });
-    });
+
+      map.setDisplayOptions({
+          building: true
+      });
+
+      var view = new mapvgl.View({
+          map: map
+      });
+
+      fetch('/static/chongqing.json').then(function (rs) {
+          return rs.json();
+      }).then(function (rs) {
+          var data = rs;
+          var polygons = [];
+          var len = data.length;
+          for (var i = 0; i < len; i++) {
+              var line = data[i];
+              var polygon = [];
+              var pt = [line[1] * 512, line[2] * 512];
+              for (var j = 3; j < line.length; j += 2) {
+                  pt[0] += line[j] / 100 / 2;
+                  pt[1] += line[j + 1] / 100 / 2;
+                  polygon.push([pt[0], pt[1]]);
+              }
+
+              polygons.push({
+                  geometry: {
+                      type: 'Polygon',
+                      coordinates: [polygon]
+                  },
+                  properties: {
+                      height: line[0] / 2
+                  }
+              });
+          }
+
+          // 面
+          var shaperLayer = new mapvgl.ShapeLayer({
+              color: 'rgba(230, 230, 230, 1)',
+              style: 'window',
+              opacity: 1.0,
+              enablePicked: true,
+              autoSelect: true, // 根据鼠标位置来自动设置选中项
+              selectedColor: '#ee1111', // 选中项颜色
+              selectedIndex: -1,
+              onClick: (e) => {
+                console.log(e);
+              }
+          });
+          view.addLayer(shaperLayer);
+          shaperLayer.setData(polygons);
+
+          // 点
+          var pointlayer = new mapvgl.PointLayer({
+            color: 'rgba(50, 50, 200, 1)',
+            blend: 'lighter',
+            size: 20
+          });
+          var pointData = [{
+              geometry: {
+                  type: 'Point',
+                  coordinates: [106.586837,29.576216]
+              }
+          }];
+          view.addLayer(pointlayer);
+          pointlayer.setData(pointData);
+
+          // 窄线
+          var simpleLineLayer = new mapvgl.SimpleLineLayer({
+            color: 'rgba(50, 50, 200, 1)',
+            blend: 'lighter',
+          });
+          var simpleLineData = [{
+            geometry: {
+                type: 'LineString',
+                coordinates: [
+                    [106.578501,29.57843],
+                    [106.578801,29.589085]
+                ]
+            }
+          }]
+          view.addLayer(simpleLineLayer);
+          simpleLineLayer.setData(simpleLineData);
+
+          // 粗线
+          var lineLayer = new mapvgl.LineLayer({
+            color: 'rgba(50, 50, 200, 1)',
+            blend: 'lighter',
+          });
+          var lineData = [{
+            geometry: {
+                type: 'LineString',
+                coordinates: [
+                    [106.541432,29.588897],
+                    [106.565507,29.588018],
+                    [106.568884,29.581171],
+                    [106.565147,29.566847],
+                    [106.54869,29.558364],
+                ]
+            }
+          }]
+          view.addLayer(lineLayer);
+          lineLayer.setData(lineData);
+
+          // icon
+          var iconLayer = new mapvgl.IconLayer({
+            width: 100 / 2,
+            height: 153 / 2,
+            offset: [0, - 153 / 2 / 2],
+            icon: '../../../../assets/dingwei.png',
+            enablePicked: true, // 是否可以拾取
+            selectedIndex: -1, // 选中项
+            selectedColor: '#ff0000', // 选中项颜色
+            autoSelect: true, // 根据鼠标位置来自动设置选中项
+            onClick: (e) => { // 点击事件
+                console.log(e)
+            },
+          });
+          var iconData = [{
+              geometry: {
+                  type: 'Point',
+                  coordinates: [
+                    106.590111,29.576082
+                  ],
+                  id: 1213
+              }
+          }]
+          view.addLayer(iconLayer);
+          iconLayer.setData(iconData);
+      });
+    } else {
+      this.map = new BMap.Map('mapContainer', { enableMapClick: false }); // 创建Map实例
+      let map = this.map;
+      let zoomNum = 0;
+      let mapType = '';
+      map.centerAndZoom(new BMap.Point(114.08306, 22.60197), 10); // 初始化地图,设置中心点坐标和地图级别
+      let MapTypeControl = new BMap.MapTypeControl({
+        mapTypes: [BMAP_SATELLITE_MAP, BMAP_NORMAL_MAP],
+        anchor: BMAP_ANCHOR_TOP_LEFT,
+      });
+      map.addControl(MapTypeControl); //添加二维地图与卫星地图切换按钮
+      map.setMapType(BMAP_SATELLITE_MAP);
+      map.setCurrentCity('西安'); // 设置地图显示的城市 此项是必须设置的
+      // map.centerAndZoom("深圳",10);      // 初始化地图,用城市名设置地图中心点
+      map.enableScrollWheelZoom(); //开启鼠标滚轮缩放
+      map.disableDoubleClickZoom(); //禁用地图点击事件
+      let viewPoints = [];
+      let roadData = this.props.roadData;
+      roadData.map(data => {
+        for (let i = 0; i < data.roadNameList.length; i++) {
+          let point = coordtransform.wgs84tobd09(
+            data.roadNameList[i].latitude,
+            data.roadNameList[i].longitude,
+          );
+          viewPoints.push(new BMap.Point(point[0], point[1]));
+        }
+      });
+      map.setViewport(viewPoints, {
+        enableAnimation: true,
+      });
+      zoomNum = map.getZoom();
+      mapType = map.getMapType();
+      map.getMapType().getName() == '地图' && map.setMapStyle({ styleJson: CONFIG.styleJson });
+      const getZoomNum = () => {
+        /**获取当前地图等级 */
+        zoomNum = map.getZoom();
+        map.clearOverlays();
+        this.drawRoadStartAndEndPic();
+        this.drawRoad();
+        let iconList = this.state.checkIndex;
+        if (iconList.length > 0) {
+          iconList.forEach(item => {
+            item == 'keyProject' && this.drawKeyProject();
+            item == 'danger' && this.drawDangerPoint();
+            item == 'monitor' && this.drawMonitorPic();
+            item == 'bim' && this.drawBimPic();
+            item == 'panoramic' && this.drawPanoramicData();
+            item == 'station' && this.drawStationAndSite();
+          });
+        }
+      };
+      map.addEventListener('zoomend', getZoomNum); /**地图缩放结束事件 */
+      map.addEventListener('maptypechange', () => {
+        /** 地图类型改事件，即切换地图、卫星地图 */
+        let mapType = map.getMapType().getName();
+        this.setState({
+          currentMapType: mapType,
+        });
+      });
+    }
   }
   //危险源图标绘制
   drawDangerPoint() {
@@ -595,6 +761,7 @@ class BmapGeo extends React.Component {
   }
 
   render() {
+    const {type} = this.props;
     let list = [
       { type: 'station', name: '驻地与场站' },
       { type: 'keyProject', name: '关键工程' },
@@ -713,7 +880,7 @@ class BmapGeo extends React.Component {
         {/* <h1 className={styles.title}>百度地图测试demo</h1> */}
         <div className={styles.container} id="bMapContainer">
           <div style={{ width: '100%', height: '100%' }} id="mapContainer"></div>
-          <div className={styles.checkBox_list}>
+          {type === 0 && <div className={styles.checkBox_list}>
             <Icon
               type="sync"
               spin={this.state.freshLoading}
@@ -735,7 +902,7 @@ class BmapGeo extends React.Component {
                   </div>
                 );
               })}
-          </div>
+          </div>}
           <RightSideInfoDrawer {...drawerProps} ref={ref => (this.RightSideInfoDrawer = ref)} />
         </div>
       </div>

@@ -86,7 +86,7 @@ div.hide_list {
 	min-height: 500px;
 	border: 1px solid #ededed;
 	border-left: none;
-	min-height: 600px;
+	height: 600px;
 }
 
 .nav {

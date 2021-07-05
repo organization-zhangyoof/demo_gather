@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { BmapGeo, VideoPlayModal, VideoListModal } from "./components/index"
 
 const BmapRoutePage = (obj) => {
-  const { location, dispatch, map,video  } = obj
+  const { location, dispatch, map,video, type  } = obj
 
   const {
     dangereData,
@@ -33,6 +33,7 @@ const BmapRoutePage = (obj) => {
     bimPoints,
     videoPoints,
     startAndEndData,
+    type,
     //关键工程数据
     //驻地与场站数据
     //全景照片数据
